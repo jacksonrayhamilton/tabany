@@ -1,1 +1,5 @@
 Purge RMXP graphics, use freely-distributable set.
+
+Remove PHP components.
+
+Setup Node.
