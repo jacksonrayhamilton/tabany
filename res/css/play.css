@@ -1,0 +1,100 @@
+* {
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+.chat.sidebar {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	height: 100%;
+	background: #686;
+}
+
+#gameplay {
+	position: relative;
+	padding: 10px;
+	text-align: center;
+	box-sizing: border-box;
+}
+
+#map {
+	margin: 0 auto;
+	text-align: left;
+}
+
+/* Tiles sometimes obscure Entities from clickability */
+.tile {
+	pointer-events: none;
+}
+
+/* Target iPhone 5 screen width in landscape mode */
+@media (max-width: 568px) {
+	
+	html {
+		overflow-y: hidden;
+	}
+	
+	#gameplay {
+		padding: 0;
+	}
+	
+	#controller {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 2147483646;
+		width: 480px;
+		height: 320px;
+		background-image: url('../../res/img/controllers/1.png');
+		opacity: 0.2;
+		-webkit-user-select: none;
+	}
+	
+	.button {
+		position: absolute;
+		z-index: 2147483647;
+		-webkit-user-select: none;
+	}
+	
+	#left-button, #right-button {
+		top: 210px;
+		width: 60px;
+		height: 50px;
+	}
+	
+	#right-button, #right-up-button, #right-down-button {
+		left: 110px;
+	}
+	
+	#up-button, #down-button {
+		left: 60px;
+		width: 50px;
+		height: 60px;
+	}
+	
+	#up-button, #left-up-button, #right-up-button {
+		top: 150px;
+	}
+	
+	#down-button, #left-down-button, #right-down-button {
+		top: 260px;
+	}
+	
+	#left-up-button,
+	#right-up-button,
+	#right-down-button,
+	#left-down-button {
+		width: 60px;
+		height: 60px;
+	}
+	
+	#game-title {
+		display: none;
+	}
+	
+	#map {
+		margin: 0;
+	}
+	
+}

@@ -1,0 +1,64 @@
+CHECK GOOGLE DOCS FOR THIS FILE'S NEW HOME ;)
+-Caleb
+
+engine.js
+	new Monster()
+
+	jcadventure.js
+		new Dragon(x, y) (inherits monster)
+		
+		shire.js
+			loadTileset(tileset.json)
+			loadMap(map.json)
+			
+			makeEntity(
+			
+				// properties...
+			);
+			
+			if (globalVariables.townIsBurningDown) {
+			
+				makeEntity(dragon);
+			}
+		mountains.js
+		
+	map001.json
+	map002.json
+	grassland-tileset.json
+	
+	levels.json
+	-------------------------
+		{
+			info: {
+				startingLevel: 
+			},
+			levels: [
+				shire: {
+					tileset: grassland-tileset.json
+					map: map001.json
+					entities: [
+						{
+							type: Hobbit,
+							name: Blacksmith,
+							say: {
+								"if": "townIsBurningDown",
+								"then": 
+							}
+							
+							"Hi there!"
+							
+						},
+						{
+							showIf: "townIsBurningDown",
+							type: Dragon,
+							x: 100,
+							y: 100
+						}
+					]
+				},
+				mountain: {
+					
+				}
+			]
+			
+		}

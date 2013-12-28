@@ -1,0 +1,390 @@
+h1 {
+	color: #fff;
+}
+
+#sprite-pane {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 1000;
+	height: 100%;
+	padding: 10px;
+	text-align: left;
+	background-color: #454;
+	background-repeat: no-repeat;	
+	overflow-y: scroll;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;	
+}
+#sprite-pane h2 {
+	margin: 0em;
+	margin-bottom: 10px;
+}
+#sprite-map {
+	position: relative;
+}
+
+/* Tile selection */
+
+.selection {
+	display: none;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 100000000;
+	width: 32px;
+	height: 32px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+.selection.visible {
+	display: block;
+	border: dashed 3px rgba(255, 255, 255, 0.75);
+}
+.selection.visible.erasing {
+	border: dashed 3px rgba(255, 102, 102, 0.75);
+}
+.selection.box {
+	background: rgba(255, 255, 255, 0.5);
+}
+.selection.box.erasing {
+	background: rgba(255, 102, 102, 0.5);
+}
+/* Keeps the selection outline from getting in the cursor's way */
+.selection.outline {
+	pointer-events: none;
+}
+
+#toolbar {
+	position: fixed;
+	top: 0;
+	right: 0;
+	z-index: 2000;
+	height: 40px;
+	color: #000;
+	background: #565;
+	border-radius: 0 0 0 10px;
+	text-align: left;
+	box-shadow: 
+		0 1px 10px #000;
+}
+
+.control {
+	display: inline-block;
+	position: relative;
+	width: 20px;
+	height: 20px;
+	padding: 2px;
+	margin-top: 8px;
+	margin-right: 5px;
+	border-radius: 3px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	cursor: pointer;
+}
+.control:first-child {
+	margin-left: 10px;
+}
+.control:last-child {
+	margin-right: 10px;
+}
+/* Add a darker overlay to hovered-over toolbar items */
+.control:hover {
+	background-color: rgba(0, 0, 0, 0.15);
+}
+.control-row {
+	text-align: center;
+}
+
+/*
+ * MENUS
+ */
+
+.menu div.close {
+	position: absolute;
+	top: 2px;
+	right: 6px;
+	font-family: sans-serif;
+	font-size: 14pt;
+	text-align: center;
+	color: #36c;
+	cursor: pointer;
+}
+
+.menu {
+	visibility: hidden;
+	opacity: 0;
+	position: absolute;
+	top: 50px;
+	z-index: 3000;
+	background-color: #fff;
+	background-color: rgba(255, 255, 255, 0.95);
+	border-radius: 5px;
+	padding: 10px;
+	text-align: left;
+	color: #000;
+	box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.75);
+	-webkit-transition: all 0.25s ease-in-out;
+	-webkit-transition-property: visibility, opacity;
+}
+
+#undo-history-menu,
+#json-menu {
+	width: 200px;
+}
+
+#tileset-menu {
+	width: 300px;
+}
+
+.menu.visible {
+	visibility: visible;
+	opacity: 1;
+}
+
+.menu h3, h4 {
+	margin: 0px;
+	text-align: center;
+}
+
+.menu h3 {
+	padding-bottom: 10px;
+}
+
+.menu h4 {
+	padding-bottom: 5px;
+}
+
+
+/* Undo History Menu */
+
+#undo-history-menu {
+	right: 150px;
+}
+
+#undo-history-list {
+	max-height: 400px;
+	overflow: scroll;
+	overflow-x: hidden;
+	margin: 0;
+	padding: 0;
+	cursor: default;
+	font-size: 10pt;
+	list-style-type: none;
+}
+
+#undo-history-list li {
+	margin: 0;
+	padding: 10px 0;
+	border-top: solid 1px #ccc;
+	list-style-type: none;
+	cursor: pointer;
+}
+
+#undo-history-list li:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+#undo-history-list li .subtitle {
+	opacity: 0.5;
+	padding-left: 10px;
+	font-size: 8pt;
+}
+
+
+/* JSON menu */
+
+#json-menu {
+	right: 380px;
+}
+
+#json-menu textarea {
+	height: 10em;
+	background: rgba(255, 204, 153, .5);
+	border-radius: 5px 0 0 0;
+}
+
+#json-map-string {
+	margin-bottom: 5px;
+}
+
+
+/* Tileset Menu */
+
+#tileset-menu {
+	right: 610px;
+}
+
+#editing-tileset-container {
+	position: relative;
+	height: 512px;
+	overflow-y: scroll;
+}
+
+#tileset-toolbar {
+	margin-bottom: 5px;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+#tileset-toolbar .item {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+}
+
+#apply-tileset {
+	background-image: url(../../res/img/icons/page_go.png);
+}
+
+#save-tileset {
+	background-image: url(../../res/img/icons/disk.png);
+}
+
+#set-tileset {
+	background-image: url(../../res/img/icons/page_go.png);
+}
+
+.tile-trait {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	opacity: 0.5;
+	cursor: pointer;
+}
+
+
+/* Layers pane */
+
+#layer-pane {
+	position: fixed;
+	top: 0;
+	right: 0px;
+	z-index: 1000;
+	width: 140px;
+	padding-bottom: 20px;
+	background: #686;
+	text-align: left;
+	border-radius: 0 0 0 5px;
+	box-shadow: 0px 1px 10px rgba(0, 0, 0, 1);
+	-webkit-transition: right 0.5s ease-in-out;
+	-moz-transition: right 0.5s ease-in-out;
+}
+#layer-pane .control {
+	width: 16px;
+	height: 16px;
+}
+#layer-pane h2 {
+	margin-top: 60px;
+	margin-bottom: 10px;
+	text-align: center;
+	text-shadow: 0px -1px 1px #242;
+}
+#layer-list {
+	margin: 0px;
+	padding: 0px;
+	background: #575;
+	list-style-type: none;
+	cursor: default;
+}
+#layer-list,
+#layer-list li {
+	border: solid 2px #353;
+	border-left: none;
+	border-right: none;
+}
+#layer-list li {
+	padding: 6px 20px;
+	border-width: 1px;
+	border-bottom: none;
+	text-align: left;
+	color: #bcb;
+	text-shadow: 0px -1px 1px #242;
+}
+#layer-list li:first-child {
+	border-top: none;
+}
+#layer-list li.selected {
+	background: #36c;
+	font-weight: bold;
+	color: #fff;
+	text-shadow: 0px -1px 1px #14a;	
+}
+
+/* Toggle Contrast control */
+
+#toggle-contrast-wrapper {
+	float: left;
+	width: 45px;
+	margin-top: 5px;
+	margin-right: 10px;
+}
+
+#toggle-contrast {
+	display: block;
+	margin: 0 auto;
+}
+
+#toggle-contrast-wrapper label {
+	clear: both;
+	font-size: 10px;
+}
+
+/* Content container */
+
+#content {
+	margin-left: 300px;
+	text-align: left;
+}
+
+#content h1, #content h2 {
+	margin: .3em 0 .2em 0;
+}
+
+/* Maps & Tiles */
+
+.layer {
+	/* Triggers a new stack context and allows the the darker:after element
+	   appear above the right layer */
+	position: relative;
+	transition: opacity 0.25s ease-in-out;
+}
+
+.tile {
+	/* Overrides above tile z-indexing so that the darker:after element works */
+	z-index: auto !important;
+}
+
+.faded {
+	opacity: 0.25;
+}
+
+/* Layer */
+
+.darker:after {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, .5);
+	width: 10000px;
+	height: 10000px;
+	transition: opacity 0.25s ease-in-out;
+}
+
+/* Hide Layer Pane when windows is not wide enough */
+@media (max-width: 1070px) {
+
+	#layer-pane {
+		right: -140px;
+	}
+	#toolbar:hover + #layer-pane,
+	#layer-pane:hover {
+		right: 0px;
+		-webkit-transition-duration: 0.25s;
+		-moz-transition-duration: 0.25s;
+	}
+
+}
