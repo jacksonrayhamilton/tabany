@@ -46,7 +46,7 @@
 		z-index: 2147483646;
 		width: 480px;
 		height: 320px;
-		background-image: url('../../res/img/controllers/1.png');
+		background-image: url('/images/controllers/1.png');
 		opacity: 0.2;
 		-webkit-user-select: none;
 	}

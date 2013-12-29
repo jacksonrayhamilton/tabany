@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='en-US'>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+    <meta name='description' content='A free and open-source browser-based MMORPG.'>
+    
+    <!-- Constrain viewport on iOS -->
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+    
+    <% // Load in stylesheets for this page
+       var i, len;
+       if (stylesheets) {
+         for (i = 0, len = stylesheets.length; i < len; i++) { %>
+           <link rel='stylesheet' href='/stylesheets/<%= stylesheets[i] %>.css'>
+    <%   }
+       } %>
+    
+    <title><%= title %></title>
+  </head>
+  <body>
+    <%- body %>
+    
+    <script src='//code.jquery.com/jquery-1.10.2.min.js'></script>
+    <% // Load in javascripts for this page
+       // (TODO: use object literals instead?)
+       if (typeof javascripts !== 'undefined') {
+         for (i = 0, len = javascripts.length; i < len; i++) { %>
+           <script src='/javascripts/<%= javascripts[i] %>.js'></script>
+    <%   }
+       } %>
+  </body>
+</html>

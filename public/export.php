@@ -1,6 +1,8 @@
 <?php
 	
 	/*
+	
+	NTS: Implement this in Node
 		
 	To send data to this script via JavaScript,
 	use jQuery's $.post() method

@@ -1,8 +1,12 @@
 (function($, RPG) {
 
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 // Require both a map and a tileset before continuing
-$.getJSON('res/maps/market.json', function(mapData) {
-$.getJSON('res/tilesets/market-street.json', function(tilesetData) {
+$.getJSON('/maps/market.json', function(mapData) {
+$.getJSON('/tilesets/market-street.json', function(tilesetData) {
 
 addToTilesets(objectToTileset(tilesetData));
 
@@ -14,7 +18,7 @@ RPG.currentMap.drawMap();
 var defaultEntities = ['caleb', 'mona', 'chan', 'terbun', 'piggie',
 'blondy', 'sky', 'gren', 'teal'];
 
-for (var i = 0; i < 27; i += 1) {
+for (var i = 0; i < 9; i += 1) {
 	
 	RPG.makePlayer({
 		spriteset: defaultEntities[i % 9],
@@ -50,11 +54,14 @@ for (var i = 0; i < 27; i += 1) {
 				self.stopMove(direction);
 			}, 2000);
 		},
-		moveRandomly: function(){ console.log('kekekekekeke'); }
+		moveRandomly: function() {
+			/*var direction = RPG.directions[RPG.directionNames[getRandomInt(0, 3)]];
+			this.startMove(direction);*/
+		}
 	});
 }
 
-RPG.makeAnimal({
+RPG.makeCritter({
 	spriteset: 'gully',
 	name: 'gully',
 	x: 240,
@@ -68,7 +75,7 @@ RPG.makeAnimal({
 	}
 });
 
-RPG.makeAnimal({
+RPG.makeCritter({
 	spriteset: 'blaster',
 	name: 'blaster',
 	x: 300,
@@ -83,13 +90,13 @@ RPG.makeAnimal({
 
 // Assign switchTo() to the click() method of all Entities
 // created before this line
-for (var i = 0; i < RPG.getEntities().length; i += 1) {
+for (var i = 0; i < RPG.entities.length; i += 1) {
 	RPG.getEntity('id', i).click = function() {
 		this.switchTo();
 	};
 }
 
-RPG.makeAnimal({
+RPG.makeCritter({
 	spriteset: 'bessy',
 	name: 'bessy',
 	x: 119,
@@ -128,7 +135,7 @@ RPG.makeAnimal({
 // Make kakaw X times
 for (var i = 0; i < 7; i += 1) {
 	
-	RPG.makeAnimal({
+	RPG.makeCritter({
 		spriteset: 'kakaw',
 		name: 'kakaw',
 		x: 32 + Math.floor(Math.random() * 500),
@@ -176,7 +183,7 @@ for (var i = 0; i < 7; i += 1) {
 }
 
 // Give all Entities (created before this line) some methods
-for (var i = 0; i < RPG.getEntities().length; i += 1) {
+for (var i = 0; i < RPG.entities.length; i += 1) {
 	
 	var entity = RPG.getEntity('id', i);
 	

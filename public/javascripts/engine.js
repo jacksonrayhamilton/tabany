@@ -380,7 +380,7 @@ CollisionBounds.prototype.intersects = function(other) {
 // spritesets' images, and of the individual sprites within those sets
 function Spriteset(name) {
 	this.name = name;
-	this.path = 'res/img/spritesets/' + this.name + '.gif';
+	this.path = '/images/spritesets/' + this.name + '.gif';
 	this.image = new Image();
 	
 	// Tracks if the spriteset's image AND the image's callbacks have executed
@@ -872,13 +872,13 @@ Entity.prototype.startMove = function(direction) {
 Entity.prototype.stopMove = function(direction) {
 	
 	if (direction === 'all') {
-		this.stopMove(directions.left);
-		this.stopMove(directions.up);
+		this.stopMove(RPG.directions.left);
+		this.stopMove(RPG.directions.up);
 	} else {
 		
 		// Convert string arguments to Direction objects
 		if (typeof direction === 'string') {
-			direction = directions[direction];
+			direction = RPG.directions[direction];
 		}
 		var axis = direction.axis;
 		var oppositeAxis = direction.oppositeAxis;

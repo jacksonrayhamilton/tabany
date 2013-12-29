@@ -13,7 +13,7 @@ var CollisionBounds = function(left, top, right, bottom) {
 }
 
 // All Tilesets available to scripts are stored here
-// These Tilesets are derived from .json files in res/tilesets
+// These Tilesets are derived from .json files in tilesets
 window.tilesets = [];
 
 // Adds a Tileset to the tilesets array (if it is not already there)
@@ -127,7 +127,7 @@ function makeDefaultTileTraits(rows, cols) {
 function Tileset(name, tileTraits, defaultRow, defaultCol) {
 	
 	this.name = name;
-	this.path = 'res/img/tilesets/' + name + '.png';
+	this.path = '/images/tilesets/' + name + '.png';
 	
 	if (typeof tileTraits !== 'undefined') {
 		

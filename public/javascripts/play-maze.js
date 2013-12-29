@@ -2,8 +2,8 @@
 (function($, RPG) {
 
 // Require both a map and a tileset before continuing
-$.getJSON('res/maps/garden-maze.json', function(mapData) {
-$.getJSON('res/tilesets/garden-maze.json', function(tilesetData) {
+$.getJSON('/maps/garden-maze.json', function(mapData) {
+$.getJSON('/tilesets/garden-maze.json', function(tilesetData) {
 
 // Make a Tileset and make it accessible to Maps
 addToTilesets(objectToTileset(tilesetData));

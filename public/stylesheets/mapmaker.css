@@ -235,15 +235,15 @@ h1 {
 }
 
 #apply-tileset {
-	background-image: url(../../res/img/icons/page_go.png);
+	background-image: url(/images/icons/page_go.png);
 }
 
 #save-tileset {
-	background-image: url(../../res/img/icons/disk.png);
+	background-image: url(/images/icons/disk.png);
 }
 
 #set-tileset {
-	background-image: url(../../res/img/icons/page_go.png);
+	background-image: url(/images/icons/page_go.png);
 }
 
 .tile-trait {

@@ -1,4 +1,4 @@
-// <= IE8 needs an indexOf polyfill
+// IE8 needs an indexOf polyfill
 if(!Array.prototype.indexOf) {
     Array.prototype.indexOf = function(needle) {
         for (var i = 0; i < this.length; i++) {
@@ -10,7 +10,7 @@ if(!Array.prototype.indexOf) {
     };
 }
 
-// < ES5 browsers need an Object.create polyfill
+// ES5 browsers need an Object.create polyfill
 if (!Object.create) {
     Object.create = (function(){
         function F(){}

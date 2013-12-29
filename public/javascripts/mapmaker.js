@@ -1363,7 +1363,7 @@ function makeTilesetMenu(tileset) {
 // Returns a css value for an argument TileTraits's element's background image
 // (an "O" for passable, an "X" for impassable, and an up arrow for above)
 function getTileTraitsBackgroundImage(tileTraits) {
-	var backgroundImage = 'url(res/img/icons/';
+	var backgroundImage = 'url(/images/icons/';
 	if (tileTraits.passable && tileTraits.above) {
 		backgroundImage += 'above';
 	} else if (!tileTraits.passable && !tileTraits.above) {
@@ -1386,7 +1386,7 @@ function toggleSetting(setting) {
 // Updates the argument element's icon according to the argument setting's
 // boolean value
 function updateIcon($element, setting, trueFileName, falseFileName) {
-	var path = 'res/img/icons/';
+	var path = '/images/icons/';
 	if (setting) {
 		path += trueFileName;
 	} else {
@@ -1594,14 +1594,14 @@ if (itemExists('settings')) {
 // Save the defaults
 else {
 	
-	// Look through the res/tilesets folder for default Tileset .json files
+	// Look through the tilesets folder for default Tileset .json files
 	// If found: Save localStorage copies (those Tilesets are better)
 	// Otherwise: Use the original default Tilesets (with default TileTraits)
 	for (var i = 0; i < defaultTilesetNames.length; i += 1) {
 		
 		var name = defaultTilesetNames[i];
 		$.ajax({
-			'url': 'res/tilesets/' + name + '.json',
+			'url': '/tilesets/' + name + '.json',
 			'dataType': 'json',
 			'async': false,
 			'success': function(data) {
