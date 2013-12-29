@@ -28,6 +28,9 @@ $$.saveMap = $('#save-map');
 $$.saveMapAs = $('#save-map-as');
 $$.deleteMap = $('#delete-map');
 $$.exportJSON = $('#export-json');
+$$.writeMap = $('#write-map');
+$$.writeTileset = $('#write-tileset');
+$$.serverWriteResponse = $('#server-write-response');
 $$.tilesetMenuOpen = $('#tileset-menu-open');
 $$.undo = $('#undo');
 $$.redo = $('#redo');
@@ -1065,6 +1068,30 @@ $$.exportJSON.on('click', function() {
 	$$.JSONMenu.addClass('visible');
 	$('#json-map-string').text(JSON.stringify(currentMap));
 	$('#json-tileset-string').text(JSON.stringify(getCurrentTileset()));
+});
+
+$$.writeMap.on('click', function() {
+	var json = JSON.stringify(currentMap);
+	$.ajax({
+		type: 'POST',
+		url: '/mapmaker/write',
+		data: { map: json }
+	})
+	.always(function (data) {
+		$$.serverWriteResponse.text(data);
+	});
+});
+
+$$.writeTileset.on('click', function() {
+	var json = JSON.stringify(getCurrentTileset());
+	$.ajax({
+		type: 'POST',
+		url: '/mapmaker/write',
+		data: { tileset: json }
+	})
+	.always(function (data) {
+		$$.serverWriteResponse.text(data);
+	});
 });
 
 // Click the close button to dismiss prompt

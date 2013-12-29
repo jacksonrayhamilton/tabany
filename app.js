@@ -19,6 +19,10 @@ var app = express();
 var partials = require('express-partials');
 app.use(partials());
 
+// Process HTTP POST requests
+app.use(express.urlencoded());
+app.use(express.json());
+
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -28,7 +32,7 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here'));
+app.use(express.cookieParser('*&DRn9$CjzEr7z7hbw3PdT9ph4z&2qVNg'));
 app.use(express.session());
 app.use(app.router);
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
@@ -42,6 +46,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/play', play.index);
 app.get('/mapmaker', mapmaker.index);
+app.post('/mapmaker/write', mapmaker.write);
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
