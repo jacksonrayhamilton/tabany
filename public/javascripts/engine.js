@@ -6,29 +6,27 @@
 
 var RPG = {
 	
-	// Contains all Entities being used on the current map
-	'entities': [],
+	// Contains all Entities on the current Map
+	entities: [],
 	
-	// Ensures a unique ID for each Entity
-	'nextEntityId': 0,
+	// Ensures a unique ID for each newly-created Entity
+	nextEntityId: 0,
 	
 	// Contains all Entities that need to have their DOM elements changed on a
 	// requestAnimationFrame
-	'changedEntities': {},
+	changedEntities: {},
 	
 	// Contains all Spritesets that have been used by Entities so far
-	'spritesets': {},
+	spritesets: {},
 	
 	// Contains all keys currently being pressed (to prevent duplicate presses)
-	'keys': [],
+	keys: [],
 	
-	// A useful little array
-	'directionNames': ['left', 'up', 'right', 'down'],
+	directionNames: ['left', 'up', 'right', 'down'],
 	
-	// Useful references
-	'currentEntity': null,
-	'currentMap': null,
-	'$map': $('#map')
+	currentEntity: null,
+	currentMap: null,
+	$map: $('#map')
 };
 
 

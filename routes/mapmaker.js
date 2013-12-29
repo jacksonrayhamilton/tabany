@@ -96,8 +96,6 @@ exports.write = (function () {
       }
       res.send('Wrote file "' + filename + '" to "' + path + '".');
     });
-    
-    console.log(type, path, name, filename);
   };
 }());
 

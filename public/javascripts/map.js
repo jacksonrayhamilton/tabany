@@ -138,7 +138,7 @@ function Tileset(name, tileTraits, defaultRow, defaultCol) {
 	}
 	// If no TileTraits are passed:
 	// Make TileTraits for each row and column of the tileset sprite
-	// This doesn't really work since loading is too slow
+	// This doesn't really work though since the image loads asynchronously
 	else {
 		var image = new Image(),
 			self = this;

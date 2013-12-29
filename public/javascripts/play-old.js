@@ -55,8 +55,8 @@ for (var i = 0; i < 9; i += 1) {
 			}, 2000);
 		},
 		moveRandomly: function() {
-			/*var direction = RPG.directions[RPG.directionNames[getRandomInt(0, 3)]];
-			this.startMove(direction);*/
+			var direction = RPG.directions[RPG.directionNames[getRandomInt(0, 3)]];
+			this.startMove(direction);
 		}
 	});
 }
