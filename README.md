@@ -36,6 +36,24 @@ Performance will be scrutinized once all essential features of the engine are im
 Graphics are on the horizon; until then, the game will utilize RPG Maker assets (available under separate terms than that of Tabany's code).
 
 
+Usage
+-----
+
+To install:
+
+```bash
+$ git clone https://github.com/jacksonrayhamilton/tabany.git
+$ cd tabany
+$ npm install
+```
+
+After installing, to run the server:
+
+```bash
+$ node app
+```
+
+
 Contact
 -------
 
