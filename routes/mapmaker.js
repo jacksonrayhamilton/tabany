@@ -38,7 +38,8 @@ exports.index = function (req, res) {
     title: 'Tabany\'s Map Creation Utility, Map Maker | Tabany',
     stylesheets: ['global', 'map', 'mapmaker'],
     javascripts: ['polyfills', 'inheritance', 'map', 'mapmaker'],
-    createControl: createControl
+    createControl: createControl,
+    legacy: true
   });
 };
 

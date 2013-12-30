@@ -1,1 +1,3 @@
+Migrate legacy code
+
 Purge RMXP graphics, use freely-distributable set.
