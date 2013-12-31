@@ -19,7 +19,7 @@ function () {
     // image sources. The returned value will be a dictionary
     // of HTMLImageElements.
     loadImages: function (srcs, onImagesLoad) {
-      var images, numSrcs, numLoaded, i, len, image;
+      var images, i, len, numSrcs, numLoaded, name;
       
       // Create an array of HTMLImageElements.
       if (Array.isArray(srcs)) {
@@ -43,13 +43,16 @@ function () {
         numLoaded = 0;
         
         for (name in srcs) {
-          ImageLoader.loadImage(srcs[name], function (image) {
-            images[name] = image;
-            numLoaded++;
-            if (numLoaded === numSrcs) {
-              onImagesLoad(images);
-            }
-          });
+          ImageLoader.loadImage(srcs[name], (function () {
+            var boundName = name;
+            return function (image) {
+              images[boundName] = image;
+              numLoaded++;
+              if (numLoaded === numSrcs) {
+                onImagesLoad(images);
+              }
+            };
+          }()));
         }
       }
     }

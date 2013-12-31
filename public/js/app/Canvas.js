@@ -44,14 +44,25 @@ function (Tile) {
       }
     },
     
+    drawEntity: function (entity) {
+      var image = entity.image;
+      this.drawSlice(
+        image,
+        0, 0,
+        image.width / 4, image.height / 4,
+        entity.x, entity.y
+      );
+    },
+    
     drawLayer: function (tilemaps, tileset, height, entities) {
-      var t, tLen, e, eLen, entitiesSortedByY, y, tilemap, entity;
+      var t, tLen, e, eLen, tileSize, entitiesSortedByY, y, tilemap, entity;
       
       t = 0;
       tLen = tilemaps.length;
       if (entities) {
         e = 0
-        eLen = entities.Length;
+        eLen = entities.length;
+        tileSize = tileset.tileSize;
         
         // TODO: Mutate array.
         /*
@@ -87,7 +98,7 @@ function (Tile) {
           // block executes, this loop is also safe.
           for (; e < eLen; e++) {
             entity = entitiesSortedByY[e];
-            if (entity.getTileBase() === y) {
+            if (entity.getTileBase(tileSize) === y) {
               this.drawEntity(entity);
             } else {
               break;

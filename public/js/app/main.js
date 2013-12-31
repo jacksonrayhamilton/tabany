@@ -1,7 +1,11 @@
-define(['jquery', 'underscore', 'app/ImageLoader', 'app/Sketch',
-        'app/Tileset', 'app/Tilemap', 'app/LayeredMap'],
-function ($, _, ImageLoader, Sketch,
-          Tileset, Tilemap, LayeredMap) {
+define(['jquery', 'underscore',
+        'app/ImageLoader', 'app/Sketch', 'app/Tileset',
+        'app/Tilemap', 'app/LayeredMap', 'app/Input',
+        'app/Entity', 'app/polyfills'],
+function ($, _,
+          ImageLoader, Sketch, Tileset,
+          Tilemap, LayeredMap, Input,
+          Entity) {
 $(function () {
 
 'use strict';
@@ -12,8 +16,10 @@ var icyTiles = [
   {},{},{},{},{"impassible": 1},{"impassible": 1},{},{},
   {"impassible": 1},{"impassible": 1},{"impassible": 1},{"impassible": 1},{"impassible": 1},{"impassible": [3], "raised": 1},{"impassible": [3], "raised": 1},{},
   {"impassible": [3], "raised": 1},{"impassible": [3], "raised": 1},{"impassible": 1},{"impassible": 1},{"impassible": 1},{"impassible": [1]},{"impassible": [1]},{"impassible": 1},
-  {"impassible": [1]},{"impassible": [1]},{"impassible": 1},{"impassible": 1},{},{},{"impassible": 1},{},
-  //{},{},{},{},{},{},{},{},
+  {"impassible": [1]},{"impassible": [1]},{"impassible": 1},{"impassible": 1},{"raised": 1},{"raised": 1},{"impassible": 1},{},
+  {},{},{},{"raised": 1},{"raised": 1},{"raised": 1},{"raised": 1},{},
+  {},{},{},{"raised": 1},{"impassible": 1},{"impassible": 1},{},{},
+  {},{},{},{"impassible": 1},{},{},{},{},
 ];
 var myTilemapTiles0 = [
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
@@ -55,6 +61,14 @@ var wellTiles = [
   21, 22,
 ];
 
+var treeTiles = [
+    , 28, 29,   ,
+  35, 36, 37, 38,  
+    , 44, 45, 46,
+    , 52, 53, 54,
+    , 60, 61, 62,
+];
+
 var sketch = Object.create(Sketch);
 sketch.init();
 sketch.createCanvas('main', 640, 480);
@@ -63,13 +77,14 @@ sketch.appendCanvas('main');
 
 ImageLoader.loadImages({
   
-  icy: '/a/tilesets/Gratheo-breezeicyyj9.png'
+  'tilesets/icy': '/tilesets/Gratheo-breezeicyyj9.png',
+  'sprites/gir': '/sprites/Gir-f_girsample2m_e3814ec.png'
   
 }, function (images) {
   
   var main = sketch.canvases.main;
   var rendering = sketch.canvases.rendering;
-  var icy = Object.create(Tileset).init(icyTiles, images.icy);
+  var icy = Object.create(Tileset).init(icyTiles, images['tilesets/icy']);
   
   var icyMap = Object.create(LayeredMap).init([
     [
@@ -77,15 +92,37 @@ ImageLoader.loadImages({
     ],
     [
       Object.create(Tilemap).init(myTilemapTiles1, 20, 15, 0, 0, 0),
-      Object.create(Tilemap).init(wellTiles, 2, 2, 5, 1),
-      Object.create(Tilemap).init(wellTiles, 2, 2, 9, 7),
+      Object.create(Tilemap).init(treeTiles, 4, 4, 2, 2),
+      Object.create(Tilemap).init(treeTiles, 4, 4, 5, 2),
+      Object.create(Tilemap).init(wellTiles, 2, 2, 5, 7),
+      Object.create(Tilemap).init(wellTiles, 2, 2, 10, 9),
     ],
   ], icy, 20, 15);
   
-  console.log(icyMap);
+  var player = Object.create(Entity).init(0, 0, images['sprites/gir']);
   
-  main.drawLayeredMap(icyMap);
+  var entities = [player];
   
+  var refresh = function () {
+    main.drawLayeredMap(icyMap, entities);
+  };
+  
+  var refreshConstantly = function () {
+    refresh();
+    requestAnimationFrame(function () {
+      refreshConstantly();
+    });
+  };
+  
+  //refreshConstantly();
+  refresh(); // initial refresh
+  
+  var input = Object.create(Input).init({
+    65: function () { player.x -= 32; refresh(); },
+    87: function () { player.y -= 32; refresh(); },
+    68: function () { player.x += 32; refresh(); },
+    83: function () { player.y += 32; refresh(); },
+  });
   
 });
 
