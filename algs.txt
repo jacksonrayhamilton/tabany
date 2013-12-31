@@ -1,0 +1,68 @@
+naive drawing
+  draw all layer0
+  draw all non-raised layer1, and then layer2
+  draw all entities
+  draw all raised layer1, and then layer2
+
+
+
+LayeredMap
+  // Each layer is an array of tilemaps
+  this.layers = [
+    [], [], ...
+  ];
+  this.entityLayer
+  this.tileset
+  this.width
+  this.height
+
+Tilemap
+  this.tiles
+  this.x
+  this.y
+  this.base = this.y + this.height
+
+Canvas
+  
+  drawLayeredMap( layeredMap, entities )
+    for layers i
+      if i === layeredMap.entityLayer
+        drawLayer( layers[i], height, entities )
+      else
+        drawLayer( layers[i], height )
+  
+  drawLayer( tilemaps, height, entities )
+    t = 0
+    if entities
+      e = 0
+      // Cache this? (Or mutate array)
+      // Or handle the sorting outside of this function
+      entitiesSortedByY = entities.sort(function (a, b) {
+        return a.y - b.y;
+      });
+    for height y
+      // Cache this row
+      for (; t < tilemaps.length; t++)
+        if tilemaps[t].base === y
+          drawTilemap( tilemaps[i] )
+        else
+          break
+      if entities
+        // Cache this row. Update if an entity moves
+        for (; e < entitiesSortedByY.length; e++)
+          if entitiesSortedByY[e].getTileBase() === y
+            drawEntity( entitiesSortedByY[e] )
+          else
+            break
+  
+  drawTilemap( tilemap )
+    ...
+    drawSlice( ... ((tileXY[0] + tilemap.x) * tileSize), ((tileXY[1] + tilemap.y) * tileSize) )
+
+
+/*
+
+
+yEntities = entities.filter(function (value) {
+  return value === y;
+});

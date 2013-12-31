@@ -18,3 +18,23 @@ sketch.loadImages({
   this.canvases.main.drawSlice(layer0.el, 0, 0, tWidth * 32, 32, 0, 0);
   
 });
+
+
+
+
+
+var myTilemap0 = Object.create(Tilemap).init(myTilemapTiles0, 20, 15);
+var myTilemap1 = Object.create(Tilemap).init(myTilemapTiles1, 20, 15);
+var main = sketch.canvases.main;
+var rendering = sketch.canvases.rendering;
+main.drawTilemap(myTilemap0, icy);
+rendering.drawTilemap(myTilemap1, icy);
+main.drawImage(rendering.el, 0, 0);
+
+
+
+
+var well0 = Object.create(Tilemap).init(wellTiles, 2, 2, 5, 3);
+var well1 = Object.create(Tilemap).init(wellTiles, 2, 2, 6, 7);
+main.drawTilemap(well0, icy);
+main.drawTilemap(well1, icy);

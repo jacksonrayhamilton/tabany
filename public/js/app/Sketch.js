@@ -1,5 +1,5 @@
-define(['underscore', 'app/Canvas', 'app/ImageLoader', 'app/Tilemap'],
-function (_, Canvas, ImageLoader, Tilemap) {
+define(['underscore', 'app/Canvas', 'app/ImageLoader'],
+function (_, Canvas, ImageLoader) {
   
   var Sketch = {
     
