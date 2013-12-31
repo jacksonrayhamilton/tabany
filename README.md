@@ -58,9 +58,3 @@ Contact
 -------
 
 Send an email to jackson@jacksonrayhamilton.com if you would like to contribute to this project in any substantial \[or, I suppose, even in any *minor*\] way.
-
-
-A Note on RMXP Graphics
------------------------
-
-Jackson Ray Hamilton has purchased the license necessary to use those sprites which were originally included in the RPG Maker XP game engine. Please obtain a license for RPG Maker XP if you would like to use those sprites as well; otherwise delete them. (These sprites will soon be migrated out of the project and deleted from the repository, and replaced by only sprites which are freely-distributable.)

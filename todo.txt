@@ -1,3 +1,4 @@
-Migrate legacy code
-
-Purge RMXP graphics, use freely-distributable set.
+Finish Entity implementation
+  Orientations
+  Moving, collision detection
+    (quadtrees?)
