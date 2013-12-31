@@ -46,11 +46,19 @@ function (Tile) {
     
     drawEntity: function (entity) {
       var image = entity.image;
+      /*this.ctx.fillRect(
+        entity.x + Math.floor(entity.width / 2) - Math.floor(entity.baseX / 2),
+        entity.y + entity.height - entity.baseY,
+        entity.baseX,
+        entity.baseY
+      );*/
+      this.ctx.fillRect(entity.x, entity.y, entity.baseX, entity.baseY)
       this.drawSlice(
         image,
         0, 0,
         image.width / 4, image.height / 4,
-        entity.x, entity.y
+        entity.x - Math.floor(entity.width / 2) + Math.floor(entity.baseX / 2),
+        entity.y - entity.height + entity.baseY
       );
     },
     

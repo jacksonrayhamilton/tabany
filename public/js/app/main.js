@@ -100,7 +100,7 @@ ImageLoader.loadImages({
     ],
   ], icy, 20, 15);
   
-  var player = Object.create(Entity).init(0, 0, images['sprites/ifrit']);
+  var player = Object.create(Entity).init(32, 32, 32, 32, images['sprites/ifrit']);
   
   var entities = [player];
   

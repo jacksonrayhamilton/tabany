@@ -1,9 +1,7 @@
 Tabany
 ======
 
-<div id="container" style="text-align: center;">
-  <img src="screenshot.jpg" alt="Screenshot of ifret standing in snow." title="Screenshot">
-</div>
+![Screenshot of ifret standing in snow.](screenshot.jpg "Screenshot")
 
 Tabany is a free and open-source browser-based MMORPG written in JavaScript and implemented with Node.js.
 
