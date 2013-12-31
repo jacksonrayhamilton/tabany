@@ -22,13 +22,13 @@ var icyTiles = [
   {},{},{},{"impassible": 1},{},{},{},{},
 ];
 var myTilemapTiles0 = [
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
+  1, 1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
+  1, 1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
+  1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
+  1, 1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
+  1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
+  1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
+  1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
@@ -78,7 +78,8 @@ sketch.appendCanvas('main');
 ImageLoader.loadImages({
   
   'tilesets/icy': '/images/tilesets/Gratheo-breezeicyyj9.png',
-  'sprites/gir': '/images/sprites/Gir-f_girsample2m_e3814ec.png'
+  'sprites/gir': '/images/sprites/Gir-f_girsample2m_e3814ec.png',
+  'sprites/ifrit': '/images/sprites/ifrit.png'
   
 }, function (images) {
   
@@ -93,13 +94,13 @@ ImageLoader.loadImages({
     [
       Object.create(Tilemap).init(myTilemapTiles1, 20, 15, 0, 0, 0),
       Object.create(Tilemap).init(treeTiles, 4, 4, 2, 2),
-      Object.create(Tilemap).init(treeTiles, 4, 4, 5, 2),
+      Object.create(Tilemap).init(treeTiles, 4, 4, 5, 3),
       Object.create(Tilemap).init(wellTiles, 2, 2, 5, 7),
       Object.create(Tilemap).init(wellTiles, 2, 2, 10, 9),
     ],
   ], icy, 20, 15);
   
-  var player = Object.create(Entity).init(0, 0, images['sprites/gir']);
+  var player = Object.create(Entity).init(0, 0, images['sprites/ifrit']);
   
   var entities = [player];
   
@@ -119,10 +120,10 @@ ImageLoader.loadImages({
   
   // hackish testing
   var input = Object.create(Input).init({
-    65: function () { player.x -= 32; refresh(); },
-    87: function () { player.y -= 32; refresh(); },
-    68: function () { player.x += 32; refresh(); },
-    83: function () { player.y += 32; refresh(); },
+    65: function () { player.x -= 1; refresh(); },
+    87: function () { player.y -= 1; refresh(); },
+    68: function () { player.x += 1; refresh(); },
+    83: function () { player.y += 1; refresh(); },
   });
   
 });

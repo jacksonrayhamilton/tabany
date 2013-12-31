@@ -1,6 +1,8 @@
 Tabany
 ======
 
+![Screenshot of ifret standing in snow](screenshot.png "Screenshot")
+
 Tabany is a free and open-source browser-based MMORPG written in JavaScript and implemented with Node.js.
 
 
@@ -58,3 +60,9 @@ Contact
 -------
 
 Send an email to jackson@jacksonrayhamilton.com if you would like to contribute to this project in any substantial \[or, I suppose, even in any *minor*\] way.
+
+
+Image Credits
+-------------
+
+Credits for this project's image assets are available at public/images/CREDITS. These assets are NOT licensed under the same terms as Tabany's code. In order to use those assets you must follow the specific requirements of their creators, which are specified at the pages listed in CREDITS. Copying the CREDITS file into your project MAY suffice, but you should navigate to the creators' pages to confirm that you are properly crediting the creators.
