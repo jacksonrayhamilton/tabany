@@ -77,8 +77,8 @@ sketch.appendCanvas('main');
 
 ImageLoader.loadImages({
   
-  'tilesets/icy': '/tilesets/Gratheo-breezeicyyj9.png',
-  'sprites/gir': '/sprites/Gir-f_girsample2m_e3814ec.png'
+  'tilesets/icy': '/images/tilesets/Gratheo-breezeicyyj9.png',
+  'sprites/gir': '/images/sprites/Gir-f_girsample2m_e3814ec.png'
   
 }, function (images) {
   
@@ -117,6 +117,7 @@ ImageLoader.loadImages({
   //refreshConstantly();
   refresh(); // initial refresh
   
+  // hackish testing
   var input = Object.create(Input).init({
     65: function () { player.x -= 32; refresh(); },
     87: function () { player.y -= 32; refresh(); },

@@ -5,8 +5,6 @@
 
 var express = require('express');
 var routes = require('./routes');
-var play = require('./routes/play');
-var mapmaker = require('./routes/mapmaker');
 var testing = require('./routes/testing');
 var http = require('http');
 var path = require('path');
@@ -43,9 +41,6 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/play', play.index);
-app.get('/mapmaker', mapmaker.index);
-app.post('/mapmaker/write', mapmaker.write);
 app.get('/testing', testing.index);
 
 http.createServer(app).listen(app.get('port'), function () {
