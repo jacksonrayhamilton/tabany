@@ -29,6 +29,10 @@ function (Tile) {
           tileXY[1] * tileSize
         ];
       }
+    },
+    
+    getTile: function (index) {
+      return this.tiles[index];
     }
   };
   

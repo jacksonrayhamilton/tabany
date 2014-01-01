@@ -14,7 +14,7 @@ function () {
       // Used for ordering.
       this.base = (typeof base === 'undefined') ? this.y + this.height - 1 : base;
       return this;
-    },
+    }
     
     /*fromJSON: function(json) {
       

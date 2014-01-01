@@ -13,13 +13,13 @@ $(function () {
 // [0, 1, 2, 3]
 // left up right down
 var icyTiles = [
-  {},{},{},{},{"impassible": 1},{"impassible": 1},{},{},
-  {"impassible": 1},{"impassible": 1},{"impassible": 1},{"impassible": 1},{"impassible": 1},{"impassible": [3], "raised": 1},{"impassible": [3], "raised": 1},{},
-  {"impassible": [3], "raised": 1},{"impassible": [3], "raised": 1},{"impassible": 1},{"impassible": 1},{"impassible": 1},{"impassible": [1]},{"impassible": [1]},{"impassible": 1},
-  {"impassible": [1]},{"impassible": [1]},{"impassible": 1},{"impassible": 1},{"raised": 1},{"raised": 1},{"impassible": 1},{},
-  {},{},{},{"raised": 1},{"raised": 1},{"raised": 1},{"raised": 1},{},
-  {},{},{},{"raised": 1},{"impassible": 1},{"impassible": 1},{},{},
-  {},{},{},{"impassible": 1},{},{},{},{},
+  {},{},{},{},{"impassible": true},{"impassible": true},{},{},
+  {"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["down"], "raised": 1},{"impassible": ["down"], "raised": 1},{},
+  {"impassible": ["down"], "raised": 1},{"impassible": ["down"], "raised": 1},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["up"]},{"impassible": ["up"]},{"impassible": true},
+  {"impassible": ["up"]},{"impassible": ["up"]},{"impassible": true},{"impassible": true},{},{},{"impassible": true},{},
+  {},{},{},{},{"raised": 1},{"raised": 1},{"raised": 1},{},
+  {},{},{},{"raised": 1},{"raised": 1},{"raised": 1},{},{},
+  {},{},{},{"impassible": true},{"raised": 1},{"impassible": true},{"raised": 1},{},
 ];
 var myTilemapTiles0 = [
   1, 1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
@@ -62,11 +62,9 @@ var wellTiles = [
 ];
 
 var treeTiles = [
-    , 28, 29,   ,
-  35, 36, 37, 38,  
-    , 44, 45, 46,
-    , 52, 53, 54,
-    , 60, 61, 62,
+  36, 37, 38,
+  44, 45, 46,
+  52, 53, 54,
 ];
 
 var sketch = Object.create(Sketch);
@@ -93,14 +91,16 @@ ImageLoader.loadImages({
     ],
     [
       Object.create(Tilemap).init(myTilemapTiles1, 20, 15, 0, 0, 0),
-      Object.create(Tilemap).init(treeTiles, 4, 4, 2, 2),
-      Object.create(Tilemap).init(treeTiles, 4, 4, 5, 3),
+      Object.create(Tilemap).init(treeTiles, 3, 3, 2, 2),
+      Object.create(Tilemap).init(treeTiles, 3, 3, 5, 3),
       Object.create(Tilemap).init(wellTiles, 2, 2, 5, 7),
       Object.create(Tilemap).init(wellTiles, 2, 2, 10, 9),
     ],
   ], icy, 20, 15);
   
-  var player = Object.create(Entity).init(32, 32, 32, 32, images['sprites/ifrit']);
+  console.log(icyMap);
+  
+  var player = Object.create(Entity).init(32, 128, 32, 32, images['sprites/ifrit']);
   
   var entities = [player];
   
@@ -120,10 +120,10 @@ ImageLoader.loadImages({
   
   // hackish testing
   var input = Object.create(Input).init({
-    65: function () { player.x -= 1; refresh(); },
-    87: function () { player.y -= 1; refresh(); },
-    68: function () { player.x += 1; refresh(); },
-    83: function () { player.y += 1; refresh(); },
+    65: function () { player.move('left', icyMap); refresh(); },
+    87: function () { player.move('up', icyMap); refresh(); },
+    68: function () { player.move('right', icyMap); refresh(); },
+    83: function () { player.move('down', icyMap); refresh(); },
   });
   
 });
