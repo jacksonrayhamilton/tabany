@@ -131,32 +131,58 @@ ImageLoader.loadImages({
     });
   };
   
-  refreshConstantly();
-  //refresh(); // initial refresh
+  // Choose refresh rate
+  switch (2) {
+    // Silky-smooth but is a performance hog until rendering
+    // optimizations are made
+    case 0: refreshConstantly(); break;
+    // Refresh once on load (other methods will call refresh()
+    // on a need-by-need basis
+    case 1: refresh(); break;
+    // Choppy but isn't as brutal as case 0
+    case 2:
+      setInterval(function () {
+        refresh();
+      }, 200);
+      break;
+  }
   
-  // hackish testing
+  // kind of hackish testing
   var input = Object.create(Input);
   input.init({
     65: function (event) {
-      if (!player.moving) {
-        player.moveContinuously('left', icyMap, this, event.which);
-      }
+      player.startMovingContinuously('left', icyMap, this, event.which);
     },
     87: function (event) {
-      if (!player.moving) {
-        player.moveContinuously('up', icyMap, this, event.which);
-      }
+      player.startMovingContinuously('up', icyMap, this, event.which);
     },
     68: function (event) {
-      if (!player.moving) {
-        player.moveContinuously('right', icyMap, this, event.which);
-      }
+      player.startMovingContinuously('right', icyMap, this, event.which);
     },
     83: function (event) {
-      if (!player.moving) {
-        player.moveContinuously('down', icyMap, this, event.which);
-      }
+      player.startMovingContinuously('down', icyMap, this, event.which);
     },
+  }, {
+    65: {
+      direction: 'left',
+      opposite: 68,
+      adjacent: 87
+    },
+    87: {
+      direction: 'up',
+      opposite: 83,
+      adjacent: 65
+    },
+    68: {
+      direction: 'right',
+      opposite: 65,
+      adjacent: 87
+    },
+    83: {
+      direction: 'down',
+      opposite: 87,
+      adjacent: 65
+    }
   });
   
   // very hackish teleporting

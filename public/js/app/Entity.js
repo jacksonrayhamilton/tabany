@@ -1,5 +1,5 @@
-define(['app/Tile'],
-function (Tile) {
+define(['app/Util', 'app/Tile'],
+function (Util, Tile) {
   
   'use strict';
   
@@ -179,18 +179,64 @@ function (Tile) {
       }*/
     },
     
-    moveContinuously: function (direction, layeredMap, input, keyCode) {
-      if (input.keyIsPressed(keyCode)) {
+    moveContinuously: (function () {
+      var callback = function () {
+        this.moveContinuously.apply(this, Util.slice(arguments[0]));
+      };
+      var actuallyMove = function (direction, layeredMap, input, keyCode) {
         this.moving = true;
         this.nextFrame();
         this.move(direction, layeredMap);
-        this.movementTimeout = setTimeout((function () {
-          this.moveContinuously.call(this, direction, layeredMap, input, keyCode);
-        }).bind(this), this.movementRate);
+        this.movementTimeout = setTimeout(callback.bind(this, arguments), this.movementRate);
+      };
+      return function (direction, layeredMap, input, keyCode) {
+        var keyProperties,
+        oppositeKeyCode, adjacentKeyCode, adjacentOppositeKeyCode,
+        otherKeyIsPressed;
+        
+        // Check if the original key is still being pressed.
+        if (input.keyIsPressed(keyCode)) {
+          actuallyMove.apply(this, Util.slice(arguments));
+        } else {
+          // Check if any of the other directional keys are being pressed.
+          keyProperties = input.keyProperties;
+          oppositeKeyCode = keyProperties[keyCode].opposite;
+          adjacentKeyCode = keyProperties[keyCode].adjacent;
+          adjacentOppositeKeyCode = keyProperties[adjacentKeyCode].opposite;
+          
+          if (input.keyIsPressed(oppositeKeyCode)) {
+            direction = keyProperties[oppositeKeyCode].direction;
+            keyCode = oppositeKeyCode;
+            otherKeyIsPressed = true;
+          } else if (input.keyIsPressed(adjacentKeyCode)) {
+            direction = keyProperties[adjacentKeyCode].direction;
+            keyCode = adjacentKeyCode;
+            otherKeyIsPressed = true;
+          } else if (input.keyIsPressed(adjacentOppositeKeyCode)) {
+            direction = keyProperties[adjacentOppositeKeyCode].direction;
+            keyCode = adjacentOppositeKeyCode;
+            otherKeyIsPressed = true;
+          }
+          
+          if (otherKeyIsPressed) {
+            actuallyMove.call(this, direction, layeredMap, input, keyCode);
+          } else {
+            this.moving = false;
+            this.frame = 0;
+            clearTimeout(this.movementTimeout);
+          }
+        }
+      };
+    }()),
+    
+    startMovingContinuously: function (direction, layeredMap, input, keyCode) {
+      if (this.moving) {
+        if (direction !== this.direction) {
+          clearTimeout(this.movementTimeout);
+          this.moveContinuously(direction, layeredMap, input, keyCode);
+        }
       } else {
-        this.moving = false;
-        this.frame = 0;
-        clearTimeout(this.movementTimeout);
+        this.moveContinuously(direction, layeredMap, input, keyCode);
       }
     },
     

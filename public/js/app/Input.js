@@ -2,9 +2,10 @@ define(['jquery'],
 function ($) {
   
   var Input = {
-    init: function (mappings) {
+    init: function (mappings, keyProperties) {
       var $document = $(document);
       this.mappings = mappings;
+      this.keyProperties = keyProperties;
       this.keys = [];
       $document.on('keydown', this.keydown.bind(this));
       $document.on('keyup', this.keyup.bind(this));
