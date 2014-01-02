@@ -63,6 +63,25 @@ Canvas
 /*
 
 
-yEntities = entities.filter(function (value) {
-  return value === y;
-});
+
+
+
+
+special collision detection
+
+if isArray
+  if xAxis
+    if impassibility.left
+      if (dir === left && this.projection < tile.leftBound) false
+      if (dir === right && this.projection >= tile.leftBound) false
+    if impassibility.right
+      if (dir === left && this.projection <= tile.rightBound) false
+      if (dir === right && this.projection > tile.rightBound) false
+  else if yAxis
+    if impassibility.up
+      if (dir === up && this.projection < tile.topBound) false
+      if (dir === down && this.projection >= tile.topBound) false
+    if impassibility.down
+      if (dir === up && this.projection <= tile.bottomBound) false
+      if (dir === down && this.projection > tile.bottomBound) false
+
