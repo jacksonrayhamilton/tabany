@@ -30,6 +30,7 @@ function () {
         for (ts = 0, tsLen = tilemaps.length; ts < tsLen; ts++) {
           tilemap = tilemaps[ts];
           tiles = tilemap.tiles;
+          // CONSIDER: Tilemaps with lots of undefined indexes are imperformant.
           for (t = 0, tLen = tiles.length; t < tLen; t++) {
             tile = tileset.getTile(tiles[t]);
             if (tile && tile.impassible) {

@@ -4,37 +4,52 @@ function (Util, Tile) {
   'use strict';
   
   var Entity = {
-    init: function (x, y, baseX, baseY, image, direction, movementRate, frameRate) {
+    init: function (x, y, width, height, image, direction, movementRate, frameRate) {
       this.x = x;
       this.y = y;
-      this.baseX = baseX;
-      this.baseY = baseY;
+      this.width = width;
+      this.height = height;
       this.image = image;
-      this.width = Math.floor(image.width / 4);
-      this.height = Math.floor(image.height / 4);
+      this.spriteWidth = Math.floor(image.width / 4);
+      this.spriteHeight = Math.floor(image.height / 4);
       this.direction = direction;
       this.movementRate = movementRate;
       this.frameRate = frameRate;
       this.speed = 1;
-      this.frame = 0; // 0-3
+      this.frame = 0; // 0..3
       this.nextFrameCount = 0;
       return this;
     },
     getTileBase: function (tileSize) {
       return Math.floor(this.y / tileSize);
     },
+    
     wouldCollide: function (target, dx, dy) {
+      var x, y;
+      x = this.x + dx;
+      y = this.y + dy;
       return (
-        this.x + dx <= target.x + target.width - 1  ||  // this.left <= target.right
-        this.x + this.baseX - 1 + dx >= target.x    ||  // this.right >= target.left
-        this.y + dy <= target.y + target.height - 1 ||  // this.top <= target.bottom
-        this.y + this.baseY - 1 + dy >= target.y        // this.bottom >= target.top
+        x <= target.x + target.width - 1  &&  // this.left <= target.right
+        x + this.width - 1 >= target.x    &&  // this.right >= target.left
+        y <= target.y + target.height - 1 &&  // this.top <= target.bottom
+        y + this.height - 1 >= target.y       // this.bottom >= target.top
       );
     },
     
-    wouldCollideWithMap: function (dx, dy, layeredMap) {
+    wouldCollideWithEntity: function (entities, dx, dy) {
+      var i, len;
+      for (i = 0, len = entities.length; i < len; i++) {
+        if (entities[i] !== this && this.wouldCollide(entities[i], dx, dy)) {
+          console.log('would collide with', entities[i]);
+          return true;
+        }
+      }
+      return false;
+    },
+    
+    wouldCollideWithMap: function (layeredMap, dx, dy) {
       var tileSize, impassibilityMap,
-      delta, axisIndex, axis, base, oppositeAxis, oppositeBase,
+      delta, axisIndex, axis, sideLength, oppositeAxis, oppositeBase,
       lowerDirection, upperDirection,
       current, preciseProjection, projection,
       start, end, i, currentTile, projectedTile,
@@ -55,18 +70,18 @@ function (Util, Tile) {
         delta = dx;
         axisIndex = 0;
         axis = this.x;
-        base = this.baseX;
+        sideLength = this.width;
         oppositeAxis = this.y;
-        oppositeBase = this.baseY;
+        oppositeBase = this.height;
         lowerDirection = 'left';
         upperDirection = 'right';
       } else if (dy !== 0) {
         delta = dy;
         axisIndex = 1;
         axis = this.y;
-        base = this.baseY;
+        sideLength = this.height;
         oppositeAxis = this.x;
-        oppositeBase = this.baseX;
+        oppositeBase = this.width;
         lowerDirection = 'up';
         upperDirection = 'down';
       }
@@ -81,8 +96,8 @@ function (Util, Tile) {
         current = Math.floor(axis / tileSize);
         preciseProjection = axis + delta;
       } else if (delta > 0) {
-        current = Math.floor((axis + base - 1) / tileSize);
-        preciseProjection = axis + base - 1 + delta;
+        current = Math.floor((axis + sideLength - 1) / tileSize);
+        preciseProjection = axis + sideLength - 1 + delta;
       }
       projection = Math.floor(preciseProjection / tileSize);
       
@@ -135,7 +150,7 @@ function (Util, Tile) {
               if (impassibility.indexOf(lowerDirection) > -1) {
                 lowerBound = tileXY[axisIndex] * tileSize;
                 if      (t === 0 && delta < 0 && preciseProjection < lowerBound) return true;
-                else if (t === 1 && delta > 0 && preciseProjection >= lowerBound && (preciseProjection - base + 1) < lowerBound) return true;
+                else if (t === 1 && delta > 0 && preciseProjection >= lowerBound && (preciseProjection - sideLength + 1) < lowerBound) return true;
               }
               
               // Check if left-moving Entity's left bound intersects the next Tile's right bound
@@ -144,7 +159,7 @@ function (Util, Tile) {
               // (or if down-moving Entity's bottom bound exceeds Tile's bottom bound).
               if (impassibility.indexOf(upperDirection) > -1) {
                 upperBound = ((tileXY[axisIndex] + 1) * tileSize) - 1;
-                if      (t === 1 && delta < 0 && preciseProjection <= upperBound && (preciseProjection + base - 1) > upperBound) return true;
+                if      (t === 1 && delta < 0 && preciseProjection <= upperBound && (preciseProjection + sideLength - 1) > upperBound) return true;
                 else if (t === 0 && delta > 0 && preciseProjection > upperBound) return true;
               }
             }
@@ -154,7 +169,7 @@ function (Util, Tile) {
       return false;
     },
     
-    move: function (direction, layeredMap) {
+    move: function (direction, layeredMap, entities) {
       var dx, dy, nearbyTiles, tileBase;
       
       this.direction = direction;
@@ -169,7 +184,8 @@ function (Util, Tile) {
         case 'down': dy = this.speed; break;
       }
       
-      if (!this.wouldCollideWithMap(dx, dy, layeredMap)) {
+      if (!this.wouldCollideWithMap(layeredMap, dx, dy) &&
+          !this.wouldCollideWithEntity(entities, dx, dy)) {
         this.x += dx;
         this.y += dy;
       }
@@ -183,13 +199,13 @@ function (Util, Tile) {
       var callback = function () {
         this.moveContinuously.apply(this, Util.slice(arguments[0]));
       };
-      var actuallyMove = function (direction, layeredMap, input, keyCode) {
+      var actuallyMove = function (direction, layeredMap, entities, input, keyCode) {
         this.moving = true;
         this.nextFrame();
-        this.move(direction, layeredMap);
+        this.move(direction, layeredMap, entities);
         this.movementTimeout = setTimeout(callback.bind(this, arguments), this.movementRate);
       };
-      return function (direction, layeredMap, input, keyCode) {
+      return function (direction, layeredMap, entities, input, keyCode) {
         var keyProperties,
         oppositeKeyCode, adjacentKeyCode, adjacentOppositeKeyCode,
         otherKeyIsPressed;
@@ -219,7 +235,7 @@ function (Util, Tile) {
           }
           
           if (otherKeyIsPressed) {
-            actuallyMove.call(this, direction, layeredMap, input, keyCode);
+            actuallyMove.call(this, direction, layeredMap, entities, input, keyCode);
           } else {
             this.moving = false;
             this.frame = 0;
@@ -229,14 +245,14 @@ function (Util, Tile) {
       };
     }()),
     
-    startMovingContinuously: function (direction, layeredMap, input, keyCode) {
+    startMovingContinuously: function (direction, layeredMap, entities, input, keyCode) {
       if (this.moving) {
         if (direction !== this.direction) {
           clearTimeout(this.movementTimeout);
-          this.moveContinuously(direction, layeredMap, input, keyCode);
+          this.moveContinuously.apply(this, Util.slice(arguments));
         }
       } else {
-        this.moveContinuously(direction, layeredMap, input, keyCode);
+        this.moveContinuously.apply(this, Util.slice(arguments));
       }
     },
     

@@ -45,7 +45,7 @@ function (Tile) {
     },
     
     drawEntity: function (entity) {
-      var image, directionRow, xStart, yStart, width, height, frame;
+      var image, directionRow, xStart, yStart, spriteWidth, spriteHeight, frame;
       
       image = entity.image;
       
@@ -56,20 +56,20 @@ function (Tile) {
         case 'down': directionRow = 0; break;
       }
       
-      width = entity.width;
-      height = entity.height;
+      spriteWidth = entity.spriteWidth;
+      spriteHeight = entity.spriteHeight;
       frame = entity.frame;
       
-      xStart = width * frame;
-      yStart = height * directionRow;
+      xStart = spriteWidth * frame;
+      yStart = spriteHeight * directionRow;
       
-      this.ctx.fillRect(entity.x, entity.y, entity.baseX, entity.baseY)
+      this.ctx.fillRect(entity.x, entity.y, entity.width, entity.height)
       this.drawSlice(
         image,
         xStart, yStart,
-        width, height,
-        entity.x - Math.floor(entity.width / 2) + Math.floor(entity.baseX / 2),
-        entity.y - entity.height + entity.baseY
+        spriteWidth, spriteHeight,
+        entity.x - Math.floor(spriteWidth / 2) + Math.floor(entity.width / 2),
+        entity.y - spriteHeight + entity.height
       );
     },
     

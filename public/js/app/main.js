@@ -114,14 +114,23 @@ ImageLoader.loadImages({
     ],
   ], icy, 20, 15);
   
-  console.log(icyMap);
+  var currentMap = icyMap;
   
   var player = Object.create(Entity).init(0, 160, 16, 16, images['sprites/ifrit'], 'down', 5, 10);
   
-  var entities = [player];
+  var entities = [
+    player,
+    Object.create(Entity).init(32, 32, 16, 16, images['sprites/gir'], 'down', 5, 10)
+  ];
+  
+  (function () {
+    for (var i = 0; i < 10; i++) {
+      
+    }
+  }());
   
   var refresh = function () {
-    main.drawLayeredMap(icyMap, entities);
+    main.drawLayeredMap(currentMap, entities);
   };
   
   var refreshConstantly = function () {
@@ -133,8 +142,8 @@ ImageLoader.loadImages({
   
   // Choose refresh rate
   switch (2) {
-    // Silky-smooth but is a performance hog until rendering
-    // optimizations are made
+    // Silky-smooth but is a performance hog (until rendering
+    // optimizations are made)
     case 0: refreshConstantly(); break;
     // Refresh once on load (other methods will call refresh()
     // on a need-by-need basis
@@ -151,16 +160,16 @@ ImageLoader.loadImages({
   var input = Object.create(Input);
   input.init({
     65: function (event) {
-      player.startMovingContinuously('left', icyMap, this, event.which);
+      player.startMovingContinuously('left', currentMap, entities, this, event.which);
     },
     87: function (event) {
-      player.startMovingContinuously('up', icyMap, this, event.which);
+      player.startMovingContinuously('up', currentMap, entities, this, event.which);
     },
     68: function (event) {
-      player.startMovingContinuously('right', icyMap, this, event.which);
+      player.startMovingContinuously('right', currentMap, entities, this, event.which);
     },
     83: function (event) {
-      player.startMovingContinuously('down', icyMap, this, event.which);
+      player.startMovingContinuously('down', currentMap, entities, this, event.which);
     },
   }, {
     65: {
