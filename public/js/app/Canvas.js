@@ -45,18 +45,29 @@ function (Tile) {
     },
     
     drawEntity: function (entity) {
-      var image = entity.image;
-      /*this.ctx.fillRect(
-        entity.x + Math.floor(entity.width / 2) - Math.floor(entity.baseX / 2),
-        entity.y + entity.height - entity.baseY,
-        entity.baseX,
-        entity.baseY
-      );*/
+      var image, directionRow, xStart, yStart, width, height, frame;
+      
+      image = entity.image;
+      
+      switch (entity.direction) {
+        case 'left': directionRow = 1; break;
+        case 'up': directionRow = 3; break;
+        case 'right': directionRow = 2; break;
+        case 'down': directionRow = 0; break;
+      }
+      
+      width = entity.width;
+      height = entity.height;
+      frame = entity.frame;
+      
+      xStart = width * frame;
+      yStart = height * directionRow;
+      
       this.ctx.fillRect(entity.x, entity.y, entity.baseX, entity.baseY)
       this.drawSlice(
         image,
-        0, 0,
-        image.width / 4, image.height / 4,
+        xStart, yStart,
+        width, height,
         entity.x - Math.floor(entity.width / 2) + Math.floor(entity.baseX / 2),
         entity.y - entity.height + entity.baseY
       );

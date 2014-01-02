@@ -14,21 +14,23 @@ $(function () {
 // left up right down
 var icyTiles = [
   {},{},{},{},{"impassible": true},{"impassible": true},{},{},
-  {"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["down"], "raised": 1},{"impassible": ["down"], "raised": 1},{},
-  {"impassible": ["down"], "raised": 1},{"impassible": ["down"], "raised": 1},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["up"]},{"impassible": ["up"]},{"impassible": true},
+  {"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{},
+  {"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},
   {"impassible": ["up"]},{"impassible": ["up"]},{"impassible": true},{"impassible": true},{},{},{"impassible": true},{},
-  {},{},{},{},{"raised": 1},{"raised": 1},{"raised": 1},{},
-  {},{},{},{"raised": 1},{"raised": 1},{"raised": 1},{},{},
-  {},{},{},{"impassible": true},{"raised": 1},{"impassible": true},{"raised": 1},{},
+  {},{},{},{},{"raised": true},{"raised": true},{"raised": true},{},
+  {},{},{},{"raised": true},{"raised": true},{"raised": true},{},{},
+  {},{},{},{"impassible": true},{"raised": true},{"impassible": true},{"raised": true},{},
   {},{},{},{},{},{},{},{},
   {},{},{},{},{},{},{},{},
   {},{},{},{},{},{},{},{},
   {},{},{},{},{},{},{},{},
   {},{},{},{},{},{},{},{},
   {},{},{},{},{},{},{},{},
-  {"impassible": ["left", "up"]},{"impassible": ["up"]},{"impassible": ["up", "right"]},{},{},{},{},{},
+  {"impassible": ["left", "up"], "raised": true},{"impassible": ["up"], "raised": true},{"impassible": ["up", "right"], "raised": true},{},{},{},{},{},
   {"impassible": ["left"]},{},{"impassible": ["right"]},{},{},{},{},{},
-  {"impassible": ["left", "down"]},{"impassible": ["down"]},{"impassible": ["right", "down"]},{},{},{},{},{},
+  {"impassible": ["left"]},{},{"impassible": ["right"]},{},{},{},{},{},
+  {"impassible": ["left"]},{},{"impassible": ["right"]},{},{},{},{},{},
+  {},{},{},{},{},{},{},{},
 ];
 var myTilemapTiles0 = [
   1, 1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
@@ -41,9 +43,9 @@ var myTilemapTiles0 = [
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 112, 113, 114, 6,
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 120, 121, 122, 6,
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 128, 129, 130, 6,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
 ];
@@ -57,11 +59,11 @@ var myTilemapTiles1 = [
    ,  ,  ,  ,  , 3,  , 2,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
    ,  ,11,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 2,  ,  ,
    ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-   ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+   ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  104, 105, 106,  ,
    ,  ,  ,  ,  ,  ,  ,  ,  , 4,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
    ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
    ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-   ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+   ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  136, 137, 138,  ,
    ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
 ];
 
@@ -109,13 +111,12 @@ ImageLoader.loadImages({
       Object.create(Tilemap).init(treeTiles, 3, 3, 2, 2),
       Object.create(Tilemap).init(treeTiles, 3, 3, 5, 3),
       Object.create(Tilemap).init(wellTiles, 2, 2, 5, 7),
-      Object.create(Tilemap).init(platformTiles, 3, 3, 10, 9),
     ],
   ], icy, 20, 15);
   
   console.log(icyMap);
   
-  var player = Object.create(Entity).init(0, 160, 16, 16, images['sprites/ifrit']);
+  var player = Object.create(Entity).init(0, 160, 16, 16, images['sprites/ifrit'], 'down', 5, 10);
   
   var entities = [player];
   
@@ -130,15 +131,32 @@ ImageLoader.loadImages({
     });
   };
   
-  //refreshConstantly();
-  refresh(); // initial refresh
+  refreshConstantly();
+  //refresh(); // initial refresh
   
   // hackish testing
-  var input = Object.create(Input).init({
-    65: function () { player.move('left', icyMap); refresh(); },
-    87: function () { player.move('up', icyMap); refresh(); },
-    68: function () { player.move('right', icyMap); refresh(); },
-    83: function () { player.move('down', icyMap); refresh(); },
+  var input = Object.create(Input);
+  input.init({
+    65: function (event) {
+      if (!player.moving) {
+        player.moveContinuously('left', icyMap, this, event.which);
+      }
+    },
+    87: function (event) {
+      if (!player.moving) {
+        player.moveContinuously('up', icyMap, this, event.which);
+      }
+    },
+    68: function (event) {
+      if (!player.moving) {
+        player.moveContinuously('right', icyMap, this, event.which);
+      }
+    },
+    83: function (event) {
+      if (!player.moving) {
+        player.moveContinuously('down', icyMap, this, event.which);
+      }
+    },
   });
   
   // very hackish teleporting
