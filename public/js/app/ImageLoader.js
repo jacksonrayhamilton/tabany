@@ -4,58 +4,34 @@ function () {
   'use strict';
   
   var ImageLoader = {
-  
-    // Loads a single image and executes a callback on completion
-    loadImage: function (src, onImageLoad) {
-      var image = new Image();
-      image.addEventListener('load', function () {
-        onImageLoad(image);
-      }, false);
-      image.src = src;
-    },
     
-    // Loads an array of images and executes a callback after the last
-    // one's completion.
-    // If an array is passed, returns an array of HTMLImageElements.
-    // If an object is passed, `srcs` is assumed to be a dictionary of
-    // image sources. The returned value will be a dictionary
-    // of HTMLImageElements.
-    loadImages: function (srcs, onImagesLoad) {
-      var images, i, len, numSrcs, numLoaded, name;
+    // Loads images from a dictionary of name and src pairs.
+    // Then merges the resultant HTMLImageElements into a dictionary
+    // of name and HTMLImageElement pairs. Also passes that
+    // dictionary to a callback.
+    loadImages: function (container, srcs, callback) {
+      var numSrcs, numLoaded, name;
       
-      // Create an array of HTMLImageElements.
-      if (Array.isArray(srcs)) {
-        images = [];
-      
-        for (i = 0, len = srcs.length; i < len; i++) {
-          this.loadImage(srcs[i], function (image) {
-            images.push(image);
-            if (images.length === len) {
-              onImagesLoad(images);
-            }
-          });
-        }
+      if (container === null) {
+        container = Object.create(null);
       }
-      // Create a dictionary of HTMLImageElements.
-      else {
-        // CONSIDER: Allow object to be passed in that
-        // can just have properties slapped on? (Performance, avoid copying.)
-        images = {};
-        numSrcs = Object.keys(srcs).length;
-        numLoaded = 0;
-        
-        for (name in srcs) {
-          ImageLoader.loadImage(srcs[name], (function () {
-            var boundName = name;
-            return function (image) {
-              images[boundName] = image;
-              numLoaded++;
-              if (numLoaded === numSrcs) {
-                onImagesLoad(images);
-              }
-            };
-          }()));
-        }
+      numSrcs = Object.keys(srcs).length;
+      numLoaded = 0;
+      
+      for (name in srcs) {
+        var image = new Image();
+        image.addEventListener('load', (function () {
+          var boundName = name;
+          var boundImage = image;
+          return function () {
+            container[boundName] = boundImage;
+            numLoaded++;
+            if (numLoaded === numSrcs) {
+              callback(container);
+            }
+          };
+        }()), false);
+        image.src = srcs[name];
       }
     }
   

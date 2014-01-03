@@ -84,7 +84,7 @@ function (Tile) {
       yStart = spriteHeight * directionRow;
       
       //this.ctx.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
-      this.ctx.fillRect(entity.x, entity.y, entity.width, entity.height)
+      //this.ctx.fillRect(entity.x, entity.y, entity.width, entity.height)
       this.drawSlice(
         image,
         xStart, yStart,

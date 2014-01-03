@@ -90,7 +90,7 @@ sketch.createCanvas('main', 640, 480);
 sketch.createCanvas('rendering', 640, 480);
 sketch.appendCanvas('main');
 
-ImageLoader.loadImages({
+ImageLoader.loadImages(null, {
   
   'tilesets/icy': '/images/tilesets/Gratheo-breezeicyyj9.png',
   'sprites/gir': '/images/sprites/Gir-f_girsample2m_e3814ec.png',
