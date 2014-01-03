@@ -1,6 +1,8 @@
 define(['jquery'],
 function ($) {
   
+  'use strict';
+  
   var Input = {
     init: function (mappings, keyProperties) {
       var $document = $(document);

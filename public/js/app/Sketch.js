@@ -1,6 +1,8 @@
 define(['underscore', 'app/Canvas', 'app/ImageLoader'],
 function (_, Canvas, ImageLoader) {
   
+  'use strict';
+  
   var Sketch = {
     
     init: function (container) {

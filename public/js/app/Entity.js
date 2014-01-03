@@ -20,8 +20,9 @@ function (Util, Tile) {
       this.nextFrameCount = 0;
       return this;
     },
+    
     getTileBase: function (tileSize) {
-      return Math.floor(this.y / tileSize);
+      return Math.floor((this.y + this.height - 1) / tileSize);
     },
     
     wouldCollide: function (target, dx, dy) {
@@ -39,10 +40,7 @@ function (Util, Tile) {
     wouldCollideWithEntity: function (entities, dx, dy) {
       var i, len;
       for (i = 0, len = entities.length; i < len; i++) {
-        if (entities[i] !== this && this.wouldCollide(entities[i], dx, dy)) {
-          console.log('would collide with', entities[i]);
-          return true;
-        }
+        if (entities[i] !== this && this.wouldCollide(entities[i], dx, dy)) return true;
       }
       return false;
     },

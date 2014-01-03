@@ -1,6 +1,8 @@
 define(['app/Tile'],
 function (Tile) {
   
+  'use strict';
+  
   var Tileset = {
     
     init: function (tiles, image, tileSize) {

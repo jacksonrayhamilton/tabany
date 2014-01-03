@@ -119,13 +119,14 @@ ImageLoader.loadImages({
   var player = Object.create(Entity).init(0, 160, 16, 16, images['sprites/ifrit'], 'down', 5, 10);
   
   var entities = [
-    player,
-    Object.create(Entity).init(32, 32, 16, 16, images['sprites/gir'], 'down', 5, 10)
+    player
   ];
   
   (function () {
     for (var i = 0; i < 10; i++) {
-      
+      var y = Math.floor(i / currentMap.width);
+      var x = i % currentMap.width;
+      entities.push(Object.create(Entity).init(32 + (x * 48), 32 + (y * 48), 16, 16, images['sprites/gir'], 'down', 5, 10));
     }
   }());
   
@@ -141,7 +142,7 @@ ImageLoader.loadImages({
   };
   
   // Choose refresh rate
-  switch (2) {
+  switch (0) {
     // Silky-smooth but is a performance hog (until rendering
     // optimizations are made)
     case 0: refreshConstantly(); break;

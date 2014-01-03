@@ -1,6 +1,8 @@
 define(['app/Tile'],
 function (Tile) {
   
+  'use strict';
+  
   var Canvas = {
     
     init: function (el, width, height) {
@@ -25,23 +27,41 @@ function (Tile) {
     },
     
     drawTilemap: function (tilemap, tileset) {
-      var width, image, tileSize, i, len, tile, tileXY, coordinates;
-      width = tilemap.width;
-      image = tileset.image;
+      var tileSize, width, height, pixelWidth, pixelHeight, cache, image, i, len, tile, tileXY, coordinates;
+      
       tileSize = tileset.tileSize;
-      for (i = 0, len = tilemap.tiles.length; i < len; i++) {
-        tile = tileset.tiles[tilemap.tiles[i]];
-        if (tile) {
-          tileXY = Tile.getXY(i, width);
-          coordinates = tile.coordinates;
-          this.drawSlice(
-            image,
-            coordinates[0], coordinates[1],
-            tileSize, tileSize,
-            ((tileXY[0] + tilemap.x) * tileSize), ((tileXY[1] + tilemap.y) * tileSize)
-          );
+      width = tilemap.width;
+      height = tilemap.height;
+      pixelWidth = width * tileSize;
+      pixelHeight = height * tileSize;
+      
+      // Create a cached Canvas for effeciently redrawing the Tilemap.
+      if (!tilemap.cache) {
+        tilemap.cache = Object.create(Canvas).init(null, pixelWidth, pixelHeight);
+        cache = tilemap.cache;
+        image = tileset.image;
+        // Draw all Tiles to the cache.
+        for (i = 0, len = tilemap.tiles.length; i < len; i++) {
+          tile = tileset.tiles[tilemap.tiles[i]];
+          if (tile) {
+            tileXY = Tile.getXY(i, width);
+            coordinates = tile.coordinates;
+            cache.drawSlice(
+              image,
+              coordinates[0], coordinates[1],
+              tileSize, tileSize,
+              (tileXY[0] * tileSize), (tileXY[1] * tileSize)
+            );
+          }
         }
       }
+      
+      // Draw from the cache onto this Canvas.
+      this.drawImage(
+        tilemap.cache.el,
+        tilemap.x * tileSize,
+        tilemap.y * tileSize
+      );
     },
     
     drawEntity: function (entity) {
@@ -63,6 +83,7 @@ function (Tile) {
       xStart = spriteWidth * frame;
       yStart = spriteHeight * directionRow;
       
+      //this.ctx.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
       this.ctx.fillRect(entity.x, entity.y, entity.width, entity.height)
       this.drawSlice(
         image,
@@ -99,18 +120,6 @@ function (Tile) {
         });
       }
       for (y = 0; y < height; y++) {
-        // TODO: Cache this row.
-        // The `tilemaps` array MUST ALREADY BE ORDERED BY BASE.
-        // Thus, when a Tilemap not of the currently-iterating base is
-        // encountered, the loop can safely be broken.
-        for (; t < tLen; t++) {
-          tilemap = tilemaps[t];
-          if (tilemap.base === y) {
-            this.drawTilemap(tilemap, tileset);
-          } else {
-            break;
-          }
-        }
         if (entities) {
           // TODO: Cache this row. Update if an entity moves.
           // Since `entities` are always sorted by y before this
@@ -124,6 +133,18 @@ function (Tile) {
             }
           }
         }
+        // The `tilemaps` array MUST ALREADY BE ORDERED BY BASE.
+        // Thus, when a Tilemap not of the currently-iterating base is
+        // encountered, the loop can safely be broken.
+        for (; t < tLen; t++) {
+          tilemap = tilemaps[t];
+          if (tilemap.base === y) {
+            this.drawTilemap(tilemap, tileset);
+          } else {
+            break;
+          }
+        }
+        
       }
     },
     

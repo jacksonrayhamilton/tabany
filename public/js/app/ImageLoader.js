@@ -1,6 +1,8 @@
 define(
 function () {
   
+  'use strict';
+  
   var ImageLoader = {
   
     // Loads a single image and executes a callback on completion

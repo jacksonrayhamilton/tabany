@@ -1,6 +1,8 @@
 define(
 function () {
   
+  'use strict';
+  
   var Tilemap = {
     
     // TODO: Rename `tiles` to something more descriptive

@@ -1,6 +1,8 @@
 define(
 function () {
   
+  'use strict';
+  
   var LayeredMap = {
     init: function (layers, tileset, width, height, entityLayer) {
       this.layers = layers; // Array of arrays of tilemaps

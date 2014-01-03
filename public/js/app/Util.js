@@ -1,6 +1,8 @@
 define(
 function () {
   
+  'use strict';
+  
   var Util = {
     slice: (function () {
       var unboundSlice = Array.prototype.slice;
