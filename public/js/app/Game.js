@@ -85,7 +85,7 @@ function (Sketch, Input, ImageLoader) {
           this.entities = this.entities.sort(callback);
           this.entitiesChanged = false;
         }
-        this.canvas.drawLayeredMap(this.currentMap, this.entities);
+        this.sketch.drawLayeredMap('main', this.currentMap, this.entities);
       }
     }()),
     
