@@ -8,7 +8,8 @@ requirejs.config({
     // REMEMBER TO REMOVE THE .js EXTENSION
     //jquery: '//code.jquery.com/jquery-1.10.2.min',
     jquery: 'jquery-1.10.2.min',
-    //underscore: '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min'
+    //underscore: '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min',
+    'socket.io': '/socket.io/socket.io'
   },
   shim: {
     underscore: {

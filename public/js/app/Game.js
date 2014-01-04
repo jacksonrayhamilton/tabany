@@ -1,5 +1,5 @@
-define(['app/Sketch', 'app/Input', 'app/ImageLoader', 'app/polyfills'],
-function (Sketch, Input, ImageLoader) {
+define(['socket.io', 'app/Sketch', 'app/Input', 'app/ImageLoader', 'app/polyfills'],
+function (io, Sketch, Input, ImageLoader) {
   
   'use strict';
   
@@ -27,6 +27,12 @@ function (Sketch, Input, ImageLoader) {
       args.setup.call(this, this);
       
       this.refreshConstantly();
+      
+      var socket = io.connect('http://localhost:3000');
+      socket.on('news', function (data) {
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
+      });
     },
     
     initInput: function () {

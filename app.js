@@ -43,6 +43,15 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/testing', testing.index);
 
-http.createServer(app).listen(app.get('port'), function () {
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+server.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
+});
+
+io.sockets.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
 });
