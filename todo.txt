@@ -1,4 +1,5 @@
-Finish Entity implementation
-  Orientations
-  Moving, collision detection
-    (quadtrees?)
+Entity
+  quadtree collisions
+
+Canvas
+  recognize raised property

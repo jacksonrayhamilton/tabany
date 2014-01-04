@@ -91,6 +91,7 @@ function (_, Canvas, ImageLoader, EntityImage,
           height = tilemap.height;
           pixelWidth = width * tileSize;
           pixelHeight = height * tileSize;
+          // TODO: Find better way to organize these caches?
           tilemap.cache = Object.create(Canvas).init(null, pixelWidth, pixelHeight);
           cache = tilemap.cache;
           
@@ -147,7 +148,7 @@ function (_, Canvas, ImageLoader, EntityImage,
       yStart = spriteHeight * directionRow;
       
       //this.ctx.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
-      this.canvases[canvas].ctx.fillRect(entity.x, entity.y, entity.width, entity.height)
+      //this.canvases[canvas].ctx.fillRect(entity.x, entity.y, entity.width, entity.height)
       this.canvases[canvas].drawSlice(
         image,
         xStart, yStart,
@@ -167,7 +168,8 @@ function (_, Canvas, ImageLoader, EntityImage,
         eLen = entities.length;
         tileSize = tileset.tileSize;
       }
-      for (y = 0; y < height; y++) {
+      // Entities can move off the map, so increase the range by 2.
+      for (y = -1; y < height + 1; y++) {
         if (entities) {
           // TODO: Cache this row. Update if an entity moves.
           // Since `entities` are always sorted by y before this

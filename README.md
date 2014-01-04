@@ -29,9 +29,9 @@ Players view themselves from a top-down perspective in the classic Final Fantasy
 Status
 ------
 
-Tabany is currently in a state of semi-active development.
+Tabany is currently being actively developed. A good chunk of the basic RPG client-side game engine has been written. The client-side's MMORPG functionality and its complimentary server-side code is next-up on the list.
 
-The game engine is currently unstable and probably in need of some serious architecting and rewriting. Once the game's client- and server-side components are sufficiently-stabilized, this message will be updated. GitHub Releases will then provide stable versions of the software, which should allow anyone to run a game server on his own website (provided Node.js is installed, etc).
+The game engine is currently unstable, but the latest push should always at least run. Once the game's client- and server-side components are sufficiently-stabilized, this message will be updated. GitHub Releases will then provide stable versions of the software, which should allow anyone to run a game server on his own website (provided Node.js is installed, etc).
 
 Performance will be scrutinized once all essential features of the engine are implemented.
 
@@ -59,7 +59,7 @@ $ node app
 Contact
 -------
 
-Send an email to jackson@jacksonrayhamilton.com if you would like to contribute to this project in any substantial \[or, I suppose, even in any *minor*\] way.
+Send an email to jackson@jacksonrayhamilton.com if you would like to contribute to this project in any substantial or minor way.
 
 
 Image Credits

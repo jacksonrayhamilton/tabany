@@ -9,7 +9,7 @@ function (Util, Tile) {
       this.y = y;
       this.width = width;
       this.height = height;
-      // String corresponding to the name of a Spriteset
+      // String corresponding to the name of an EntityImage.
       this.image = image;
       this.setDirection(direction);
       this.movementRate = movementRate;

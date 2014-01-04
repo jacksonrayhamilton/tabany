@@ -10,27 +10,31 @@ $(function () {
 
 'use strict';
 
-// [0, 1, 2, 3]
-// left up right down
 var icyTiles = [
   {},{},{},{},{"impassible": true},{"impassible": true},{},{},
   {"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{},
   {"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},
   {"impassible": ["up"]},{"impassible": ["up"]},{"impassible": true},{"impassible": true},{},{},{"impassible": true},{},
   {},{},{},{},{"raised": true},{"raised": true},{"raised": true},{},
-  {},{},{},{"raised": true},{"raised": true},{"raised": true},{},{},
+  {},{},{},{"raised": true},{"raised": true},{"raised": true},{"raised": true},{},
   {},{},{},{"impassible": true},{"raised": true},{"impassible": true},{"raised": true},{},
-  {},{},{},{},{},{},{},{},
-  {},{},{},{},{},{},{},{},
-  {},{},{},{},{},{},{},{},
-  {},{},{},{},{},{},{},{},
-  {},{},{},{},{},{},{},{},
-  {},{},{},{},{},{},{},{},
-  {"impassible": ["left", "up"], "raised": true},{"impassible": ["up"], "raised": true},{"impassible": ["up", "right"], "raised": true},{},{},{},{},{},
+  {},{},{},{},{"impassible": true},{},{},{},
+  {"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{"impassible": ["left"]},{"impassible": ["right"]},
+  {"impassible": true},{},{"impassible": true},{"impassible": true},{},{"impassible": true},{"impassible": ["left"]},{"impassible": ["right"]},
+  {"impassible": true},{"impassible": true},{"impassible": true},{},{},{},{},{"impassible": ["down"], "raised": true},
+  {"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{},{},
+  {"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{},{"impassible": true},{},{"impassible": true},
+  {"impassible": ["left", "up"], "raised": true},{"impassible": ["up"], "raised": true},{"impassible": ["up", "right"], "raised": true},{"impassible": true},{"impassible": true},{"impassible": true},{},{},
+  {"impassible": ["left"]},{},{"impassible": ["right"]},{"impassible": true},{},{"impassible": true},{},{"impassible": true},
+  {"impassible": ["left"]},{},{"impassible": ["right"]},{"impassible": true},{},{"impassible": true},{},{"impassible": true},
   {"impassible": ["left"]},{},{"impassible": ["right"]},{},{},{},{},{},
-  {"impassible": ["left"]},{},{"impassible": ["right"]},{},{},{},{},{},
-  {"impassible": ["left"]},{},{"impassible": ["right"]},{},{},{},{},{},
   {},{},{},{},{},{},{},{},
+  {"raised": true},{"raised": true},{"raised": true},{},{},{},{},{},
+  {"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},{"impassible": ["down"], "raised": true},
+  {"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["left"]},{},{"impassible": ["right"]},
+  {"raised": true},{"raised": true},{"raised": true},{},{},{"impassible": ["left"]},{},{"impassible": ["right"]},
+  {"impassible": true},{"impassible": true},{"impassible": true},{"impassible": ["left", "right"]},{},{"impassible": ["left", "down"], "raised": true},{},{"impassible": ["right", "down"], "raised": true},
+  {"impassible": true},{},{"impassible": true},{},{},{},{},{},
 ];
 
 var myTilemapTiles0 = [
@@ -47,7 +51,7 @@ var myTilemapTiles0 = [
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 112, 113, 114, 6,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 120, 121, 122, 6,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 128, 129, 130, 6,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
+  1, 1, 1,89, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6,
 ];
 
@@ -62,11 +66,11 @@ var myTilemapTiles1 = [
    ,  ,11,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 2,  ,  ,
    ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
    ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  104, 105, 106,  ,
-   ,  ,  ,  ,  ,  ,  ,  ,  , 4,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-   ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-   ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-   ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  136, 137, 138,  ,
-   ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+   ,  ,64,65,66,  ,  ,  ,  , 4,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+   ,  ,72,  ,74,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+   ,  ,80,81,82,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+   ,  ,88,  ,90,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  136, 137, 138,  ,
+   ,  ,96,97,98,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
 ];
 
 var wellTiles = [
@@ -96,11 +100,7 @@ Object.create(Game).init({
       'icy': '/images/tilesets/Gratheo-breezeicyyj9.png'
     }
   },
-  setup: function () {
-    
-    var game = this;
-    
-    var main = game.sketch.canvases.main;
+  setup: function (game) {
     
     var icyTileset = Object.create(Tileset).init(icyTiles, 'icy', 8, 24);
     var icyMap = Object.create(LayeredMap).init([
@@ -116,18 +116,21 @@ Object.create(Game).init({
     ], icyTileset, 20, 15);
     
     game.currentMap = icyMap;
-    var currentMap = game.currentMap;
     
-    var player = game.addEntity(Object.create(Entity).init(0, 160, 16, 16, 'ifrit', 'down', 5, 10));
+    var player = Object.create(Entity).init(0, 160, 16, 16, 'ifrit', 'down', 5, 10);
+    game.addEntity(player);
     game.player = player;
     
+    // Generate some dummy Entities
     (function () {
       for (var i = 0; i < 10; i++) {
-        var y = Math.floor(i / currentMap.width);
-        var x = i % currentMap.width;
+        var y = Math.floor(i / game.currentMap.width);
+        var x = i % game.currentMap.width;
         game.addEntity(Object.create(Entity).init(32 + (x * 48), 32 + (y * 48), 16, 16, 'gir', 'down', 5, 10));
       }
     }());
+    
+    game.addEntity(Object.create(Entity).init(7 * 32, 8 * 32, 16, 16, 'gir', 'left', 5, 10));
     
     // very hackish teleporting
     var $container = $(game.sketch.container);

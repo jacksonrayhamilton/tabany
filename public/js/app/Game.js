@@ -24,7 +24,7 @@ function (Sketch, Input, ImageLoader) {
       
       this.initInput();
       
-      args.setup.call(this);
+      args.setup.call(this, this);
       
       this.refreshConstantly();
     },
