@@ -7,7 +7,12 @@ function (Sketch, Input, ImageLoader) {
     
     init: function (args) {
       
-      this.sketch = Object.create(Sketch).init();
+      if (args.sketchArgs) {
+        this.sketch = Object.create(Sketch).init(args.sketchArgs);
+      } else {
+        this.sketch = Object.create(Sketch).init();
+      }
+      
       this.canvas = this.sketch.createCanvas('main', 640, 480);
       this.sketch.appendCanvasToContainer('main');
       
@@ -19,13 +24,9 @@ function (Sketch, Input, ImageLoader) {
       
       this.initInput();
       
-      // TODO: Use placeholders so that loading images doesn't hang everything.
-      // Use an array of images that are available on-demand.
-      // Use Spritesets which contain placeholder information for images.
-      this.sketch.loadImages(args.images, (function (images) {
-        args.setup.call(this, images);
-        this.refreshConstantly();
-      }).bind(this));
+      args.setup.call(this);
+      
+      this.refreshConstantly();
     },
     
     initInput: function () {

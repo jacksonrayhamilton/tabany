@@ -9,10 +9,9 @@ function (Util, Tile) {
       this.y = y;
       this.width = width;
       this.height = height;
+      // String corresponding to the name of a Spriteset
       this.image = image;
-      this.spriteWidth = Math.floor(image.width / 4);
-      this.spriteHeight = Math.floor(image.height / 4);
-      this.direction = direction;
+      this.setDirection(direction);
       this.movementRate = movementRate;
       this.frameRate = frameRate;
       this.speed = 1;
@@ -20,6 +19,16 @@ function (Util, Tile) {
       this.nextFrameCount = 0;
       this.game = null;
       return this;
+    },
+    
+    setDirection: function (direction) {
+      this.direction = direction;
+      switch (direction) {
+        case 'left': this.directionRow = 1; break;
+        case 'up': this.directionRow = 3; break;
+        case 'right': this.directionRow = 2; break;
+        case 'down': this.directionRow = 0; break;
+      }
     },
     
     getTileBase: function (tileSize) {
@@ -171,7 +180,9 @@ function (Util, Tile) {
     move: function (direction, layeredMap, entities) {
       var dx, dy, nearbyTiles, tileBase;
       
-      this.direction = direction;
+      if (this.direction !== direction) {
+        this.setDirection(direction);
+      }
       
       dx = 0;
       dy = 0;

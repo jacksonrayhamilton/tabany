@@ -87,18 +87,22 @@ var platformTiles = [
 ];
 
 Object.create(Game).init({
-  images: {
-    'tilesets/icy': '/images/tilesets/Gratheo-breezeicyyj9.png',
-    'sprites/gir': '/images/sprites/Gir-f_girsample2m_e3814ec.png',
-    'sprites/ifrit': '/images/sprites/ifrit.png'
+  sketchArgs: {
+    entityImages: {
+      'ifrit': '/images/sprites/ifrit.png',
+      'gir': '/images/sprites/Gir-f_girsample2m_e3814ec.png'
+    },
+    tilesetImages: {
+      'icy': '/images/tilesets/Gratheo-breezeicyyj9.png'
+    }
   },
-  setup: function (images) {
+  setup: function () {
     
     var game = this;
     
     var main = game.sketch.canvases.main;
     
-    var icyTileset = Object.create(Tileset).init(icyTiles, images['tilesets/icy']);
+    var icyTileset = Object.create(Tileset).init(icyTiles, 'icy', 8, 24);
     var icyMap = Object.create(LayeredMap).init([
       [
         Object.create(Tilemap).init(myTilemapTiles0, 20, 15, 0, 0, 0)
@@ -114,14 +118,14 @@ Object.create(Game).init({
     game.currentMap = icyMap;
     var currentMap = game.currentMap;
     
-    var player = game.addEntity(Object.create(Entity).init(0, 160, 16, 16, images['sprites/ifrit'], 'down', 5, 10));
+    var player = game.addEntity(Object.create(Entity).init(0, 160, 16, 16, 'ifrit', 'down', 5, 10));
     game.player = player;
     
     (function () {
       for (var i = 0; i < 10; i++) {
         var y = Math.floor(i / currentMap.width);
         var x = i % currentMap.width;
-        game.addEntity(Object.create(Entity).init(32 + (x * 48), 32 + (y * 48), 16, 16, images['sprites/gir'], 'down', 5, 10));
+        game.addEntity(Object.create(Entity).init(32 + (x * 48), 32 + (y * 48), 16, 16, 'gir', 'down', 5, 10));
       }
     }());
     

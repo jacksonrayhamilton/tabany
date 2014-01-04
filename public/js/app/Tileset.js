@@ -5,12 +5,13 @@ function (Tile) {
   
   var Tileset = {
     
-    init: function (tiles, image, tileSize) {
+    init: function (tiles, image, width, height, tileSize) {
       this.tiles = tiles;
+      // String corresponding to the name of a TilesetImage
       this.image = image;
+      this.width = width;
+      this.height = height;
       this.tileSize = (typeof tileSize === 'undefined') ? 32 : tileSize;
-      this.width = this.image.width / this.tileSize;
-      this.height = this.image.height / this.tileSize;
       this.generateCoordinates();
       return this;
     },

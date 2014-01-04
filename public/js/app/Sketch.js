@@ -1,24 +1,58 @@
-define(['underscore', 'app/Canvas', 'app/ImageLoader', 'app/Tile'],
-function (_, Canvas, ImageLoader, Tile) {
+define(['underscore', 'app/Canvas', 'app/ImageLoader', 'app/EntityImage',
+        'app/Tile', 'app/TilesetImage'],
+function (_, Canvas, ImageLoader, EntityImage,
+          Tile, TilesetImage) {
   
   'use strict';
   
   var Sketch = {
     
-    init: function (container) {
-      if (!container) {
+    init: function (args) {
+      var container;
+      
+      if (!args.container) {
         container = document.getElementById('SketchCanvasesContainer');
+      } else {
+        container = args.container;
       }
       container.style.position = 'relative';
       this.container = container;
+      
       this.canvases = {};
+      this.placeholder = document.createElement('canvas');
       this.images = {};
-      this.spritesets = {};
+      
+      this.entityImages = {};
+      if (args.entityImages) {
+        this.createEntityImages(args.entityImages);
+      }
+      
+      this.tilesetImages = {};
+      if (args.tilesetImages) {
+        this.createTilesetImages(args.tilesetImages);
+      }
+      
       return this;
     },
     
     loadImages: function (srcs, callback) {
       ImageLoader.loadImages(this.images, srcs, callback);
+    },
+    
+    createEntityImages: function (entityImages) {
+      var imageName, src;
+      for (imageName in entityImages) {
+        src = entityImages[imageName];
+        this.entityImages[imageName] = Object.create(EntityImage).init(src);
+      }
+    },
+    
+    createTilesetImages: function (tilesetImages) {
+      var tilesetName, src;
+      for (tilesetName in tilesetImages) {
+        src = tilesetImages[tilesetName];
+        this.tilesetImages[tilesetName] = Object.create(TilesetImage).init(src);
+      }
     },
     
     addCanvas: function (name, el) {
@@ -41,32 +75,43 @@ function (_, Canvas, ImageLoader, Tile) {
     },
     
     drawTilemap: function (canvas, tilemap, tileset) {
-      var tileSize, width, height, pixelWidth, pixelHeight, cache, image, i, len, tile, tileXY, coordinates;
+      var tileSize, width, height, pixelWidth, pixelHeight, tilesetImage, cache, image, i, len, tile, tileXY, coordinates;
       
       tileSize = tileset.tileSize;
-      width = tilemap.width;
-      height = tilemap.height;
-      pixelWidth = width * tileSize;
-      pixelHeight = height * tileSize;
       
       // Create a cached Canvas for effeciently redrawing the Tilemap.
       if (!tilemap.cache) {
-        tilemap.cache = Object.create(Canvas).init(null, pixelWidth, pixelHeight);
-        cache = tilemap.cache;
-        image = tileset.image;
-        // Draw all Tiles to the cache.
-        for (i = 0, len = tilemap.tiles.length; i < len; i++) {
-          tile = tileset.tiles[tilemap.tiles[i]];
-          if (tile) {
-            tileXY = Tile.getXY(i, width);
-            coordinates = tile.coordinates;
-            cache.drawSlice(
-              image,
-              coordinates[0], coordinates[1],
-              tileSize, tileSize,
-              (tileXY[0] * tileSize), (tileXY[1] * tileSize)
-            );
+        
+        tilesetImage = this.tilesetImages[tileset.image];
+        
+        // Only create a cache if the Tilesets' image is loaded.
+        if (tilesetImage && tilesetImage.image) {
+          
+          width = tilemap.width;
+          height = tilemap.height;
+          pixelWidth = width * tileSize;
+          pixelHeight = height * tileSize;
+          tilemap.cache = Object.create(Canvas).init(null, pixelWidth, pixelHeight);
+          cache = tilemap.cache;
+          
+          // Draw all Tiles to the cache.
+          for (i = 0, len = tilemap.tiles.length; i < len; i++) {
+            tile = tileset.tiles[tilemap.tiles[i]];
+            if (tile) {
+              tileXY = Tile.getXY(i, width);
+              coordinates = tile.coordinates;
+              cache.drawSlice(
+                tilesetImage.image,
+                coordinates[0], coordinates[1],
+                tileSize, tileSize,
+                (tileXY[0] * tileSize), (tileXY[1] * tileSize)
+              );
+            }
           }
+          
+        } else {
+          // Don't draw if there isn't a cache.
+          return;
         }
       }
       
@@ -79,34 +124,30 @@ function (_, Canvas, ImageLoader, Tile) {
     },
     
     drawEntity: function (canvas, entity) {
-      var spriteset, image, directionRow, xStart, yStart, spriteWidth, spriteHeight, frame;
+      var entityImage, entityImage, image, directionRow, xStart, yStart, spriteWidth, spriteHeight, frame;
       
-      image = entity.image;
-      //spriteset = this.spritesets[entity.spriteset];
-      /*if (entity.spriteset.image) {
-        image = entity.spriteset.image;
+      entityImage = this.entityImages[entity.image];
+      
+      // Check that the EntityImage's image has loaded.
+      // CONSIDER: Is first part of boolean check needed?
+      if (entityImage && entityImage.image) {
+        image = entityImage.image;
       } else {
-        
-      }*/
-      
-      switch (entity.direction) {
-        case 'left': directionRow = 1; break;
-        case 'up': directionRow = 3; break;
-        case 'right': directionRow = 2; break;
-        case 'down': directionRow = 0; break;
+        // Don't draw if there is no image.
+        return;
       }
       
-      //spriteWidth = entity.spriteset.spriteWidth;
-      //spriteHeight = entity.spriteset.spriteHeight;
-      spriteWidth = entity.spriteWidth;
-      spriteHeight = entity.spriteHeight;
+      directionRow = entity.directionRow;
+      
+      spriteWidth = entityImage.spriteWidth;
+      spriteHeight = entityImage.spriteHeight;
       frame = entity.frame;
       
       xStart = spriteWidth * frame;
       yStart = spriteHeight * directionRow;
       
       //this.ctx.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
-      //this.ctx.fillRect(entity.x, entity.y, entity.width, entity.height)
+      this.canvases[canvas].ctx.fillRect(entity.x, entity.y, entity.width, entity.height)
       this.canvases[canvas].drawSlice(
         image,
         xStart, yStart,
