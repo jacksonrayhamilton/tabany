@@ -18,6 +18,7 @@ function (Util, Tile) {
       this.speed = 1;
       this.frame = 0; // 0..3
       this.nextFrameCount = 0;
+      this.game = null;
       return this;
     },
     
@@ -187,6 +188,8 @@ function (Util, Tile) {
         this.x += dx;
         this.y += dy;
       }
+      
+      this.game.entitiesChanged = true;
       
       /*if (!this.wouldCollideWithEntity()) {
         

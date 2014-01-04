@@ -5,6 +5,15 @@ function () {
   
   var ImageLoader = {
     
+    // Loads a single image and executes a callback on completion.
+    loadImage: function (src, callback) {
+      var image = new Image();
+      image.addEventListener('load', function () {
+        callback(image);
+      }, false);
+      image.src = src;
+    },
+    
     // Loads images from a dictionary of name and src pairs.
     // Then merges the resultant HTMLImageElements into a dictionary
     // of name and HTMLImageElement pairs. Also passes that
@@ -13,7 +22,7 @@ function () {
       var numSrcs, numLoaded, name;
       
       if (container === null) {
-        container = Object.create(null);
+        container = {};
       }
       numSrcs = Object.keys(srcs).length;
       numLoaded = 0;
@@ -21,13 +30,16 @@ function () {
       for (name in srcs) {
         var image = new Image();
         image.addEventListener('load', (function () {
-          var boundName = name;
-          var boundImage = image;
+          var boundName, boundImage;
+          boundName = name;
+          boundImage = image;
           return function () {
             container[boundName] = boundImage;
             numLoaded++;
             if (numLoaded === numSrcs) {
-              callback(container);
+              if (typeof callback === 'function') {
+                callback(container);
+              }
             }
           };
         }()), false);

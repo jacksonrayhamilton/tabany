@@ -16,12 +16,8 @@ function (_, Canvas, ImageLoader) {
       return this;
     },
     
-    // CONSIDER: Remove this completely?
     loadImages: function (srcs, callback) {
-      ImageLoader.loadImages(srcs, function (images) {
-        _.extend(this.images, images); // PERF?
-        callback.call(this);
-      }.bind(this));
+      ImageLoader.loadImages(this.images, srcs, callback);
     },
     
     addCanvas: function (name, el) {
@@ -36,7 +32,7 @@ function (_, Canvas, ImageLoader) {
       return canvas;
     },
     
-    appendCanvas: function (name, zIndex) {
+    appendCanvasToContainer: function (name, zIndex) {
       var el = this.canvases[name].el;
       el.style.position = 'absolute';
       el.style.zIndex = (typeof zIndex === 'undefined') ? 0 : zIndex;

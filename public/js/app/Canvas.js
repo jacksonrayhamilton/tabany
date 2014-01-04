@@ -65,9 +65,15 @@ function (Tile) {
     },
     
     drawEntity: function (entity) {
-      var image, directionRow, xStart, yStart, spriteWidth, spriteHeight, frame;
+      var spriteset, image, directionRow, xStart, yStart, spriteWidth, spriteHeight, frame;
       
       image = entity.image;
+      //spriteset = this.spritesets[entity.spriteset];
+      /*if (entity.spriteset.image) {
+        image = entity.spriteset.image;
+      } else {
+        
+      }*/
       
       switch (entity.direction) {
         case 'left': directionRow = 1; break;
@@ -76,6 +82,8 @@ function (Tile) {
         case 'down': directionRow = 0; break;
       }
       
+      //spriteWidth = entity.spriteset.spriteWidth;
+      //spriteHeight = entity.spriteset.spriteHeight;
       spriteWidth = entity.spriteWidth;
       spriteHeight = entity.spriteHeight;
       frame = entity.frame;
@@ -95,7 +103,7 @@ function (Tile) {
     },
     
     drawLayer: function (tilemaps, tileset, height, entities) {
-      var t, tLen, e, eLen, tileSize, entitiesSortedByY, y, tilemap, entity;
+      var t, tLen, e, eLen, tileSize, y, tilemap, entity;
       
       t = 0;
       tLen = tilemaps.length;
@@ -103,21 +111,6 @@ function (Tile) {
         e = 0
         eLen = entities.length;
         tileSize = tileset.tileSize;
-        
-        // TODO: Mutate array.
-        /*
-         * `entities` must be sorted at least once prior to calling
-         * this function. It cannot be assumed that any have
-         * moved before this function has been called.
-         * 
-         * Each time a player moves, mark the entities array
-         * for re-sorting. Then re-sort it the next time this function
-         * is called.
-         */
-        
-        entitiesSortedByY = entities.sort(function (a, b) {
-          return a.y - b.y;
-        });
       }
       for (y = 0; y < height; y++) {
         if (entities) {
@@ -125,7 +118,7 @@ function (Tile) {
           // Since `entities` are always sorted by y before this
           // block executes, this loop is also safe.
           for (; e < eLen; e++) {
-            entity = entitiesSortedByY[e];
+            entity = entities[e];
             if (entity.getTileBase(tileSize) === y) {
               this.drawEntity(entity);
             } else {

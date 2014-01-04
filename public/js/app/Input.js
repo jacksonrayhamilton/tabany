@@ -4,37 +4,59 @@ function ($) {
   'use strict';
   
   var Input = {
-    init: function (mappings, keyProperties) {
-      var $document = $(document);
-      this.mappings = mappings;
-      this.keyProperties = keyProperties;
-      this.keys = [];
+    init: function (keyArgs) {
+      var $document, keyCode, keyArg;
+      
+      this.keydownCallbacks = {};
+      this.keyupCallbacks = {};
+      this.keyProperties = {};
+      
+      for (keyCode in keyArgs) {
+        keyArg = keyArgs[keyCode];
+        if (keyArg.keydown) {
+          this.keydownCallbacks[keyCode] = keyArg.keydown;
+        }
+        if (keyArg.keyup) {
+          this.keyupCallbacks[keyCode] = keyArg.keyup;
+        }
+        if (keyArg.properties) {
+          this.keyProperties[keyCode] = keyArg.properties;
+        }
+      }
+      
+      this.pressedKeys = [];
+      
+      $document = $(document);
       $document.on('keydown', this.keydown.bind(this));
       $document.on('keyup', this.keyup.bind(this));
+      return this;
     },
     keydown: function (event) {
       var keyCode = event.which;
       this.addKey(keyCode);
-      if (this.mappings[keyCode]) {
-        this.mappings[keyCode].call(this, event);
+      if (this.keydownCallbacks[keyCode]) {
+        this.keydownCallbacks[keyCode].call(this, event);
       }
     },
     keyup: function (event) {
       var keyCode = event.which;
       this.removeKey(keyCode);
+      if (this.keyupCallbacks[keyCode]) {
+        this.keyupCallbacks[keyCode].call(this, event);
+      }
     },
     keyIsPressed: function (keyCode) {
-      return (this.keys.indexOf(keyCode) > -1);
+      return (this.pressedKeys.indexOf(keyCode) > -1);
     },
     addKey: function (keyCode) {
       if (!this.keyIsPressed(keyCode)) {
-        this.keys.push(keyCode);
+        this.pressedKeys.push(keyCode);
       }
     },
     removeKey: function (keyCode) {
-      var index = this.keys.indexOf(keyCode);
+      var index = this.pressedKeys.indexOf(keyCode);
       if (index > -1) {
-        this.keys.splice(index, 1);
+        this.pressedKeys.splice(index, 1);
       }
     }
   };
