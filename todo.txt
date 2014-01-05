@@ -1,5 +1,0 @@
-Entity
-  quadtree collisions
-
-Canvas
-  recognize raised property

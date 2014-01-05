@@ -9,7 +9,7 @@ Tabany is a free and open-source browser-based MMORPG written in JavaScript and 
 Backstory
 ---------
 
-"Tabany" is the informal name of the planet T.A.B.A.N.Y. (The Artificial Biological Anamoly Near You), which is the setting for the game. Geographically- and atmospherically-speaking, Tabany is Earth-like, and is inhabited by the descendants of a stranded band of intergalactic settlers. The planet was specially-engineered to preserve a state of perpetual infancy among its biological inhabitants, such that life could be lived simply and without technology's eccentricities.
+"Tabany" is the informal name of the planet T.A.B.A.N.Y. (The Artificial Biological Anomaly Near You), which is the setting for the game. Geographically- and atmospherically-speaking, Tabany is Earth-like, and is inhabited by the descendants of a stranded band of intergalactic settlers. The planet was specially-engineered to preserve life indefinitely among its inhabitants.
 
 However, due to an error in the planet's design, its age regresses at a rate faster than it progresses. The consequence of this is that all life on Tabany is completely destroyed after a period of seven days. But Tabany also has a fail-safe feature which will revitalize its inhabitants to their original state if a mass extinction ever occurs. So, every seven days, the planet is reborn.
 

@@ -11,12 +11,11 @@ var path = require('path');
 
 var app = express();
 
-// Enable view layouts
-// (Must be placed before `app.use(app.router);`)
+// Enable view layouts. Must be placed before `app.use(app.router)`.
 var partials = require('express-partials');
 app.use(partials());
 
-// Process HTTP POST requests
+// Process HTTP POST requests.
 app.use(express.urlencoded());
 app.use(express.json());
 
@@ -44,14 +43,19 @@ app.get('/', routes.index);
 app.get('/testing', testing.index);
 
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
 server.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
+// TODO: Consider better alternatives to this pattern.
+var requirejs = require('requirejs');
+requirejs.config({
+    nodeRequire: require,
+    baseUrl: './server/js/lib',
+    paths: {
+      app: '../app'
+    }
+});
+requirejs(['app/main'], function (main) {
+  main(server);
 });

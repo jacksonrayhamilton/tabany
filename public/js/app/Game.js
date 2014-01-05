@@ -1,5 +1,9 @@
-define(['socket.io', 'app/Sketch', 'app/Input', 'app/ImageLoader', 'app/polyfills'],
-function (io, Sketch, Input, ImageLoader) {
+define(['underscore', 'socket.io',
+        'app/Sketch', 'app/Input', 'app/ImageLoader',
+        'app/Entity', 'app/polyfills'],
+function (_, io,
+          Sketch, Input, ImageLoader,
+          Entity) {
   
   'use strict';
   
@@ -29,10 +33,15 @@ function (io, Sketch, Input, ImageLoader) {
       this.refreshConstantly();
       
       var socket = io.connect('http://localhost:3000');
-      socket.on('news', function (data) {
-        console.log(data);
-        socket.emit('my other event', { my: 'data' });
-      });
+      socket.on('createEntity', (function (data) {
+        var args = _.values(data.entity);
+        console.log(data, args);
+        var entity = Object.create(Entity);
+        entity.init.apply(entity, args);
+        this.addEntity(entity);
+        //socket.emit('my other event', { my: 'data' });
+      }).bind(this));
+      
     },
     
     initInput: function () {

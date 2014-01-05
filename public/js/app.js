@@ -1,14 +1,24 @@
 requirejs.config({
-  // All scripts are loaded from lib/ by default
+  // All scripts are loaded from lib/ by default.
   baseUrl: 'js/lib',
   paths: {
-    // All scripts from app/ should be required like so: 'app/script'
+    // For a script at `public/js/app/script.js`, require it like so:
+    // define(['app/script' ... ],
+    // function (script ... ) {
+    //   ...
+    // });
     app: '../app',
-    // Load libraries from cdn
-    // REMEMBER TO REMOVE THE .js EXTENSION
-    //jquery: '//code.jquery.com/jquery-1.10.2.min',
-    jquery: 'jquery-1.10.2.min',
-    //underscore: '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min',
+    // Uncomment production scripts when needed.
+    jquery: [
+      //'//code.jquery.com/jquery-1.10.2.min',
+      //'jquery-1.10.2.min',
+      'jquery-1.10.2'
+    ],
+    underscore: [
+      //'//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min',
+      //'underscore-min',
+      'underscore'
+    ],
     'socket.io': '/socket.io/socket.io'
   },
   shim: {

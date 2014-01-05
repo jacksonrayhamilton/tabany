@@ -1,14 +1,16 @@
-define(['jquery', 'underscore',
+define(['domReady!', 'jquery', 'underscore',
         'app/Game', 'app/ImageLoader', 'app/Sketch', 'app/Tileset',
         'app/Tilemap', 'app/LayeredMap', 'app/Input',
         'app/Entity', 'app/polyfills'],
-function ($, _,
+function (doc, $, _,
           Game, ImageLoader, Sketch, Tileset,
           Tilemap, LayeredMap, Input,
           Entity) {
-$(function () {
 
 'use strict';
+
+// TODO: Move these tiles and maps into other files!
+// Load them in somehow.
 
 var icyTiles = [
   {},{},{},{},{"impassible": true},{"impassible": true},{},{},
@@ -122,15 +124,15 @@ Object.create(Game).init({
     game.player = player;
     
     // Generate some dummy Entities
-    (function () {
+    /*(function () {
       for (var i = 0; i < 10; i++) {
         var y = Math.floor(i / game.currentMap.width);
         var x = i % game.currentMap.width;
         game.addEntity(Object.create(Entity).init(32 + (x * 48), 32 + (y * 48), 16, 16, 'gir', 'down', 5, 10));
       }
-    }());
+    }());*/
     
-    game.addEntity(Object.create(Entity).init(7 * 32, 8 * 32, 16, 16, 'gir', 'left', 5, 10));
+    //game.addEntity(Object.create(Entity).init(7 * 32, 8 * 32, 16, 16, 'gir', 'left', 5, 10));
     
     // very hackish teleporting
     var $container = $(game.sketch.container);
@@ -138,6 +140,7 @@ Object.create(Game).init({
     $container.on('click', function (e) {
       game.player.x = e.pageX - containerOffset.left;
       game.player.y = e.pageY - containerOffset.top;
+      game.entitiesChanged = true;
     });
     
   }
@@ -145,5 +148,4 @@ Object.create(Game).init({
 
   
 
-});
 });

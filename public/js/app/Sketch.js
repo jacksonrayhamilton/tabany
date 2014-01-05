@@ -171,9 +171,7 @@ function (_, Canvas, ImageLoader, EntityImage,
       // Entities can move off the map, so increase the range by 2.
       for (y = -1; y < height + 1; y++) {
         if (entities) {
-          // TODO: Cache this row. Update if an entity moves.
-          // Since `entities` are always sorted by y before this
-          // block executes, this loop is also safe.
+          // The `entities` array MUST ALREADY BE ORDERED BY Y.
           for (; e < eLen; e++) {
             entity = entities[e];
             if (entity.getTileBase(tileSize) === y) {
@@ -184,8 +182,6 @@ function (_, Canvas, ImageLoader, EntityImage,
           }
         }
         // The `tilemaps` array MUST ALREADY BE ORDERED BY BASE.
-        // Thus, when a Tilemap not of the currently-iterating base is
-        // encountered, the loop can safely be broken.
         for (; t < tLen; t++) {
           tilemap = tilemaps[t];
           if (tilemap.base === y) {
