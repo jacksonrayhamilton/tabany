@@ -1,4 +1,4 @@
-define(['app/ImageLoader'],
+define(['client/ImageLoader'],
 function (ImageLoader) {
   
   var EntityImage = {

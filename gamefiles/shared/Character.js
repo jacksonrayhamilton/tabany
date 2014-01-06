@@ -1,4 +1,4 @@
-define(['app/inherits', 'app/Entity'],
+define(['shared/inherits', 'shared/Entity'],
 function (inherits, Entity) {
   
   var Character = inherits(Entity, {

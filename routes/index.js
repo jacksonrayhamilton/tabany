@@ -6,6 +6,7 @@
 exports.index = function (req, res) {
   res.render('index', {
     title: 'Free Open-Source Browser-Based MMORPG | Tabany',
+    pageName: 'index',
     stylesheets: ['index']
   });
 };

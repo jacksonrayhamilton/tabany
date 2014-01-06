@@ -1,6 +1,6 @@
 // TODO: Consider better alternatives to a main() function.
-define(['socket.io', 'underscore', 'app/Character', 'app/Entity', 'app/Player'],
-function (socketio, _, Character, Entity, Player) {
+define(['socket.io', 'underscore', 'shared/Player'],
+function (socketio, _, Player) {
   
   var spawnPlayer = function (socket) {
     var player = Object.create(Player).init(_.random(0, 639), _.random(0, 479));
@@ -21,9 +21,9 @@ function (socketio, _, Character, Entity, Player) {
         socket.emit('playerRegistered', { player: player });
       });
       
-      /*setInterval(function () {
+      setInterval(function () {
         spawnPlayer(socket);
-      }, 2000);*/
+      }, 2000);
     });
   };
   

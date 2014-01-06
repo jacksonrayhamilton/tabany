@@ -1,4 +1,4 @@
-define(['app/Tile'],
+define(['shared/Tile'],
 function (Tile) {
   
   'use strict';
@@ -6,6 +6,7 @@ function (Tile) {
   var Canvas = {
     
     init: function (el, width, height) {
+      // Optionally set el to a preexisting canvas element.
       if (el === null) {
         el = document.createElement('canvas');
         el.width = width;

@@ -1,7 +1,6 @@
 /*
  * Constants that are used across the whole program.
  */
-
 define(
 function () {
   

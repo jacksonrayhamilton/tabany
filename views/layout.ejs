@@ -16,7 +16,10 @@
     <%   }
        } %>
     
-    <script data-main='js/app' src='js/lib/require.js'></script>
+    <% if (typeof pageName !== 'undefined' && pageName === 'testing') { %>
+      <% // Is a slash needed before "gamefiles"? %>
+      <script data-main='/gamefiles/client/client' src='/gamefiles/client/lib/require.js'></script>
+    <% } %>
     <title><%= title %></title>
   </head>
   <body>

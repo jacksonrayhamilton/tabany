@@ -1,6 +1,6 @@
 define(['underscore', 'socket.io',
-        'app/Sketch', 'app/Input', 'app/ImageLoader',
-        'app/Entity', 'app/polyfills'],
+        'client/Sketch', 'client/Input', 'client/ImageLoader',
+        'shared/Entity', 'client/polyfills'],
 function (_, io,
           Sketch, Input, ImageLoader,
           Entity) {

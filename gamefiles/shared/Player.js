@@ -1,4 +1,4 @@
-define(['underscore', 'app/getUUID', 'app/PlayerCharacter', 'text!app/player_names.json', 'text!app/player_sprites.json',],
+define(['underscore', 'shared/getUUID', 'shared/PlayerCharacter', 'text!shared/player_names.json', 'text!shared/player_sprites.json',],
 function (_, getUUID, PlayerCharacter, playerNamesJSON, playerSpritesJSON) {
   
   var names, sexes, sprites;

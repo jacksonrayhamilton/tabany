@@ -1,4 +1,4 @@
-define(['app/Character', 'app/inherits'],
+define(['shared/Character', 'shared/inherits'],
 function (Character, inherits) {
   
   var PlayerCharacter = inherits(Character, {

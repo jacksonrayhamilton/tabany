@@ -33,10 +33,10 @@ app.use(express.session());
 app.use(app.router);
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
 
-// Website's static directory
+// Website's regular static directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Client and server shared static files directory
+// Client and server shared files directory
 app.use('/gamefiles', express.static(path.join(__dirname, 'gamefiles')));
 
 // Development only
@@ -52,15 +52,4 @@ server.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-// TODO: Consider better alternatives to this pattern?
-var requirejs = require('requirejs');
-requirejs.config({
-    nodeRequire: require,
-    baseUrl: './server/js/lib',
-    paths: {
-      app: '../app'
-    }
-});
-requirejs(['app/main'], function (main) {
-  main(server);
-});
+require('./gamefiles/server/server.js')(server);

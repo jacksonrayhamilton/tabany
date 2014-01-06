@@ -1,5 +1,5 @@
-define(['underscore', 'app/Canvas', 'app/ImageLoader', 'app/EntityImage',
-        'app/Tile', 'app/TilesetImage'],
+define(['underscore', 'client/Canvas', 'client/ImageLoader', 'client/EntityImage',
+        'shared/Tile', 'client/TilesetImage'],
 function (_, Canvas, ImageLoader, EntityImage,
           Tile, TilesetImage) {
   
@@ -7,8 +7,8 @@ function (_, Canvas, ImageLoader, EntityImage,
   
   'use strict';
   
-  ENTITY_SPRITE_DIR = '/images/sprites/';
-  TILESET_SPRITE_DIR = '/images/tilesets/';
+  ENTITY_SPRITE_DIR = '/gamefiles/images/entities/';
+  TILESET_SPRITE_DIR = '/gamefiles/images/tilesets/';
   
   var Sketch = {
     

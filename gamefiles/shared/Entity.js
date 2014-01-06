@@ -1,4 +1,4 @@
-define(['app/Util', 'app/Tile'],
+define(['shared/Util', 'shared/Tile'],
 function (Util, Tile) {
   
   'use strict';
@@ -15,10 +15,29 @@ function (Util, Tile) {
       this.pixelRate = pixelRate;
       this.moveRate = moveRate;
       this.frameRate = frameRate;
-      this.frame = 0; // 0..3
-      this.nextFrameCount = 0;
-      this.game = null;
+      
+      if (Util.inBrowser()) {
+        this.frame = 0; // 0..3
+        this.nextFrameCount = 0;
+        // Entities should NOT need this property
+        this.game = null;
+      }
+      
       return this;
+    },
+    
+    toJSON: function () {
+      return {
+        x: this.x,
+        y: this.y,
+        width: this.width,
+        height: this.height,
+        image: this.image,
+        direction: this.direction,
+        pixelRate: this.pixelRate,
+        moveRate: this.moveRate,
+        frameRate: this.frameRate
+      };
     },
     
     setDirection: function (direction) {
@@ -34,6 +53,11 @@ function (Util, Tile) {
     getTileBase: function (tileSize) {
       return Math.floor((this.y + this.height - 1) / tileSize);
     },
+    
+    // TODO: Move all collision detection logic into Game.js.
+    // That way all these arguments don't need to be passed in, also
+    // you can have a reference to the game object without needing
+    // to latch it onto the Entity.
     
     wouldCollide: function (target, dx, dy) {
       var x, y;
