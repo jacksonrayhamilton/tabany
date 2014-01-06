@@ -5,15 +5,24 @@ Game
   Separate logic properly between client and server
   Avoid duplicate logic between public and server directories
 
+Client-server collisions
+  On client move, entities will move locally immediately. Client socket will emit the move/directionChange event and node will broadcast the move to all other clients.
+  Client will tell server whether it believes it can move. The server will (or will not) apply the change actually. Then if the client was right, do nothing. If the client was wrong, his gamestate had lagged and he had not known that another Entity had got in his way; so send down a correction on the player's own position.
+
 Tilesets, Tilemaps
   Accept json files
 
+ImageLoader
+  Change into AssetLoader and allow it to load images as well as JSON, etc.
+
 Sprites
-  Use the common name Sprite for EntityImages and TilesetImages. Possibly inherit from Sprite if needed.
   Remove shadows from some sprites, test others for ricketyness.
+  Use Sprite or Image class and inherit from it into EntitySprite or TilesetSprite. Perhaps even make Sprite inherit from AssetLoader and generalize the loadX() fn.
+  Have Sprite objs created but do not load their images until the last possible second (when they are needed)
 
 Entity
   generalize moveContinuously
 
 Canvas
   recognize raised property?
+

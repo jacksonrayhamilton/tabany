@@ -33,7 +33,7 @@ Tabany is currently being actively developed. A good chunk of the basic RPG clie
 
 The game engine is currently unstable, but the latest push should always at least run. Once the game's client- and server-side components are sufficiently-stabilized, this message will be updated. GitHub Releases will then provide stable versions of the software, which should allow anyone to run a game server on his own website (provided Node.js is installed, etc).
 
-Performance will be scrutinized once all essential features of the engine are implemented.
+Performance will be scrutinized once all essential features of the engine are implemented. (This is not to say that the engine is particularly imperformant right now&mdash;but once stabilized, it will be *absurdly*-fast.)
 
 Graphics are on the horizon; until then, the game will utilize RPG Maker assets (available under separate terms than that of Tabany's code).
 

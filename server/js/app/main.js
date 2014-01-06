@@ -21,9 +21,9 @@ function (socketio, _, Character, Entity, Player) {
         socket.emit('playerRegistered', { player: player });
       });
       
-      setInterval(function () {
+      /*setInterval(function () {
         spawnPlayer(socket);
-      }, 2000);
+      }, 2000);*/
     });
   };
   

@@ -23,7 +23,7 @@ app.use(express.json());
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(express.favicon());
+app.use(express.favicon(path.join(__dirname, 'public/images/favicon.ico')));
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
@@ -32,7 +32,12 @@ app.use(express.cookieParser('*&DRn9$CjzEr7z7hbw3PdT9ph4z&2qVNg'));
 app.use(express.session());
 app.use(app.router);
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
+
+// Website's static directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Client and server shared static files directory
+app.use('/gamefiles', express.static(path.join(__dirname, 'gamefiles')));
 
 // Development only
 if ('development' == app.get('env')) {
@@ -47,7 +52,7 @@ server.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-// TODO: Consider better alternatives to this pattern.
+// TODO: Consider better alternatives to this pattern?
 var requirejs = require('requirejs');
 requirejs.config({
     nodeRequire: require,
