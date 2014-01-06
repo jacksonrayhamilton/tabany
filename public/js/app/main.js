@@ -68,9 +68,9 @@ var myTilemapTiles1 = [
    ,  ,11,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 2,  ,  ,
    ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
    ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  104, 105, 106,  ,
-   ,  ,64,65,66,  ,  ,  ,  , 4,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-   ,  ,72,  ,74,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
-   ,  ,80,81,82,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+   ,  ,  ,  ,  ,  ,  ,  ,  , 4,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+   ,  ,99,100,101,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
+   ,  ,107,108,109,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
    ,  ,88,  ,90,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  136, 137, 138,  ,
    ,  ,96,97,98,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,
 ];
@@ -92,17 +92,65 @@ var platformTiles = [
   120, 121, 122,
 ];
 
+var cliffEdge = {
+  tiles: [91, 92, 93],
+  width: 3, height: 1, x: 2, y: 10
+};
+
 Object.create(Game).init({
   sketchArgs: {
-    entityImages: {
-      'ifrit': '/images/sprites/ifrit.png',
-      'gir': '/images/sprites/Gir-f_girsample2m_e3814ec.png'
+    "entityImages": {
+      "hero_a":       "GR-001heroA.png",
+      "fighter_a":    "GR-004fighterA.png",
+      "warrior_a":    "GR-006warriorA.png",
+      "lancer_a":     "GR-008ancerA.png",
+      "archer_a":     "GR-012archerA.png",
+      "warrior_03":   "GR-013-warior03.png",
+      "elf_a":        "GR-014elfA.png",
+      "grappler_a":   "GR-018grapplerA.png",
+      "cleric_a":     "GR-022clericA.png",
+      "archer_01":    "GR-breeze-archer01.png",
+      "mage_01":      "GR-breeze-mage01.png",
+      "merchant_01":  "GR-breeze-merchant01.png",
+      "thief_01":     "GR-breeze-thief01-1.png",
+      "warrior_01":   "GR-breeze-warior01-2.png",
+      "fighter_b":    "GR-005fighterB.png",
+      "warrior_b":    "GR-007warriorB.png",
+      "lancer_b":     "GR-009lancerB.png",
+      "mage_02":      "GR-breeze-mage02.png",
+      "fighter_02":   "GR-breeze-fighter02-1.png",
+      "clown_01":     "GR-breeze-clown01.png",
+      "soldier_01":   "GR-breeze-soldier01.png",
+      "soldier_02":   "GR-breeze-soldier02.png",
+      "soldier_03":   "GR-breeze-soldier03-1.png",
+      "soldier_04":   "GR-breeze-soldier04.png",
+      "pandaman":     "GR-pandaman.png",
+      "flora_red":    "GR-000flora02.png",
+      "ghost_short":  "GR-000ghost01.png",
+      "slime_yellow": "GR-000slime04.png",
+      "catsith":      "GR-breeze-cat01.png",
+      "flora_purple": "GR-breeze-flora.png",
+      "ghost_tall":   "GR-breeze-ghost.png",
+      "shade":        "GR-breeze-shade.png",
+      "slime_green":  "GR-breeze-slime02.png",
+      "slime_red":    "GR-breeze-slime.png",
+      "snowman":      "GR-breeze-snowman.png",
+      "panda":        "GR-panda.png"
     },
-    tilesetImages: {
-      'icy': '/images/tilesets/Gratheo-breezeicyyj9.png'
+    "tilesetImages": {
+      "icy": "Gratheo-breezeicyyj9.png"
     }
   },
+  tilesets: {
+    'icy': '/tilesets/icy.json'
+  },
+  maps: {
+    'Winter Wonderland': '/maps/winter_wonderland.json'
+  },
   setup: function (game) {
+    
+    var cliffEdgeTilemap = Object.create(Tilemap);
+    cliffEdgeTilemap.init.apply(cliffEdgeTilemap, _.values(cliffEdge));
     
     var icyTileset = Object.create(Tileset).init(icyTiles, 'icy', 8, 24);
     var icyMap = Object.create(LayeredMap).init([
@@ -114,25 +162,15 @@ Object.create(Game).init({
         Object.create(Tilemap).init(treeTiles, 3, 3, 2, 2),
         Object.create(Tilemap).init(treeTiles, 3, 3, 5, 3),
         Object.create(Tilemap).init(wellTiles, 2, 2, 5, 7),
+        cliffEdgeTilemap
       ],
     ], icyTileset, 20, 15);
     
     game.currentMap = icyMap;
     
-    var player = Object.create(Entity).init(0, 160, 16, 16, 'ifrit', 'down', 5, 10);
+    /*var player = Object.create(Entity).init(0, 160, 16, 16, 'hero_a', 'down', 1, 5, 20);
     game.addEntity(player);
-    game.player = player;
-    
-    // Generate some dummy Entities
-    /*(function () {
-      for (var i = 0; i < 10; i++) {
-        var y = Math.floor(i / game.currentMap.width);
-        var x = i % game.currentMap.width;
-        game.addEntity(Object.create(Entity).init(32 + (x * 48), 32 + (y * 48), 16, 16, 'gir', 'down', 5, 10));
-      }
-    }());*/
-    
-    //game.addEntity(Object.create(Entity).init(7 * 32, 8 * 32, 16, 16, 'gir', 'left', 5, 10));
+    game.player = player;*/
     
     // very hackish teleporting
     var $container = $(game.sketch.container);

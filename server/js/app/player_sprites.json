@@ -1,0 +1,33 @@
+{
+  "male": [
+    "hero_a",
+    "fighter_a",
+    "warrior_a",
+    "lancer_a",
+    "archer_a",
+    "warrior_03",
+    "elf_a",
+    "grappler_a",
+    "cleric_a",
+    "archer_01",
+    "mage_01",
+    "merchant_01",
+    "thief_01",
+    "warrior_01"
+  ],
+  "female": [
+    "fighter_b",
+    "warrior_b",
+    "lancer_b",
+    "mage_02",
+    "fighter_02"
+  ],
+  "neutral": [
+    "clown_01",
+    "soldier_01",
+    "soldier_02",
+    "soldier_03",
+    "soldier_04",
+    "pandaman"
+  ]
+}

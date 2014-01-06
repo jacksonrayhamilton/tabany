@@ -1,0 +1,18 @@
+Have constructors accept object literals
+Design really good constructor pattern
+
+Game
+  Separate logic properly between client and server
+  Avoid duplicate logic between public and server directories
+
+Tilesets, Tilemaps
+  Accept json files
+
+Sprites
+  Use the common name Sprite for EntityImages and TilesetImages. Possibly inherit from Sprite if needed.
+
+Entity
+  generalize moveContinuously
+
+Canvas
+  recognize raised property?

@@ -1,5 +1,5 @@
-define(['app/Tile'],
-function (Tile) {
+define(
+function () {
   
   'use strict';
   
@@ -16,20 +16,22 @@ function (Tile) {
       return this;
     },
     
-    /*fromJSON: function(json) {
-      
+    /*initFromJSON: function (json) {
+      var tileSize;
+      tileSize = (typeof json.tileSize === 'undefined') ? 32 : tileSize;
+      return this.init(json.tiles, json.image, json.width, json.height, tileSize);
     },*/
     
+    // CONSIDER: Think about porting this elsewhere (Tilemaps?) for performance.
     generateCoordinates: function () {
-      var i, len, tiles, width, tileSize, tileXY;
+      var tiles, width, tileSize, i, len;
       tiles = this.tiles;
       width = this.width;
       tileSize = this.tileSize;
       for (i = 0, len = tiles.length; i < len; i++) {
-        tileXY = Tile.getXY(i, width);
         tiles[i].coordinates = [
-          tileXY[0] * tileSize,
-          tileXY[1] * tileSize
+          (i % width) * tileSize,
+          Math.floor(i / width) * tileSize
         ];
       }
     },

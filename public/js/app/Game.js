@@ -33,13 +33,13 @@ function (_, io,
       this.refreshConstantly();
       
       var socket = io.connect('http://localhost:3000');
-      socket.on('createEntity', (function (data) {
-        var args = _.values(data.entity);
-        console.log(data, args);
-        var entity = Object.create(Entity);
-        entity.init.apply(entity, args);
-        this.addEntity(entity);
-        //socket.emit('my other event', { my: 'data' });
+      
+      socket.on('playerRegistered', (function (data) {
+        this.player = this.createPlayer(data.player.character);
+      }).bind(this));
+      
+      socket.on('createPlayer', (function (data) {
+        this.createPlayer(data.player.character);
       }).bind(this));
       
     },
@@ -108,6 +108,14 @@ function (_, io,
     refreshConstantly: function () {
       this.refresh();
       requestAnimationFrame(this.refreshConstantly);
+    },
+    
+    createPlayer: function (args) {
+      var player = Object.create(Entity);
+      player.init.apply(player, _.values(args));
+      this.addEntity(player);
+      this.entitiesChanged = true;
+      return player;
     },
     
     addEntity: function (entity) {

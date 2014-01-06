@@ -19,6 +19,7 @@
     "less-middleware": "0.1.14",
     "express-partials": "0.1.1",
     "socket.io": "0.9.15",
-    "requirejs": "2.1.9"
+    "requirejs": "2.1.9",
+    "underscore": "1.5.2"
   }
 }

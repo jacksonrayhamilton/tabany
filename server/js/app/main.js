@@ -1,19 +1,30 @@
 // TODO: Consider better alternatives to a main() function.
-define(['socket.io', 'app/Entity'],
-function (socketio, Entity) {
+define(['socket.io', 'underscore', 'app/Character', 'app/Entity', 'app/Player'],
+function (socketio, _, Character, Entity, Player) {
+  
+  var spawnPlayer = function (socket) {
+    var player = Object.create(Player).init(_.random(0, 639), _.random(0, 479));
+    socket.emit('createPlayer', { player: player });
+  };
   
   var main = function (server) {
+    var io;
     
-    var io = socketio.listen(server);
+    io = socketio.listen(server);
     
     io.sockets.on('connection', function (socket) {
-      var dude = Object.create(Entity).init(7 * 32, 8 * 32, 16, 16, 'gir', 'left', 5, 10)
-      socket.emit('createEntity', { entity: dude.toJSON() });
-      socket.on('my other event', function (data) {
-        console.log(data);
+      var player;
+      
+      player = Object.create(Player).init(32, 32);
+      
+      socket.set('player', player, function () {
+        socket.emit('playerRegistered', { player: player });
       });
+      
+      setInterval(function () {
+        spawnPlayer(socket);
+      }, 2000);
     });
-    
   };
   
   return main;

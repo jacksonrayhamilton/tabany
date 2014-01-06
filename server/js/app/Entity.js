@@ -2,17 +2,17 @@ define(
 function () {
   
   var Entity = {
-    init: function (x, y, width, height, image, direction, movementRate, frameRate) {
+    
+    init: function (x, y, width, height, image, direction, pixelRate, moveRate, frameRate) {
       this.x = x;
       this.y = y;
       this.width = width;
       this.height = height;
       this.image = image;
       this.direction = direction;
-      this.movementRate = movementRate;
+      this.pixelRate = pixelRate
+      this.moveRate = moveRate;
       this.frameRate = frameRate;
-      this.speed = 1;
-      // this.game = null;
       return this;
     },
     
@@ -24,9 +24,9 @@ function () {
         height: this.height,
         image: this.image,
         direction: this.direction,
-        movementRate: this.movementRate,
-        frameRate: this.frameRate,
-        speed: this.speed
+        pixelRate: this.pixelRate,
+        moveRate: this.moveRate,
+        frameRate: this.frameRate
       };
     }
   };

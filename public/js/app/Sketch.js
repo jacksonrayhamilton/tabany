@@ -3,7 +3,12 @@ define(['underscore', 'app/Canvas', 'app/ImageLoader', 'app/EntityImage',
 function (_, Canvas, ImageLoader, EntityImage,
           Tile, TilesetImage) {
   
+  var ENTITY_SPRITE_DIR, TILESET_SPRITE_DIR;
+  
   'use strict';
+  
+  ENTITY_SPRITE_DIR = '/images/sprites/';
+  TILESET_SPRITE_DIR = '/images/tilesets/';
   
   var Sketch = {
     
@@ -39,10 +44,11 @@ function (_, Canvas, ImageLoader, EntityImage,
       ImageLoader.loadImages(this.images, srcs, callback);
     },
     
+    // TODO: Generalize these functions.
     createEntityImages: function (entityImages) {
       var imageName, src;
       for (imageName in entityImages) {
-        src = entityImages[imageName];
+        src = ENTITY_SPRITE_DIR + entityImages[imageName];
         this.entityImages[imageName] = Object.create(EntityImage).init(src);
       }
     },
@@ -50,7 +56,7 @@ function (_, Canvas, ImageLoader, EntityImage,
     createTilesetImages: function (tilesetImages) {
       var tilesetName, src;
       for (tilesetName in tilesetImages) {
-        src = tilesetImages[tilesetName];
+        src = TILESET_SPRITE_DIR + tilesetImages[tilesetName];
         this.tilesetImages[tilesetName] = Object.create(TilesetImage).init(src);
       }
     },

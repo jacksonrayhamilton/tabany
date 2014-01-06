@@ -1,5 +1,0 @@
-Game
-  Separate logic properly between client and server
-
-Canvas
-  recognize raised property? (how??)

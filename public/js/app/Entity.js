@@ -4,7 +4,7 @@ function (Util, Tile) {
   'use strict';
   
   var Entity = {
-    init: function (x, y, width, height, image, direction, movementRate, frameRate) {
+    init: function (x, y, width, height, image, direction, pixelRate, moveRate, frameRate) {
       this.x = x;
       this.y = y;
       this.width = width;
@@ -12,9 +12,9 @@ function (Util, Tile) {
       // String corresponding to the name of an EntityImage.
       this.image = image;
       this.setDirection(direction);
-      this.movementRate = movementRate;
+      this.pixelRate = pixelRate;
+      this.moveRate = moveRate;
       this.frameRate = frameRate;
-      this.speed = 1;
       this.frame = 0; // 0..3
       this.nextFrameCount = 0;
       this.game = null;
@@ -188,10 +188,10 @@ function (Util, Tile) {
       dy = 0;
       
       switch (direction) {
-        case 'left': dx = -1 * this.speed; break;
-        case 'up': dy = -1 * this.speed; break;
-        case 'right': dx = this.speed; break;
-        case 'down': dy = this.speed; break;
+        case 'left': dx = -1 * this.pixelRate; break;
+        case 'up': dy = -1 * this.pixelRate; break;
+        case 'right': dx = this.pixelRate; break;
+        case 'down': dy = this.pixelRate; break;
       }
       
       if (!this.wouldCollideWithMap(layeredMap, dx, dy) &&
@@ -207,6 +207,7 @@ function (Util, Tile) {
       }*/
     },
     
+    // TODO: Generalize this function so that it can be used without inputs.
     moveContinuously: (function () {
       var callback = function () {
         this.moveContinuously.apply(this, Util.slice(arguments[0]));
@@ -215,7 +216,7 @@ function (Util, Tile) {
         this.moving = true;
         this.nextFrame();
         this.move(direction, layeredMap, entities);
-        this.movementTimeout = setTimeout(callback.bind(this, arguments), this.movementRate);
+        this.movementTimeout = setTimeout(callback.bind(this, arguments), this.moveRate);
       };
       return function (direction, layeredMap, entities, input, keyCode) {
         var keyProperties,
