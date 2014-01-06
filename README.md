@@ -1,7 +1,7 @@
 Tabany
 ======
 
-![Screenshot of ifret standing in snow.](screenshot.jpg "Screenshot")
+![Screenshot of crowd of chibi characters on snow with the caption "Welcome to Tabany!".](screenshot_001.jpg "Screenshot")
 
 Tabany is a free and open-source browser-based MMORPG written in JavaScript and implemented with Node.js.
 
@@ -29,13 +29,15 @@ Players view themselves from a top-down perspective in the classic Final Fantasy
 Status
 ------
 
-Tabany is currently being actively developed. A good chunk of the basic RPG client-side game engine has been written. The client-side's MMORPG functionality and its complimentary server-side code is next-up on the list.
+Tabany is currently being actively developed. A good chunk of the basic RPG client-side game engine has been written. The client-side's MMORPG functionality and its complimentary server-side code is currently being adventurously implemented.
 
 The game engine is currently unstable, but the latest push should always at least run. Once the game's client- and server-side components are sufficiently-stabilized, this message will be updated. GitHub Releases will then provide stable versions of the software, which should allow anyone to run a game server on his own website (provided Node.js is installed, etc).
 
 Performance will be scrutinized once all essential features of the engine are implemented.
 
 Graphics are on the horizon; until then, the game will utilize RPG Maker assets (available under separate terms than that of Tabany's code).
+
+For more info on tentative project goals see docs/design_document.txt.
 
 
 Usage

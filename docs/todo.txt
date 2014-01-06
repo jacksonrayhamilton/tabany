@@ -10,6 +10,7 @@ Tilesets, Tilemaps
 
 Sprites
   Use the common name Sprite for EntityImages and TilesetImages. Possibly inherit from Sprite if needed.
+  Remove shadows from some sprites, test others for ricketyness.
 
 Entity
   generalize moveContinuously
