@@ -1,18 +1,31 @@
-module.exports = function (server) {
+// TODO: Consider better alternatives to a main() function.
+define(['socket.io', 'underscore', 'shared/Player'],
+function (socketio, _, Player) {
   
-  var requirejs = require('requirejs');
+  var spawnPlayer = function (socket) {
+    var player = Object.create(Player).init(_.random(0, 639), _.random(0, 479));
+    socket.emit('createPlayer', { player: player });
+  };
   
-  requirejs.config({
-    nodeRequire: require,
-    baseUrl: './gamefiles',
-    paths: {
-      text: 'server/lib/text'
-    }
-  });
+  var server = function (httpServer) {
+    var io;
+    
+    io = socketio.listen(httpServer);
+    
+    io.sockets.on('connection', function (socket) {
+      var player;
+      
+      player = Object.create(Player).init(32, 32);
+      
+      socket.set('player', player, function () {
+        socket.emit('playerRegistered', { player: player });
+      });
+      
+      /*setInterval(function () {
+        spawnPlayer(socket);
+      }, 2000);*/
+    });
+  };
   
-  // Start main server-side app logic.
-  requirejs(['server/main'], function (main) {
-    main(server);
-  });
-  
-};
+  return server;
+});

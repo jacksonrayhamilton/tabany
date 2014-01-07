@@ -52,4 +52,4 @@ server.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-require('./gamefiles/server/server.js')(server);
+require('./gamefiles/server/server_start.js')(server);
