@@ -1,28 +1,47 @@
 // TODO: Consider better alternatives to a main() function.
-define(['socket.io', 'underscore', 'shared/Player'],
-function (socketio, _, Player) {
+define(['socket.io', 'underscore',
+        'shared/Game', 'shared/Player',
+        'server/Chat'],
+function (socketio, _,
+          Game, Player,
+          Chat) {
   
-  var spawnPlayer = function (socket) {
-    var player = Object.create(Player).init(_.random(0, 639), _.random(0, 479));
-    socket.emit('createPlayer', { player: player });
+  var getRandomPlayer = function () {
+    return player = Object.create(Player).init(_.random(0, 639), _.random(0, 479));
   };
   
   var server = function (httpServer) {
-    var io;
+    var game, io;
     
+    game = Object.create(Game).init();
     io = socketio.listen(httpServer);
     
     io.sockets.on('connection', function (socket) {
-      var player;
       
-      player = Object.create(Player).init(32, 32);
+      var player = getRandomPlayer(),
+          chat = Object.create(Chat).init({
+            io: io,
+            socket: socket
+          });
       
       socket.set('player', player, function () {
-        socket.emit('playerRegistered', { player: player });
+        // BAD DESIGN, ideally players should be linked securely by a session
+        // or even an ID, and there should be no need to call addEntity
+        // afterwards.
+        socket.emit('playerJoined', {
+          player: player,
+          entities: game.entities
+        });
+        game.addEntity(player);
+        socket.broadcast.emit('createPlayer', { player: player });
+        chat.sendMessageToClients({
+          name: 'Server',
+          message: player.character.name + ' has joined.'
+        });
       });
       
       /*setInterval(function () {
-        spawnPlayer(socket);
+        io.sockets.emit('createPlayer', { player: getRandomPlayer() });
       }, 2000);*/
     });
   };

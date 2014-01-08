@@ -14,12 +14,10 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.4.7",
-    "ejs": "0.8.5",
+    "connect": "2.12.0",
     "less-middleware": "0.1.14",
-    "express-partials": "0.1.1",
-    "socket.io": "0.9.15",
     "requirejs": "2.1.9",
+    "socket.io": "0.9.15",
     "underscore": "1.5.2"
   }
 }

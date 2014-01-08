@@ -3,5 +3,6 @@
 
 # Except:
 !.gitignore
+!favicon.ico
 !README.md
 !download_images.sh

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang='en-US'>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge, chrome=1'>
+    <meta name='description' content='A free and open-source browser-based MMORPG.'>
+    
+    <!-- Constrain viewport on iOS -->
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+    
+    <link rel='stylesheet' href='/gamefiles/client/stylesheets/lib/normalize.css'>
+    <link rel='stylesheet' href='/gamefiles/client/stylesheets/style.css'>
+    
+    <script data-main='/gamefiles/client/client_start' src='/gamefiles/client/lib/require.js'></script>
+    <title>Tabany</title>
+  </head>
+  <body>
+    <!-- Default size is 20t x 15t (640px x 480px) (assuming 32px tiles). -->
+    <div id='SketchCanvasesContainer'>
+      <div id='Chatbox'>
+        <div id='ChatboxMessages'></div>
+        <div id='ChatboxMessageRow'>
+          <input id='ChatboxMessageInput' type='text'> <button id='ChatboxMessageSend'>Send</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

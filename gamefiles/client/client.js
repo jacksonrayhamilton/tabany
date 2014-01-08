@@ -1,9 +1,9 @@
 define(['domReady!', 'jquery', 'underscore',
-        'client/Game', 'client/ImageLoader', 'client/Sketch', 'shared/Tileset',
+        'client/ClientGame', 'client/ImageLoader', 'client/Sketch', 'shared/Tileset',
         'shared/Tilemap', 'shared/LayeredMap', 'client/Input',
         'shared/Entity'],
 function (doc, $, _,
-          Game, ImageLoader, Sketch, Tileset,
+          ClientGame, ImageLoader, Sketch, Tileset,
           Tilemap, LayeredMap, Input,
           Entity) {
 
@@ -97,7 +97,7 @@ var cliffEdge = {
   width: 3, height: 1, x: 2, y: 10
 };
 
-Object.create(Game).init({
+Object.create(ClientGame).init({
   sketchArgs: {
     "entityImages": {
       "hero_a":       "GR-001heroA.png",
@@ -168,16 +168,11 @@ Object.create(Game).init({
     
     game.currentMap = icyMap;
     
-    /*var player = Object.create(Entity).init(0, 160, 16, 16, 'hero_a', 'down', 1, 5, 20);
-    game.addEntity(player);
-    game.player = player;*/
-    
-    // very hackish teleporting
     var $container = $(game.sketch.container);
     var containerOffset = $container.offset();
-    $container.on('click', function (e) {
-      game.player.x = e.pageX - containerOffset.left;
-      game.player.y = e.pageY - containerOffset.top;
+    $container.on('click', function (event) {
+      game.player.x = event.pageX - containerOffset.left;
+      game.player.y = event.pageY - containerOffset.top;
       game.entitiesChanged = true;
     });
     

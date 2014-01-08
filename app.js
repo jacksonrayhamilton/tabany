@@ -1,55 +1,62 @@
 
+
 /**
  * Module dependencies.
  */
 
-var express = require('express');
-var routes = require('./routes');
-var testing = require('./routes/testing');
 var http = require('http');
 var path = require('path');
+var connect = require('connect');
+var less = require('less-middleware');
+var serverStart = require('./gamefiles/server/server_start.js');
 
-var app = express();
 
-// Enable view layouts. Must be placed before `app.use(app.router)`.
-var partials = require('express-partials');
-app.use(partials());
+/**
+ * Application initialization.
+ */
 
-// Process HTTP POST requests.
-app.use(express.urlencoded());
-app.use(express.json());
+var app = connect();
+app.use(connect.favicon(path.join(__dirname, 'images/favicon.ico')));
+app.use(connect.logger('dev'));
 
-// All environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(express.favicon(path.join(__dirname, 'public/images/favicon.ico')));
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(express.cookieParser('*&DRn9$CjzEr7z7hbw3PdT9ph4z&2qVNg'));
-app.use(express.session());
-app.use(app.router);
-app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
+// Allow HTTP POST requests.
+app.use(connect.json());
+app.use(connect.urlencoded());
 
-// Website's regular static directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Use sessions.
+// Remember to use different secrets in production.
+app.use(connect.cookieParser('*&DRn9$CjzEr7z7hbw3PdT9ph4z&2qVNg'));
+app.use(connect.session({
+  secret: 'Xh2NMK!JhJfh$*3YnHMwR2zAE%hBf524CNm',
+  key: 'sid',
+  cookie: {
+    secure: true
+  }
+}));
 
-// Client and server shared files directory
-app.use('/gamefiles', express.static(path.join(__dirname, 'gamefiles')));
+// Automatically compile less files to css.
+app.use(less({
+  src: __dirname,
+  compress: true
+}));
 
-// Development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+// Website's regular static directory.
+app.use(connect.static('public'));
 
-app.get('/', routes.index);
-app.get('/testing', testing.index);
+// Client, server and shared game files directory.
+app.use('/gamefiles', connect.static(path.join(__dirname, 'gamefiles')));
 
-var server = http.createServer(app);
-server.listen(app.get('port'), function () {
-  console.log('Express server listening on port ' + app.get('port'));
+// Display the game's source code in a friendly manner.
+app.use('/gamefiles', connect.directory(path.join(__dirname, 'gamefiles'), {
+  icons: true
+}));
+
+// Start an HTTP server.
+var httpServer = http.createServer(app);
+var PORT = process.env.PORT || 3000;
+httpServer.listen(PORT, function () {
+  console.log('Tabany server listening on port ' + PORT);
 });
 
-require('./gamefiles/server/server_start.js')(server);
+// Send the HTTP server to the game server (so it can create a socket).
+serverStart(httpServer);

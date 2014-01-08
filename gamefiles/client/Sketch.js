@@ -3,28 +3,29 @@ define(['underscore', 'client/Canvas', 'client/ImageLoader', 'client/EntityImage
 function (_, Canvas, ImageLoader, EntityImage,
           Tile, TilesetImage) {
   
-  var ENTITY_SPRITE_DIR, TILESET_SPRITE_DIR;
-  
   'use strict';
   
-  ENTITY_SPRITE_DIR = '/gamefiles/images/entities/';
-  TILESET_SPRITE_DIR = '/gamefiles/images/tilesets/';
+  var ENTITY_SPRITE_DIR = '/gamefiles/client/images/entities/',
+      TILESET_SPRITE_DIR = '/gamefiles/client/images/tilesets/';
   
   var Sketch = {
     
     init: function (args) {
-      var container;
+      var container, entityImages, tilesetImages;
       
-      if (!args.container) {
-        container = document.getElementById('SketchCanvasesContainer');
+      args = args || {};
+      container = args.container;
+      entityImages = args.entityImages;
+      tilesetImages = args.tilesetImages;
+      
+      if (!container) {
+        this.container = document.getElementById('SketchCanvasesContainer');
       } else {
-        container = args.container;
+        this.container = container;
       }
-      container.style.position = 'relative';
-      this.container = container;
+      this.container.style.position = 'relative';
       
       this.canvases = {};
-      this.placeholder = document.createElement('canvas');
       this.images = {};
       
       this.entityImages = {};

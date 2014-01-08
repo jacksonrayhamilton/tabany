@@ -2,9 +2,9 @@ define(['shared/Character', 'shared/inherits'],
 function (Character, inherits) {
   
   var PlayerCharacter = inherits(Character, {
-    init: function (x, y, width, height, image, direction, pixelRate, moveRate, frameRate, name, sex) {
+    init: function (applySuper, x, y, width, height, image, direction, pixelRate, moveRate, frameRate, name, sex) {
       
-      Character.init.apply(this, Array.prototype.slice.call(arguments));
+      applySuper(this, arguments);
       this.name = name;
       this.sex = sex;
       
