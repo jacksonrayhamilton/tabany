@@ -1,5 +1,5 @@
-define(['shared/Tile'],
-function (Tile) {
+define(
+function () {
   
   'use strict';
   

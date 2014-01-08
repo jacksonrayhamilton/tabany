@@ -1,13 +1,16 @@
 define(['underscore',
-        'shared/Entity', 'shared/Tile', 'shared/Util'],
+        'shared/Entity', 'shared/Player', 'shared/Util'],
 function (_,
-          Entity, Tile, Util) {
+          Entity, Player, Util) {
   
   'use strict';
   
   var Game = {
     
     init: function () {
+      
+      this.players = {};
+      
       this.entities = [];
       this.entitiesChanged = false;
       
@@ -20,7 +23,6 @@ function (_,
     },
     
     addEntity: function (entity) {
-      //entity.game = this;
       this.entities.push(entity);
       this.entitiesChanged = true;
       return entity;
@@ -29,7 +31,6 @@ function (_,
     removeEntity: function (entity) {
       var index = this.entities.indexOf(entity);
       if (index > -1) {
-        //entity.game = null;
         this.entities.splice(index, 1);
         this.entitiesChanged = true;
         return true;
@@ -37,11 +38,11 @@ function (_,
       return false;
     },
     
-    // INCOMPLETE, HACKISH IMPLEMENTATION, BEWARE
-    createPlayer: function (args) {
-      var player = Object.create(Entity);
-      player.init.apply(player, _.values(args));
-      this.addEntity(player);
+    // Still feels a bit hackish but getting better.
+    createPlayer: function (playerObj) {
+      var player = Object.create(Player).fromJSON(playerObj);
+      this.players[player.uuid] = player;
+      this.addEntity(player.character);
       this.entitiesChanged = true;
       return player;
     },
@@ -74,7 +75,7 @@ function (_,
       current, preciseProjection, projection,
       start, end, i, currentTile, projectedTile,
       tiles, t, tLen,
-      impassibility, tileXY, lowerBound, upperBound;
+      impassibility, tile, width, lowerBound, upperBound;
       
       tileSize = layeredMap.tileset.tileSize;
       
@@ -161,7 +162,9 @@ function (_,
             // impassible [from either direction on an axis]). A more
             // involved check.
             else if (Array.isArray(impassibility)) {
-              tileXY = Tile.getXY(tiles[t], layeredMap.width);
+              tile = tiles[t];
+              width = layeredMap.width;
+              tileXY = [tile % width, Math.floor(tile / width)];
               
               // Check if left-moving Entity's left bound exceeds Tile's left bound
               // (or if up-moving Entity's top bound exceeds Tile's top bound).
@@ -189,7 +192,12 @@ function (_,
       return false;
     },
     
-    move: function (mover, direction, layeredMap) {
+    /*
+     * 
+     * SYNTHETIC IS A HACK, REMOVE IT
+     * 
+     */
+    move: function (mover, direction, layeredMap, synthetic) {
       var dx, dy, nearbyTiles, tileBase;
       
       if (mover.direction !== direction) {
@@ -213,6 +221,13 @@ function (_,
       }
       
       this.entitiesChanged = true;
+      
+      if (Util.inBrowser() && !synthetic) {
+        this.socket.emit('playerMove', {
+          key: this.key,
+          direction: direction
+        });
+      }
     },
     
     // TODO: Generalize this function so that it can be used without inputs.

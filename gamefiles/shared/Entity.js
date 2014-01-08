@@ -1,5 +1,5 @@
-define(['shared/Util', 'shared/Tile'],
-function (Util, Tile) {
+define(['underscore'],
+function (_) {
   
   'use strict';
   
@@ -18,7 +18,7 @@ function (Util, Tile) {
       this.moveRate = moveRate;
       this.frameRate = frameRate;
       
-      if (Util.inBrowser()) {
+      if (typeof window !== 'undefined') {
         this.frame = 0; // 0..3
         this.nextFrameCount = 0;
       }
@@ -38,6 +38,12 @@ function (Util, Tile) {
         moveRate: this.moveRate,
         frameRate: this.frameRate
       };
+    },
+    
+    // TODO: Remove after switching to object literal syntax, will be obsolete
+    fromJSON: function (obj) {
+      this.init.apply(this, _.values(obj));
+      return this;
     },
     
     setDirection: function (direction) {

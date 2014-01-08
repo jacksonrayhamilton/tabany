@@ -14,7 +14,8 @@ requirejs.config({
       'client/lib/underscore'
     ],
     'socket.io': '/socket.io/socket.io',
-    domReady: 'client/lib/domReady'
+    domReady: 'client/lib/domReady',
+    text: 'shared/lib/text'
   },
   shim: {
     underscore: {

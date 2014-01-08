@@ -13,10 +13,27 @@ function (_,
   
   var Player = {
     
-    init: function (x, y) {
-      var sex, sexNames, name, sexSprites, index, spritePool, sprite;
+    init: function (args) {
+      args = args || {};
+      var uuid = args.uuid;
+      var character = args.character;
       
-      this.generateUUID();
+      this.uuid = uuid;
+      if (character) {
+        this.character = Object.create(PlayerCharacter).fromJSON(character);
+      }
+      
+      return this;
+    },
+    
+    // TODO: Remove after switching to object literal syntax, will be obsolete
+    fromJSON: function (obj) {
+      this.init.call(this, obj);
+      return this;
+    },
+    
+    generateRandomCharacter: function (x, y, direction) {
+      var sex, sexNames, name, sexSprites, index, spritePool, sprite;
       
       sex = SEXES[_.random(0, 1)];
       sexNames = NAMES[sex];
@@ -34,26 +51,8 @@ function (_,
       }
       sprite = spritePool[index];
       
-      this.character = Object.create(PlayerCharacter).init(x, y, 16, 16, sprite, 'down', 1, 10, 15, name, sex);
-      
-      return this;
-    },
-    
-    // Source: http://stackoverflow.com/a/2117523/1468130
-    generateUUID: (function () {
-      var format, regex, callback;
-      
-      format = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
-      regex = /[xy]/g;
-      callback = function(c) {
-        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-        return v.toString(16);
-      };
-      
-      return function () {
-        this.uuid = format.replace(regex, callback);
-      };
-    }())
+      this.character = Object.create(PlayerCharacter).init(x, y, 16, 16, sprite, direction, 1, 10, 15, name, sex);
+    }
   };
   
   return Player;

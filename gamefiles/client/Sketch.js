@@ -1,7 +1,7 @@
 define(['underscore', 'client/Canvas', 'client/ImageLoader', 'client/EntityImage',
-        'shared/Tile', 'client/TilesetImage'],
+        'client/TilesetImage'],
 function (_, Canvas, ImageLoader, EntityImage,
-          Tile, TilesetImage) {
+          TilesetImage) {
   
   'use strict';
   
@@ -106,13 +106,12 @@ function (_, Canvas, ImageLoader, EntityImage,
           for (i = 0, len = tilemap.tiles.length; i < len; i++) {
             tile = tileset.tiles[tilemap.tiles[i]];
             if (tile) {
-              tileXY = Tile.getXY(i, width);
               coordinates = tile.coordinates;
               cache.drawSlice(
                 tilesetImage.image,
                 coordinates[0], coordinates[1],
                 tileSize, tileSize,
-                (tileXY[0] * tileSize), (tileXY[1] * tileSize)
+                ((i % width) * tileSize), (Math.floor(i / width) * tileSize)
               );
             }
           }

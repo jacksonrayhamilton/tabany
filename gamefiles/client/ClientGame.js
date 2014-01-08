@@ -17,45 +17,64 @@ function (io,
       
       applySuper(this);
       
-      this.player = null;
-      this.currentMap = null;
+      var game = this;
       
-      this.sketch = Object.create(Sketch).init(sketchArgs);
-      this.canvas = this.sketch.createCanvas('main', 640, 480);
-      this.sketch.appendCanvasToContainer('main');
+      game.player = null;
+      game.currentMap = null;
+      
+      game.sketch = Object.create(Sketch).init(sketchArgs);
+      game.canvas = game.sketch.createCanvas('main', 640, 480);
+      game.sketch.appendCanvasToContainer('main');
     
-      this.socket = io.connect('http://localhost:3000');
+      game.socket = io.connect('http://localhost:3000');
       
-      this.socket.on('playerJoined', (function (data) {
-        this.player = this.createPlayer(data.player.character);
+      game.socket.on('playerJoined', function (data) {
+        
+        game.uuid = data.uuid;
+        game.key = data.key;
         
         (function () {
-          var entity;
-          for (var i = 0, len = data.entities.length; i < len; i++) {
-            entity = data.entities[i].character;
-            this.createPlayer(entity);
+          var uuid, player;
+          
+          for (uuid in data.players) {
+            player = game.createPlayer(data.players[uuid]);
+            if (uuid === game.uuid) {
+              /*
+               * 
+               * THIS NAME MUST BE CHANGED!!!!!!
+               * TESTING ONLY!!!
+               * CONFUSION WILL ARISE
+               * 
+               */
+              game.player = player.character;
+            }
           }
-        }.bind(this)());
+        }());
         
         // The Chatbox will eventually have player info bound to it.
-        this.initChatbox();
-      }).bind(this));
+        game.initChatbox();
+      });
       
-      this.socket.on('createPlayer', (function (data) {
-        this.createPlayer(data.player.character);
-      }).bind(this));
+      game.socket.on('createPlayer', function (data) {
+        game.createPlayer(data.player);
+      });
       
-      this.initInput();
+      game.socket.on('playerMove', function (data) {
+        var mover = game.players[data.uuid].character;
+        game.move(mover, data.direction, game.currentMap, true);
+      });
+      
+      game.initInput();
       
       if (setup) {
         // Pass `this` as the first argument to the setup function. That
         // way the setup function can refer to itself as `game`, which feels
         // more semantic.
-        setup.call(this, this);
+        setup.call(this, game);
       }
       
-      this.refreshConstantly = this.refreshConstantly.bind(this);
-      this.refreshConstantly();
+      game.refreshConstantly = game.refreshConstantly.bind(game);
+      game.refreshConstantly();
       
       return this;
     },

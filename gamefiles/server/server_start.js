@@ -6,7 +6,7 @@ module.exports = function (httpServer) {
     nodeRequire: require,
     baseUrl: './gamefiles',
     paths: {
-      text: 'server/lib/text'
+      text: 'shared/lib/text'
     }
   });
   
