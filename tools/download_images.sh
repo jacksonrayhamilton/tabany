@@ -8,7 +8,7 @@
 #
 # To run this script:
 #
-#   $ cd /path/to/tabany/gamefiles/images/
+#   $ cd /path/to/tabany/tools/
 #   $ chmod +x download_images.sh
 #   $ ./download_images.sh
 #
@@ -21,10 +21,11 @@
 FILENAME="images.tar.gz"
 DOWNLOAD_URL="http://tabany.zxq.net/${FILENAME}"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DOWNLOAD_DIR="${SCRIPT_DIR}/.download"
+IMAGES_DIR="${SCRIPT_DIR}/../gamefiles/client/images"
+DOWNLOAD_DIR="${IMAGES_DIR}/.download"
 ARCHIVE="${DOWNLOAD_DIR}/${FILENAME}"
 
 mkdir -p "$DOWNLOAD_DIR"
 wget "$DOWNLOAD_URL" -O "$ARCHIVE"
-tar -zxvf "$ARCHIVE" -C "$SCRIPT_DIR"
+tar -zxvf "$ARCHIVE" -C "$IMAGES_DIR"
 rm -rf "$DOWNLOAD_DIR"

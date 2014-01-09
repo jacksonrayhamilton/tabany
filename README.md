@@ -1,7 +1,7 @@
 Tabany
 ======
 
-![Screenshot of crowd of chibi characters on snow with the caption "Welcome to Tabany!".](screenshot_001.jpg "Screenshot")
+![Screenshot of crowd of chibi characters on snow with the caption "Welcome to Tabany!".](screenshot.jpg "Screenshot")
 
 Tabany is a free and open-source browser-based MMORPG written in JavaScript and implemented with Node.js.
 
@@ -51,11 +51,20 @@ $ cd tabany
 $ npm install
 ```
 
-After installing, to run the server:
+Tabany's images **do not** come bundled with the git repo. Assuming the current directory is `tabany`, to download the images:
+
+```bash
+$ chmod +x tools/download_images.sh
+$ ./tools/download_images.sh
+```
+
+After installing, to run the server (assuming the current directory is `tabany`):
 
 ```bash
 $ node app
 ```
+
+Enjoy.
 
 
 Contact
