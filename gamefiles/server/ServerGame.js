@@ -8,7 +8,7 @@ function (_, socketio,
   'use strict';
   
   var getRandomPlayer = function () {
-    return player = Object.create(Player).init(_.random(0, 639), _.random(0, 479));
+    return Object.create(Player).init(_.random(0, 639), _.random(0, 479));
   };
   
   var ServerGame = inherits(Game, {
@@ -18,7 +18,7 @@ function (_, socketio,
       applySuper(this);
       
       // Preserve a reference to `this` to avoid needless binding and
-      // improve readability.
+      // also improve readability.
       var game = this;
       
       game.playersPrivate = {};

@@ -8,20 +8,29 @@
     <!-- Constrain viewport on iOS -->
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
     
-    <link rel='stylesheet' href='/gamefiles/client/stylesheets/lib/normalize.css'>
-    <link rel='stylesheet' href='/gamefiles/client/stylesheets/style.css'>
+    <link rel='stylesheet' href='/stylesheets/normalize.css'>
+    <!-- Use if you want normalize's styles applied only to GameContainer. -->
+    <!--<link rel='stylesheet' href='/gamefiles/client/stylesheets/normalize-modified.css'>-->
+    <link rel='stylesheet' href='/gamefiles/client/stylesheets/gamestyles.css'>
+    <link rel='stylesheet' href='/stylesheets/styles.css'>
     
-    <script data-main='/gamefiles/client/client_start' src='/gamefiles/client/lib/require.js'></script>
+    <script data-main='/gamefiles/client/client' src='/gamefiles/client/lib/require.js'></script>
     <title>Tabany</title>
   </head>
   <body>
-    <!-- Default size is 20t x 15t (640px x 480px) (assuming 32px tiles). -->
-    <div id='SketchCanvasesContainer'>
-      <div id='Chatbox'>
-        <div id='ChatboxMessages'></div>
-        <div id='ChatboxMessageRow'>
-          <input id='ChatboxMessageInput' type='text'> <button id='ChatboxMessageSend'>Send</button>
+    <div id='game-container' class='game-container clearfix'>
+      <!-- Default size is 20t x 15t (640px x 480px) (assuming 32px tiles). -->
+      <div class='canvases-container'>
+        <div class='chatbox'>
+          <div class='chatbox-messages'></div>
+          <div class='chatbox-message-row'>
+            <input class='chatbox-message-input' type='text'> <button class='chatbox-message-send'>Send</button>
+          </div>
         </div>
+      </div>
+      <div class='agpl-info'>
+        <img src='/images/agpl-logo.png' alt='AGPLv3 Free Software Logo'><br>
+        <strong><a href='/gamefiles/'>View Source Code</a></strong>
       </div>
     </div>
   </body>

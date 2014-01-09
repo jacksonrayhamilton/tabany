@@ -1,0 +1,26 @@
+
+/*
+ * This stylesheet contains arbitrary site-wide styles which do not
+ * necessarily have any bearing on the presentation of the game itself.
+ * 
+ * If you are copying the project onto your own site, feel free to change
+ * this file. It shouldn't have any negative effect on the game itself.
+ */
+
+html {
+  background-color: #222;
+}
+
+body {
+  font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.game-container {
+  margin: 5px auto 0 auto;
+}
+
+.canvases-container {
+  background-color: #ddd;
+  box-shadow: 0px 2px 10px #000;
+}

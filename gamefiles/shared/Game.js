@@ -75,7 +75,7 @@ function (_,
       current, preciseProjection, projection,
       start, end, i, currentTile, projectedTile,
       tiles, t, tLen,
-      impassibility, tile, width, lowerBound, upperBound;
+      impassibility, tile, width, tileXY, lowerBound, upperBound;
       
       tileSize = layeredMap.tileset.tileSize;
       

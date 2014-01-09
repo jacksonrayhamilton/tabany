@@ -1,30 +1,35 @@
-define(['socket.io',
+define(['jquery', 'socket.io',
         'shared/Game', 'shared/inherits',
         'client/Chatbox', 'client/Input', 'client/Sketch',
         'client/polyfills'],
-function (io,
+function ($, io,
           Game, inherits,
           Chatbox, Input, Sketch) {
   
   var ClientGame = inherits(Game, {
     
     init: function (applySuper, args) {
-      var setup, sketchArgs;
+      var el, $el, setup, sketchArgs;
       
       args = args || {};
+      el = args.el || '#game-container';
+      $el = args.$el;
       setup = args.setup;
       sketchArgs = args.sketchArgs;
       
       applySuper(this);
       
+      // Preserve a reference to `this` to avoid needless binding and
+      // also improve readability.
       var game = this;
       
+      game.$el = $el || $(el);
       game.player = null;
       game.currentMap = null;
       
       game.sketch = Object.create(Sketch).init(sketchArgs);
       game.canvas = game.sketch.createCanvas('main', 640, 480);
-      game.sketch.appendCanvasToContainer('main');
+      game.sketch.appendCanvas('main');
     
       game.socket = io.connect('http://localhost:3000');
       
@@ -76,6 +81,17 @@ function (io,
       game.refreshConstantly = game.refreshConstantly.bind(game);
       game.refreshConstantly();
       
+      /*setTimeout(function () {
+        var layers = game.currentMap.layers;
+        console.dir(layers);
+        for (var i = 0; i < layers.length; i++) {
+          var layer = layers[i];
+          for (var j = 0; j < layer.length; j++) {
+            game.sketch.container.appendChild(layer[j].cache.el);
+          }
+        }
+      }, 2000);*/
+      
       return this;
     },
     
@@ -86,7 +102,7 @@ function (io,
     initChatbox: function () {
       this.chatbox = Object.create(Chatbox).init({
         socket: this.socket,
-        el: '#Chatbox'
+        $el: this.$el.find('.chatbox')
       });
       //this.chat = this.chatbox.chat;
     },

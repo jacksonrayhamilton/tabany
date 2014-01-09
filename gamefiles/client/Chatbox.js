@@ -14,9 +14,9 @@ function ($, Chat) {
       });
       
       this.$el = args.$el || $(args.el);
-      this.$messages = this.$el.find('#ChatboxMessages');
-      this.$messageInput = this.$el.find('#ChatboxMessageInput');
-      this.$messageSend = this.$el.find('#ChatboxMessageSend');
+      this.$messages = this.$el.find('.chatbox-messages');
+      this.$messageInput = this.$el.find('.chatbox-message-input');
+      this.$messageSend = this.$el.find('.chatbox-message-send');
       
       this.$el.on('click', this.onClick);
       this.$messageInput.on('keydown', this.onMessageInputKeydown.bind(this));

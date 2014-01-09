@@ -1,7 +1,7 @@
-define(['underscore', 'client/Canvas', 'client/ImageLoader', 'client/EntityImage',
-        'client/TilesetImage'],
-function (_, Canvas, ImageLoader, EntityImage,
-          TilesetImage) {
+define(['jquery', 'underscore',
+        'client/Canvas', 'client/EntityImage', 'client/TilesetImage'],
+function ($, _,
+          Canvas, EntityImage, TilesetImage) {
   
   'use strict';
   
@@ -11,61 +11,42 @@ function (_, Canvas, ImageLoader, EntityImage,
   var Sketch = {
     
     init: function (args) {
-      var container, entityImages, tilesetImages;
+      var el, $el, entityImages, tilesetImages;
       
       args = args || {};
-      container = args.container;
+      el = args.el || '.canvases-container';
+      $el = args.$el;
       entityImages = args.entityImages;
       tilesetImages = args.tilesetImages;
       
-      if (!container) {
-        this.container = document.getElementById('SketchCanvasesContainer');
-      } else {
-        this.container = container;
-      }
-      this.container.style.position = 'relative';
+      this.$el = $el || $(el);
+      this.$el.css({
+        position: 'relative'
+      });
       
       this.canvases = {};
       this.images = {};
       
       this.entityImages = {};
       if (args.entityImages) {
-        this.createEntityImages(args.entityImages);
+        this.createImages(this.entityImages, EntityImage, args.entityImages);
       }
       
       this.tilesetImages = {};
       if (args.tilesetImages) {
-        this.createTilesetImages(args.tilesetImages);
+        this.createImages(this.tilesetImages, TilesetImage, args.tilesetImages);
       }
       
       return this;
     },
     
-    loadImages: function (srcs, callback) {
-      ImageLoader.loadImages(this.images, srcs, callback);
-    },
-    
-    // TODO: Generalize these functions.
-    createEntityImages: function (entityImages) {
-      var imageName, src;
-      for (imageName in entityImages) {
-        src = ENTITY_SPRITE_DIR + entityImages[imageName];
-        this.entityImages[imageName] = Object.create(EntityImage).init(src);
+    createImages: function (container, ImageType, images) {
+      var imageName;
+      for (imageName in images) {
+        container[imageName] = Object.create(ImageType).init({
+          src: ImageType.DIRECTORY + images[imageName]
+        });
       }
-    },
-    
-    createTilesetImages: function (tilesetImages) {
-      var tilesetName, src;
-      for (tilesetName in tilesetImages) {
-        src = TILESET_SPRITE_DIR + tilesetImages[tilesetName];
-        this.tilesetImages[tilesetName] = Object.create(TilesetImage).init(src);
-      }
-    },
-    
-    addCanvas: function (name, el) {
-      var canvas = Object.create(Canvas).init(el);
-      this.canvases[name] = canvas;
-      return canvas;
     },
     
     createCanvas: function (name, width, height) {
@@ -74,11 +55,13 @@ function (_, Canvas, ImageLoader, EntityImage,
       return canvas;
     },
     
-    appendCanvasToContainer: function (name, zIndex) {
-      var el = this.canvases[name].el;
-      el.style.position = 'absolute';
-      el.style.zIndex = (typeof zIndex === 'undefined') ? 0 : zIndex;
-      this.container.appendChild(el);
+    appendCanvas: function (name, zIndex) {
+      var $canvas = $(this.canvases[name].el);
+      $canvas.css({
+        position: 'absolute',
+        zIndex: (typeof zIndex === 'undefined') ? 0 : zIndex
+      });
+      this.$el.append($canvas);
     },
     
     drawTilemap: function (canvas, tilemap, tileset) {
@@ -92,7 +75,7 @@ function (_, Canvas, ImageLoader, EntityImage,
         tilesetImage = this.tilesetImages[tileset.image];
         
         // Only create a cache if the Tilesets' image is loaded.
-        if (tilesetImage && tilesetImage.image) {
+        if (tilesetImage.image) {
           
           width = tilemap.width;
           height = tilemap.height;
@@ -117,7 +100,12 @@ function (_, Canvas, ImageLoader, EntityImage,
           }
           
         } else {
-          // Don't draw if there isn't a cache.
+          // The image wasn't loaded. Start loading it now, and continue
+          // failing silently until it is loaded. Don't worry, no one will
+          // notice. :)
+          if (!tilesetImage.loading) {
+            tilesetImage.load();
+          }
           return;
         }
       }
@@ -131,16 +119,19 @@ function (_, Canvas, ImageLoader, EntityImage,
     },
     
     drawEntity: function (canvas, entity) {
-      var entityImage, entityImage, image, directionRow, xStart, yStart, spriteWidth, spriteHeight, frame;
+      var entityImage, image, directionRow, xStart, yStart, spriteWidth, spriteHeight, frame;
       
       entityImage = this.entityImages[entity.image];
       
       // Check that the EntityImage's image has loaded.
-      // CONSIDER: Is first part of boolean check needed?
-      if (entityImage && entityImage.image) {
+      if (entityImage.image) {
         image = entityImage.image;
       } else {
-        // Don't draw if there is no image.
+        // The image wasn't loaded. Start loading it now, and continue
+        // failing silently until it is loaded.
+        if (!entityImage.loading) {
+          entityImage.load();
+        }
         return;
       }
       

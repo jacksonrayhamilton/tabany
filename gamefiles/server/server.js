@@ -1,14 +1,18 @@
-// TODO: Consider better alternatives to a main() function.
-define(['socket.io', 'underscore',
-        'shared/Player',
-        'server/Chat', 'server/ServerGame'],
-function (socketio, _,
-          Player,
-          Chat, ServerGame) {
+module.exports = function (httpServer) {
   
-  var server = function (httpServer) {
+  var requirejs = require('requirejs');
+  
+  requirejs.config({
+    nodeRequire: require,
+    baseUrl: './gamefiles',
+    paths: {
+      text: 'shared/lib/text'
+    }
+  });
+  
+  // Start main server logic.
+  requirejs(['server/ServerGame'], function (ServerGame) {
     Object.create(ServerGame).init(httpServer);
-  };
+  });
   
-  return server;
-});
+};

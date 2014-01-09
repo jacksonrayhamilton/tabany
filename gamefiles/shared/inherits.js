@@ -29,16 +29,19 @@ function (_) {
     
     var child = Object.create(parent);
     _.extend(child, properties);
-    child.init = _.partial(child.init, (function () {
-      var parentInit = parent.init;
-      // Optionally pass an arguments object as the second argument to
-      // applySuper() to have it automatically sliced and applied to
-      // the parent's initializer.
-      return function (thisArg, initArguments) {
-        initArguments = initArguments || {};
-        parentInit.apply(thisArg, slice(initArguments, 1));
-      };
-    }()));
+    
+    if (child.init) {
+      child.init = _.partial(child.init, (function () {
+        var parentInit = parent.init;
+        // Optionally pass an arguments object as the second argument to
+        // applySuper() to have it automatically sliced and applied to
+        // the parent's initializer.
+        return function (thisArg, initArguments) {
+          initArguments = initArguments || {};
+          parentInit.apply(thisArg, slice(initArguments, 1));
+        };
+      }()));
+    }
     
     return child;
   };

@@ -1,22 +1,24 @@
-define(['client/ImageLoader'],
-function (ImageLoader) {
+define(['shared/inherits',
+        'client/LoadableImage'],
+function (inherits,
+          LoadableImage) {
   
   'use strict';
   
-  var TilesetImage = {
+  var TilesetImage = inherits(LoadableImage, {
     
-    // Width and height are supplied so that Tilesets can still be drawn
-    // without their images hanging the engine.
-    init: function (src) {
-      
-      // Asynchronously load the Spriteset's image.
-      ImageLoader.loadImage(src, function (image) {
-        this.image = image;
-      }.bind(this));
-      
+    DIRECTORY: '/gamefiles/client/images/tilesets/',
+    
+    init: function (applySuper, args) {
+      applySuper(this, arguments);
       return this;
+    },
+    
+    onLoad: function (image) {
+      this.image = image;
     }
-  };
+    
+  });
   
   return TilesetImage;
 });
