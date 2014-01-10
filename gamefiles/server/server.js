@@ -12,7 +12,9 @@ module.exports = function (httpServer) {
   
   // Start main server logic.
   requirejs(['server/ServerGame'], function (ServerGame) {
-    Object.create(ServerGame).init(httpServer);
+    Object.create(ServerGame).init({
+      httpServer: httpServer
+    });
   });
   
 };

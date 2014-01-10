@@ -22,6 +22,10 @@ function (_,
       return this;
     },
     
+    
+    // All "addX" and "removeX" methods probably expect non-plain objects.
+    // They do not "automatically" create anything.
+    
     addEntity: function (entity) {
       this.entities.push(entity);
       this.entitiesChanged = true;
@@ -38,24 +42,52 @@ function (_,
       return false;
     },
     
-    // Still feels a bit hackish but getting better.
-    createPlayer: function (playerObj) {
-      var player = Object.create(Player).fromJSON(playerObj);
+    // Also adds the Player's PlayerCharacter.
+    addPlayer: function (player) {
       this.players[player.uuid] = player;
       this.addEntity(player.character);
-      this.entitiesChanged = true;
       return player;
     },
+    
+    // Also removes the Player's PlayerCharacter.
+    removePlayer: function (player) {
+      var player = this.players[player.uuid];
+      if (player) {
+        this.removeEntity(player.character);
+        delete this.players[player.uuid];
+        return true;
+      }
+      return false;
+    },
+    
+    
+    // All "createX" methods will automatically create an object using the
+    // supplied arguments.
+    
+    createEntity: function (entityArgs) {
+      var entity = Object.create(Entity).init(entityArgs);
+      this.addEntity(entity);
+      return entity;
+    },
+    
+    createPlayer: function (playerArgs) {
+      var player = Object.create(Player).init(playerArgs);
+      this.addPlayer(player);
+      return player;
+    },
+    
+    
+    // Collision
     
     wouldCollide: function (mover, target, dx, dy) {
       var x, y;
       x = mover.x + dx;
       y = mover.y + dy;
       return (
-        x <= target.x + target.width - 1  &&  // this.left <= target.right
-        x + mover.width - 1 >= target.x    &&  // this.right >= target.left
+        x <= target.x + target.width - 1 &&   // this.left <= target.right
+        x + mover.width - 1 >= target.x &&    // this.right >= target.left
         y <= target.y + target.height - 1 &&  // this.top <= target.bottom
-        y + mover.height - 1 >= target.y       // this.bottom >= target.top
+        y + mover.height - 1 >= target.y      // this.bottom >= target.top
       );
     },
     
@@ -70,7 +102,7 @@ function (_,
     
     wouldCollideWithMap: function (mover, layeredMap, dx, dy) {
       var tileSize, impassibilityMap,
-      delta, axisIndex, axis, sideLength, oppositeAxis, oppositeBase,
+      delta, axisIndex, axis, sideLength, oppositeAxis, oppositeSideLength,
       lowerDirection, upperDirection,
       current, preciseProjection, projection,
       start, end, i, currentTile, projectedTile,
@@ -79,7 +111,7 @@ function (_,
       
       tileSize = layeredMap.tileset.tileSize;
       
-      // RELIES ON MOVING BY 1 PIXEL!!! (But is more performant.)
+      // Relies on moving by only 1 pixel, but is more performant.
       /*if (this.x % tileSize !== 0 || this.y % tileSize !== 0) {
         return false;
       }*/
@@ -93,7 +125,7 @@ function (_,
         axis = mover.x;
         sideLength = mover.width;
         oppositeAxis = mover.y;
-        oppositeBase = mover.height;
+        oppositeSideLength = mover.height;
         lowerDirection = 'left';
         upperDirection = 'right';
       } else if (dy !== 0) {
@@ -102,7 +134,7 @@ function (_,
         axis = mover.y;
         sideLength = mover.height;
         oppositeAxis = mover.x;
-        oppositeBase = mover.width;
+        oppositeSideLength = mover.width;
         lowerDirection = 'up';
         upperDirection = 'down';
       }
@@ -125,7 +157,7 @@ function (_,
       // Determine the range of Tiles to check (the Entity may be
       // in-between more than 1 Tile).
       start = Math.floor(oppositeAxis / tileSize);
-      end = Math.floor((oppositeAxis + oppositeBase - 1) / tileSize);
+      end = Math.floor((oppositeAxis + oppositeSideLength - 1) / tileSize);
       
       // Check the whole range of Tiles.
       for (i = start; i <= end; i++) {
@@ -189,6 +221,7 @@ function (_,
           }
         }
       }
+      // If all checks failed, then the Entity will not collide.
       return false;
     },
     

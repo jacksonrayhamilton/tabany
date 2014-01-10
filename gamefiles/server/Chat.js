@@ -6,22 +6,23 @@ function () {
     init: function (args) {
       args = args || {};
       
-      this.io = args.io;
-      this.socket = args.socket;
-      
-      this.socket.on('sendMessageToServer', this.onSendMessageToServer.bind(this));
+      this.messageCount = 0;
       
       return this;
     },
     
-    sendMessageToClients: function (data) {
-      this.io.sockets.emit('sendMessageToClient', data);
+    getNextMessageId: function () {
+      var ret = this.messageCount;
+      this.messageCount += 1;
+      return ret;
     },
     
-    onSendMessageToServer: function (data) {
-      if (data.message !== '') {
-        this.sendMessageToClients(data);
-      }
+    validateMessage: function (message) {
+      return (message !== '');
+    },
+    
+    // Censor curse-words, etc.
+    censorMessage: function () {
     }
   };
   

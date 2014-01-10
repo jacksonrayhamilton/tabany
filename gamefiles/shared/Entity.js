@@ -5,23 +5,23 @@ function (_) {
   
   var Entity = {
     
-    init: function (x, y, width, height, image, direction, pixelRate, moveRate, frameRate) {
+    init: function (args) {
+      args = args || {};
       
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
+      this.x = args.x;
+      this.y = args.y;
+      this.width = args.width;
+      this.height = args.height;
       // String corresponding to the name of an EntityImage.
-      this.image = image;
-      this.setDirection(direction);
-      this.pixelRate = pixelRate;
-      this.moveRate = moveRate;
-      this.frameRate = frameRate;
+      this.image = args.image;
+      this.setDirection(args.direction);
+      this.pixelRate = args.pixelRate || 1;
+      this.moveRate = args.moveRate || 10;
+      this.frameRate = args.frameRate || 15;
       
-      if (typeof window !== 'undefined') {
-        this.frame = 0; // 0..3
-        this.nextFrameCount = 0;
-      }
+      // These properties may be browser-only.
+      this.frame = 0; // 0..3
+      this.nextFrameCount = 0;
       
       return this;
     },
@@ -38,12 +38,6 @@ function (_) {
         moveRate: this.moveRate,
         frameRate: this.frameRate
       };
-    },
-    
-    // TODO: Remove after switching to object literal syntax, will be obsolete
-    fromJSON: function (obj) {
-      this.init.apply(this, _.values(obj));
-      return this;
     },
     
     setDirection: function (direction) {
@@ -65,8 +59,9 @@ function (_) {
         var frame = this.frame += 1;
         this.frame = (frame > 3) ? 0 : frame;
         this.nextFrameCount = 0;
+      } else {
+        this.nextFrameCount += 1;
       }
-      this.nextFrameCount += 1;
     }
     
   };

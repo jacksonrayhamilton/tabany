@@ -1,110 +1,101 @@
-define(['jquery', 'socket.io',
+define(['jquery', 'socket.io', 'underscore',
         'shared/Game', 'shared/inherits',
         'client/Chatbox', 'client/Input', 'client/Sketch',
         'client/polyfills'],
-function ($, io,
+function ($, io, _,
           Game, inherits,
           Chatbox, Input, Sketch) {
   
   var ClientGame = inherits(Game, {
     
     init: function (applySuper, args) {
-      var el, $el, setup, sketchArgs;
-      
       args = args || {};
-      el = args.el || '#game-container';
-      $el = args.$el;
-      setup = args.setup;
-      sketchArgs = args.sketchArgs;
       
       applySuper(this);
       
-      // Preserve a reference to `this` to avoid needless binding and
-      // also improve readability.
-      var game = this;
+      this.host = args.host || 'http://localhost';
+      this.port = args.port || 3000;
+      this.$el = args.$el || (args.el ? $(args.el) : $('#game-container'));
+      this.player = null;
+      this.currentMap = null;
       
-      game.$el = $el || $(el);
-      game.player = null;
-      game.currentMap = null;
+      this.sketch = Object.create(Sketch).init(args.sketchArgs);
+      // TODO: Multiple canvases, these settings are arbitrary.
+      this.canvas = this.sketch.createCanvas('main', 640, 480);
+      this.sketch.appendCanvas('main');
       
-      game.sketch = Object.create(Sketch).init(sketchArgs);
-      game.canvas = game.sketch.createCanvas('main', 640, 480);
-      game.sketch.appendCanvas('main');
-    
-      game.socket = io.connect('http://localhost:3000');
-      
-      game.socket.on('playerJoined', function (data) {
-        
-        game.uuid = data.uuid;
-        game.key = data.key;
-        
-        (function () {
-          var uuid, player;
-          
-          for (uuid in data.players) {
-            player = game.createPlayer(data.players[uuid]);
-            if (uuid === game.uuid) {
-              /*
-               * 
-               * THIS NAME MUST BE CHANGED!!!!!!
-               * TESTING ONLY!!!
-               * CONFUSION WILL ARISE
-               * 
-               */
-              game.player = player.character;
-            }
-          }
-        }());
-        
-        // The Chatbox will eventually have player info bound to it.
-        game.initChatbox();
+      this.chatbox = Object.create(Chatbox).init({
+        sendMessage: this.sendChatMessageToServer.bind(this),
+        $el: this.$el.find('.chatbox')
       });
       
-      game.socket.on('createPlayer', function (data) {
-        game.createPlayer(data.player);
-      });
+      this.socket = io.connect(this.host + ':' + this.port);
       
-      game.socket.on('playerMove', function (data) {
-        var mover = game.players[data.uuid].character;
-        game.move(mover, data.direction, game.currentMap, true);
-      });
+      this.socket.on('playerJoin', this.onPlayerJoin.bind(this));
+      this.socket.on('createPlayer', this.onCreatePlayer.bind(this));
+      this.socket.on('playerMove', this.onPlayerMove.bind(this));
+      this.socket.on('sendChatMessageToClient', this.onSendChatMessageToClient.bind(this));
       
-      game.initInput();
+      this.initInput();
       
-      if (setup) {
+      if (args.setup) {
         // Pass `this` as the first argument to the setup function. That
-        // way the setup function can refer to itself as `game`, which feels
-        // more semantic.
-        setup.call(this, game);
+        // way the setup function can refer to itself as `game`.
+        args.setup.call(this, this);
       }
       
-      game.refreshConstantly = game.refreshConstantly.bind(game);
-      game.refreshConstantly();
-      
-      /*setTimeout(function () {
-        var layers = game.currentMap.layers;
-        console.dir(layers);
-        for (var i = 0; i < layers.length; i++) {
-          var layer = layers[i];
-          for (var j = 0; j < layer.length; j++) {
-            game.sketch.container.appendChild(layer[j].cache.el);
-          }
-        }
-      }, 2000);*/
+      this.refreshConstantly = this.refreshConstantly.bind(this);
+      this.refreshConstantly();
       
       return this;
     },
     
-    // Initializes a Chatbox object on `this`, the Chatbox having its own
-    // client-side Chat object.
-    // TODO: Bind player info to the Chat object.
-    // TODO: Seriously rethink the way these models are linked.
-    initChatbox: function () {
-      this.chatbox = Object.create(Chatbox).init({
-        socket: this.socket,
-        $el: this.$el.find('.chatbox')
+    // Processes all information the server gives to the client after
+    // joining the game.
+    // TODO: Seperate player joining logic world creation logic.
+    onPlayerJoin: function (data) {
+      
+      console.log('onPlayerJoin data', data);
+      
+      this.serverInfo = data.serverInfo;
+      this.uuid = data.uuid;
+      this.key = data.key;
+      
+      _.each(data.players, function (playerArgs, uuid) {
+        var player = this.createPlayer(playerArgs);
+        if (uuid === this.uuid) {
+          this.player = player;
+        }
+      }, this);
+    },
+    
+    onCreatePlayer: function (data) {
+      this.createPlayer(data.player);
+    },
+    
+    onPlayerMove: function (data) {
+      var mover = this.players[data.uuid].character;
+      this.move(mover, data.direction, this.currentMap, true);
+    },
+    
+    sendChatMessageToServer: function (message) {
+      this.socket.emit('sendChatMessageToServer', {
+        key: this.key,
+        message: message
       });
-      //this.chat = this.chatbox.chat;
+    },
+    
+    onSendChatMessageToClient: function (data) {
+      var player;
+      if (data.identifier === this.serverInfo.name) {
+        data.name = this.serverInfo.name;
+        data.color = this.serverInfo.color;
+      } else {
+        player = this.players[data.identifier];
+        data.name = player.character.name;
+        data.color = player.color;
+      }
+      this.chatbox.addMessage(data);
     },
     
     // Initializes an Input handler object on `this`, with callbacks
@@ -113,7 +104,7 @@ function ($, io,
       this.input = Object.create(Input).init({
         65: {
           keydown: function (event) {
-            this.startMovingContinuously(this.player, 'left', this.currentMap, this.input, event.which);
+            this.startMovingContinuously(this.player.character, 'left', this.currentMap, this.input, event.which);
           }.bind(this),
           properties: {
             direction: 'left',
@@ -123,7 +114,7 @@ function ($, io,
         },
         87: {
           keydown: function (event) {
-            this.startMovingContinuously(this.player, 'up', this.currentMap, this.input, event.which);
+            this.startMovingContinuously(this.player.character, 'up', this.currentMap, this.input, event.which);
           }.bind(this),
           properties: {
             direction: 'up',
@@ -133,7 +124,7 @@ function ($, io,
         },
         68: {
           keydown: function (event) {
-            this.startMovingContinuously(this.player, 'right', this.currentMap, this.input, event.which);
+            this.startMovingContinuously(this.player.character, 'right', this.currentMap, this.input, event.which);
           }.bind(this),
           properties: {
             direction: 'right',
@@ -143,7 +134,7 @@ function ($, io,
         },
         83: {
           keydown: function (event) {
-            this.startMovingContinuously(this.player, 'down', this.currentMap, this.input, event.which);
+            this.startMovingContinuously(this.player.character, 'down', this.currentMap, this.input, event.which);
           }.bind(this),
           properties: {
             direction: 'down',
@@ -154,21 +145,24 @@ function ($, io,
       });
     },
     
-    // Redraws the canvas.
-    refresh: (function () {
-      var callback = function (a, b) {
+    sortEntitiesByY: (function () {
+      var compareFunction = function (a, b) {
         return a.y - b.y;
       };
       return function () {
-        if (this.entitiesChanged) {
-          // CONSIDER: Is it safe to be constantly sorting the entities?
-          // Will that cause interference anywhere else?
-          this.entities = this.entities.sort(callback);
-          this.entitiesChanged = false;
-        }
-        this.sketch.drawLayeredMap('main', this.currentMap, this.entities);
-      }
+        this.entities.sort(compareFunction);
+      };
     }()),
+    
+    // Redraws the canvas.
+    refresh: function () {
+      if (this.entitiesChanged) {
+        // CONSIDER: Is it safe to be constantly sorting the entities?
+        this.sortEntitiesByY();
+        this.entitiesChanged = false;
+      }
+      this.sketch.drawLayeredMap('main', this.currentMap, this.entities);
+    },
     
     // Redraws the canvas at approximately 60 frames-per-second.
     refreshConstantly: function () {

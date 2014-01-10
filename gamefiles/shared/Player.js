@@ -7,51 +7,60 @@ function (_,
   
   'use strict';
   
-  var NAMES = JSON.parse(playerNamesJSON),
-      SEXES = ['male', 'female'],
-      SPRITES = JSON.parse(playerSpritesJSON);
-  
   var Player = {
     
+    NAMES: JSON.parse(playerNamesJSON),
+    SEXES: ['male', 'female'],
+    SPRITES: JSON.parse(playerSpritesJSON),
+    
+    // This method has the side effect of creating a PlayerCharacter object.
     init: function (args) {
       args = args || {};
-      var uuid = args.uuid;
-      var character = args.character;
       
-      this.uuid = uuid;
-      if (character) {
-        this.character = Object.create(PlayerCharacter).fromJSON(character);
+      this.uuid = args.uuid;
+      if (args.color) {
+        this.color = args.color;
+      }
+      if (args.character) {
+        this.character = Object.create(PlayerCharacter).init(args.character);
       }
       
-      return this;
-    },
-    
-    // TODO: Remove after switching to object literal syntax, will be obsolete
-    fromJSON: function (obj) {
-      this.init.call(this, obj);
       return this;
     },
     
     generateRandomCharacter: function (x, y, direction) {
       var sex, sexNames, name, sexSprites, index, spritePool, sprite;
       
-      sex = SEXES[_.random(0, 1)];
-      sexNames = NAMES[sex];
+      sex = this.SEXES[_.random(0, 1)];
+      sexNames = this.NAMES[sex];
       name = sexNames[_.random(0, sexNames.length)];
-      sexSprites = SPRITES[sex];
+      sexSprites = this.SPRITES[sex];
       
       // Get a random Sprite that is either of this Player's sex or which is
       // sexually-neutral.
-      index = _.random(0, sexSprites.length + SPRITES.neutral.length - 1);
+      index = _.random(0, sexSprites.length + this.SPRITES.neutral.length - 1);
       if (index < sexSprites.length) {
         spritePool = sexSprites;
       } else {
-        spritePool = SPRITES.neutral;
+        spritePool = this.SPRITES.neutral;
         index -= sexSprites.length;
       }
       sprite = spritePool[index];
       
-      this.character = Object.create(PlayerCharacter).init(x, y, 16, 16, sprite, direction, 1, 10, 15, name, sex);
+      this.character = Object.create(PlayerCharacter).init({
+        x: x, y: y, width: 16, height: 16,
+        image: sprite, direction: direction,
+        pixelRate: 1, moveRate: 10, frameRate: 15,
+        name: name, sex: sex
+      });
+    },
+    
+    generateRandomColor: function () {
+      this.color = 'rgb(' + [
+        _.random(34, 153),
+        _.random(34, 153),
+        _.random(34, 153)
+      ].join(',') + ')';
     }
   };
   

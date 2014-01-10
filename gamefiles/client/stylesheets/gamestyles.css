@@ -96,6 +96,13 @@
   padding: 1px 3px;
 }
 
+.chat-message {
+}
+
+.chat-message-name {
+  font-weight: bold;
+}
+
 .chatbox-message-row {
 }
 

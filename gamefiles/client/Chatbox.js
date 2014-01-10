@@ -1,18 +1,16 @@
-define(['jquery', 'client/Chat'],
-function ($, Chat) {
+define(['jquery', 'underscore'],
+function ($, _) {
   
   'use strict';
   
   var Chatbox = {
     
+    chatMessageTemplate: _.template('<div class="chat-messsage"><a name="<%- id %>" title="<%- name %> (<%- identifier  %>)"><span class="chat-message-name" style="color: <%- color %>;"><%- name %></span></a>: <%- message %></div>'),
+    
     init: function (args) {
       args = args || {};
       
-      this.chat = Object.create(Chat).init({
-        socket: args.socket,
-        hook: this.onSendMessageToClient.bind(this)
-      });
-      
+      this.sendMessage = args.sendMessage;
       this.$el = args.$el || $(args.el);
       this.$messages = this.$el.find('.chatbox-messages');
       this.$messageInput = this.$el.find('.chatbox-message-input');
@@ -32,7 +30,7 @@ function ($, Chat) {
       return (scrollPosition >= scrollHeight);
     },
     
-    onSendMessageToClient: function (data) {
+    addMessage: function (data) {
       var scrollLater, $messages;
       
       if (this.isScrolledToBottom()) {
@@ -40,7 +38,7 @@ function ($, Chat) {
       }
       
       $messages = this.$messages;
-      $messages.append(data.message, '<br>');
+      $messages.append(this.chatMessageTemplate(data));
       
       if (scrollLater) {
         $messages.scrollTop($messages[0].scrollHeight);
@@ -63,7 +61,7 @@ function ($, Chat) {
     onMessageSendClick: function (event) {
       var message = this.$messageInput.val();
       if (message !== '') {
-        this.chat.sendMessageToServer(message);
+        this.sendMessage(message);
         this.$messageInput.val('');
       }
     }

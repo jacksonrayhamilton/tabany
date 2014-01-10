@@ -1,7 +1,7 @@
 Images
 ======
 
-Because of the large combined size of Tabany's image assets, instead of being included in the project project repository they are available for download at http://tabany.zxq.net/images.tar.gz.
+Because of the large combined size of Tabany's image assets, instead of being included in the project repository they are available for download at http://tabany.zxq.net/images.tar.gz.
 
 Run the following commands to download, extract and install them.
 
