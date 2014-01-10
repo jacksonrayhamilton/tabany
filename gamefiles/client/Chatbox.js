@@ -1,11 +1,11 @@
-define(['jquery', 'underscore'],
-function ($, _) {
+define(['jquery', 'moment', 'underscore'],
+function ($, moment, _) {
   
   'use strict';
   
   var Chatbox = {
     
-    chatMessageTemplate: _.template('<div class="chat-messsage"><a name="<%- id %>" title="<%- name %> (<%- identifier  %>)"><span class="chat-message-name" style="color: <%- color %>;"><%- name %></span></a>: <%- message %></div>'),
+    chatMessageTemplate: _.template('<div class="chat-messsage"><a name="<%- id %>" title="<%- time %> <%- name %> (<%- identifier  %>)"><span class="chat-message-name" style="color: <%- color %>;"><%- name %></span></a>: <%- message %></div>'),
     
     init: function (args) {
       args = args || {};
@@ -32,6 +32,8 @@ function ($, _) {
     
     addMessage: function (data) {
       var scrollLater, $messages;
+      
+      data.time = moment(data.time).format('hh:mm:ss A');
       
       if (this.isScrolledToBottom()) {
         scrollLater = true;

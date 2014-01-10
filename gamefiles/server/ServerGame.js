@@ -98,6 +98,7 @@ function (_, socketio,
         this.validateKey(data.key, function (player) {
           this.sendChatMessageToClients({
             identifier: player.uuid,
+            time: Date.now(),
             message: data.message
           });
         });

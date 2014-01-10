@@ -13,6 +13,11 @@ requirejs.config({
       //'client/lib/underscore-min',
       'client/lib/underscore'
     ],
+    moment: [
+      //'//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.0/moment.min',
+      //'client/lib/moment.min',
+      'client/lib/moment'
+    ],
     'socket.io': '/socket.io/socket.io',
     domReady: 'client/lib/domReady',
     text: 'shared/lib/text'
