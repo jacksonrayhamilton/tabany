@@ -27,4 +27,3 @@ Entity
 
 Canvas
   recognize raised property?
-

@@ -3,7 +3,7 @@ Tabany
 
 ![Screenshot of crowd of chibi characters on snow with the caption "Welcome to Tabany!".](screenshot.jpg "Screenshot")
 
-Tabany is a free and open-source browser-based MMORPG written in JavaScript and implemented with Node.js.
+Tabany is a free and open-source browser-based MMORPG, written in JavaScript and for Node.js.
 
 
 Backstory
