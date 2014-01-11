@@ -1,9 +1,9 @@
 define(['jquery', 'socket.io', 'underscore',
-        'shared/Game', 'shared/inherits',
+        'shared/Game', 'shared/inherits', 'shared/Types',
         'client/Chatbox', 'client/Input', 'client/Sketch',
         'client/polyfills'],
 function ($, io, _,
-          Game, inherits,
+          Game, inherits, Types,
           Chatbox, Input, Sketch) {
   
   var ClientGame = inherits(Game, {
@@ -31,9 +31,9 @@ function ($, io, _,
       
       this.socket = io.connect(this.host + ':' + this.port);
       
-      this.socket.on('playerJoin', this.onPlayerJoin.bind(this));
+      this.socket.on('clientJoin', this.onClientJoin.bind(this));
       this.socket.on('createPlayer', this.onCreatePlayer.bind(this));
-      this.socket.on('playerMove', this.onPlayerMove.bind(this));
+      this.socket.on('movePlayer', this.onMovePlayer.bind(this));
       this.socket.on('sendChatMessageToClient', this.onSendChatMessageToClient.bind(this));
       
       this.initInput();
@@ -52,35 +52,41 @@ function ($, io, _,
     
     // Processes all information the server gives to the client after
     // joining the game.
-    // TODO: Seperate player joining logic world creation logic.
-    onPlayerJoin: function (data) {
+    onClientJoin: function (data) {
+      var i, len, entity;
       
-      console.log('onPlayerJoin data', data);
+      console.log('onClientJoin data', data);
       
       this.serverInfo = data.serverInfo;
-      this.uuid = data.uuid;
-      this.key = data.key;
       
-      _.each(data.players, function (playerArgs, uuid) {
-        var player = this.createPlayer(playerArgs);
-        if (uuid === this.uuid) {
+      for (i = 0, len = data.entities.length; i < len; i++) {
+        switch (data.entities[i].type) {
+          case Types.Objects.Entity: this.createEntity(data.entities[i]); break;
+          case Types.Objects.Character: this.createCharacter(data.entities[i]); break;
+          case Types.Objects.PlayerCharacter: this.createPlayerCharacter(data.entities[i]); break;
+        }
+      }
+      
+      for (i = 0, len = data.players.length; i < len; i++) {
+        var player = this.createPlayer(data.players[i]);
+        player.character = this.getEntity(player.entityId);
+        if (player.uuid === data.uuid) {
           this.player = player;
         }
-      }, this);
+      }
     },
     
     onCreatePlayer: function (data) {
       this.createPlayer(data.player);
     },
     
-    onPlayerMove: function (data) {
-      var mover = this.players[data.uuid].character;
+    onMovePlayer: function (data) {
+      var mover = this.getPlayer(data.uuid).character;
       this.move(mover, data.direction, this.currentMap, true);
     },
     
     sendChatMessageToServer: function (message) {
       this.socket.emit('sendChatMessageToServer', {
-        key: this.key,
         message: message
       });
     },
@@ -91,9 +97,11 @@ function ($, io, _,
         data.name = this.serverInfo.name;
         data.color = this.serverInfo.color;
       } else {
-        player = this.players[data.identifier];
+        console.log(this.players);
+        console.log(data);
+        player = this.getPlayer(data.identifier);
         data.name = player.character.name;
-        data.color = player.color;
+        data.color = player.character.color;
       }
       this.chatbox.addMessage(data);
     },

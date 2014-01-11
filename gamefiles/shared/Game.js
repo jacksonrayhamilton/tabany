@@ -1,7 +1,7 @@
 define(['underscore',
-        'shared/Entity', 'shared/Player', 'shared/Util'],
+        'shared/Entity', 'shared/Character', 'shared/PlayerCharacter', 'shared/Player', 'shared/Util'],
 function (_,
-          Entity, Player, Util) {
+          Entity, Character, PlayerCharacter, Player, Util) {
   
   'use strict';
   
@@ -9,9 +9,13 @@ function (_,
     
     init: function () {
       
-      this.players = {};
+      this.players = [];
       
+      // Will be sorted constantly.
       this.entities = [];
+      
+      // Determines if any Entities have changed at all. Mostly used by Sketch
+      // to know when to redraw.
       this.entitiesChanged = false;
       
       //this.maps = {};
@@ -22,6 +26,23 @@ function (_,
       return this;
     },
     
+    getEntity: function (id) {
+      var entities, i, len;
+      entities = this.entities;
+      for (i = 0, len = entities.length; i < len; i++) {
+        if (entities[i].id == id) return entities[i];
+      }
+      return null;
+    },
+    
+    getPlayer: function (uuid) {
+      var players, i, len;
+      players = this.players;
+      for (i = 0, len = players.length; i < len; i++) {
+        if (players[i].uuid == uuid) return players[i];
+      }
+      return null;
+    },
     
     // All "addX" and "removeX" methods probably expect non-plain objects.
     // They do not "automatically" create anything.
@@ -42,30 +63,41 @@ function (_,
       return false;
     },
     
-    // Also adds the Player's PlayerCharacter.
+    // Does NOT add the Player's PlayerCharacter.
     addPlayer: function (player) {
-      this.players[player.uuid] = player;
-      this.addEntity(player.character);
+      this.players.push(player);
       return player;
     },
     
     // Also removes the Player's PlayerCharacter.
     removePlayer: function (player) {
-      var player = this.players[player.uuid];
-      if (player) {
+      var index = this.player.indexOf(player);
+      if (index > -1) {
         this.removeEntity(player.character);
-        delete this.players[player.uuid];
+        this.players.splice(index, 1);
         return true;
       }
       return false;
     },
     
     
-    // All "createX" methods will automatically create an object using the
-    // supplied arguments.
+    // All "createX" methods will automatically create an object
+    // using the supplied arguments AND add it.
     
     createEntity: function (entityArgs) {
       var entity = Object.create(Entity).init(entityArgs);
+      this.addEntity(entity);
+      return entity;
+    },
+    
+    createCharacter: function (entityArgs) {
+      var entity = Object.create(Character).init(entityArgs);
+      this.addEntity(entity);
+      return entity;
+    },
+    
+    createPlayerCharacter: function (entityArgs) {
+      var entity = Object.create(PlayerCharacter).init(entityArgs);
       this.addEntity(entity);
       return entity;
     },
@@ -77,7 +109,7 @@ function (_,
     },
     
     
-    // Collision
+    // Collisions.
     
     wouldCollide: function (mover, target, dx, dy) {
       var x, y;

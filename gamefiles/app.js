@@ -6,6 +6,7 @@
 var http = require('http');
 var path = require('path');
 var connect = require('connect');
+var MemoryStore = connect.session.MemoryStore;
 var secrets = require('../secrets.json');
 var server = require('./server/server.js');
 

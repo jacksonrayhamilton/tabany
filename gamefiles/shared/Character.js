@@ -1,7 +1,9 @@
-define(['shared/Entity', 'shared/inherits'],
-function (Entity, inherits) {
+define(['shared/Entity', 'shared/inherits', 'shared/Types'],
+function (Entity, inherits, Types) {
   
   var Character = inherits(Entity, {
+    
+    type: Types.Objects.Character,
     
     init: function (applySuper, args) {
       applySuper(this, arguments);

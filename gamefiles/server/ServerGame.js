@@ -1,8 +1,8 @@
 define(['underscore', 'socket.io',
-        'shared/Game', 'shared/inherits', 'shared/Player',
+        'shared/Game', 'shared/inherits', 'shared/Player', 'shared/PlayerCharacter',
         'server/Chat'],
-function (_, socketio,
-          Game, inherits, Player,
+function (_, io,
+          Game, inherits, Player, PlayerCharacter,
           Chat) {
   
   'use strict';
@@ -20,54 +20,52 @@ function (_, socketio,
       this.name = args.name || 'Server';
       this.color = args.color || 'rgb(17,17,17)';
       
-      this.playersPrivate = {};
-      this.keysInUse = [];
+      this.entityCount = 0;
       
       this.chat = Object.create(Chat).init();
       
-      this.io = socketio.listen(args.httpServer, {
+      this.io = io.listen(args.httpServer, {
         //log: false
       });
       
-      this.io.sockets.on('connection', this.onConnection.bind(this));
+      /*this.io.set('authorization', function (handshakeData, callback) {
+        callback(null, true);
+      });*/
       
-      // To use socket.io sessions, bind this to the socket in onConnection instead.
-      this.io.sockets.on('sendChatMessageToServer', this.onSendChatMessageToServer.bind(this));
+      this.io.sockets.on('connection', this.onConnection.bind(this));
       
       return this;
     },
     
     onConnection: function (socket) {
-        
-      var uuid = this.generateUUID();
-      var key = this.generateKey();
       
-      var player = Object.create(Player).init({
-        uuid: uuid
-      });
-      this.playersPrivate[key] = player;
-      player.generateRandomCharacter(
+      var uuid = this.generateUUID();
+      socket.set('uuid', uuid);
+      
+      var playerCharacter = PlayerCharacter.generateRandomCharacter(
+        this.getNextEntityId(),
         _.random(0, 639),
         _.random(0, 479),
         (['left', 'up', 'right', 'down'])[_.random(0, 3)]
       );
-      player.generateRandomColor();
-      this.addPlayer(player);
+      this.addEntity(playerCharacter);
+      var player = this.createPlayer({
+        uuid: uuid,
+        character: playerCharacter
+      });
       
-      // TODO: Change split this up into a game payload and then create player
-      // after.
-      socket.emit('playerJoin', {
+      socket.emit('clientJoin', {
         serverInfo: {
           name: this.name,
           color: this.color
         },
-        players: this.players,
         uuid: uuid,
-        key: key
-        // entities: game.entities
+        players: this.players,
+        entities: this.entities
         // other gamestate stuff goes here
       });
       
+      // Tell all other clients about the new player.
       socket.broadcast.emit('createPlayer', { player: player });
       
       this.sendChatMessageToClients({
@@ -75,17 +73,36 @@ function (_, socketio,
         message: player.character.name + ' has joined.'
       });
       
-      socket.on('playerMove', this.onPlayerMove.bind(this));
-      socket.on('sendChatMessageToServer', this.onSendChatMessageToServer.bind(this));
+      this.setSocketEvents(socket, {
+        'movePlayer': this.onMovePlayer,
+        'sendChatMessageToServer': this.onSendChatMessageToServer
+      });
     },
     
-    // You do NOT need keys! This is STUPID!
-    // Use SESSIONS instead!
-    validateKey: function (key, callback) {
-      var player = this.playersPrivate[key];
-      if (player) {
-        callback.call(this, player);
-      }
+    getNextEntityId: function () {
+      var ret = this.entityCount;
+      this.entityCount += 1;
+      return ret;
+    },
+    
+    // Gets the player associated with a socket and passes that player to
+    // a socket event callback as the second argument.
+    // The client can't be trusted and the socket knows his real identity, so
+    // this function should hook into all client-initiated events.
+    getSocketPlayer: function (socket, callback) {
+      return function (data) {
+        socket.get('uuid', (function (err, uuid) {
+          if (err) throw err;
+          callback(data, this.getPlayer(uuid));
+        }).bind(this));
+      };
+    },
+    
+    // Sets a dictionary of event-callback pairs on a socket.
+    setSocketEvents: function (socket, events) {
+      _.each(events, function (callback, event) {
+        socket.on(event, this.getSocketPlayer(socket, callback.bind(this)).bind(this));
+      }, this);
     },
     
     sendChatMessageToClients: function (data) {
@@ -93,30 +110,25 @@ function (_, socketio,
       this.io.sockets.emit('sendChatMessageToClient', data);
     },
     
-    onSendChatMessageToServer: function (data) {
+    onSendChatMessageToServer: function (data, player) {
       if (this.chat.validateMessage(data.message)) {
-        this.validateKey(data.key, function (player) {
-          this.sendChatMessageToClients({
-            identifier: player.uuid,
-            time: Date.now(),
-            message: data.message
-          });
+        this.sendChatMessageToClients({
+          identifier: player.uuid,
+          time: Date.now(),
+          message: this.chat.censorMessage(data.message)
         });
       }
     },
     
-    onPlayerMove: function (data) {
-      this.validateKey(data.key, function (player) {
-        // this.move();
-        // TODO: Implement alg on todo list
-        this.io.sockets.emit('playerMove', {
-          uuid: player.uuid,
-          direction: data.direction
-        });
+    onMovePlayer: function (data, player) {
+      // this.move();
+      // TODO: Implement alg on todo list
+      this.io.sockets.emit('movePlayer', {
+        uuid: player.uuid,
+        direction: data.direction
       });
     },
     
-    // Source: http://stackoverflow.com/a/2117523/1468130
     generateUUID: (function () {
       var format = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
       var regex = /[xy]/g;
@@ -126,22 +138,6 @@ function (_, socketio,
       };
       return function () {
         return format.replace(regex, callback);
-      };
-    }()),
-    
-    // TODO: Use secure random service like random.org.
-    // CONSIDER: Sessions?
-    generateKey: (function () {
-      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      return function () {
-        var key = '';
-        do {
-          for (var i = 0; i < 32; i++) {
-            key += possible.charAt(Math.floor(Math.random() * possible.length));
-          }
-        } while (this.keysInUse.indexOf(key) > -1);
-        this.keysInUse.push(key);
-        return key;
       };
     }())
     

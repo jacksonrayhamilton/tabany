@@ -22,7 +22,8 @@ function () {
     },
     
     // Censor curse-words, etc.
-    censorMessage: function () {
+    censorMessage: function (message) {
+      return message;
     }
   };
   
