@@ -1,15 +1,11 @@
 define(['underscore', 'socket.io',
-        'shared/Game', 'shared/inherits', 'shared/Player', 'shared/PlayerCharacter',
+        'shared/Entity', 'shared/Game', 'shared/inherits', 'shared/Player',
         'server/Chat'],
 function (_, io,
-          Game, inherits, Player, PlayerCharacter,
+          Entity, Game, inherits, Player,
           Chat) {
   
   'use strict';
-  
-  var getRandomPlayer = function () {
-    return Object.create(Player).init(_.random(0, 639), _.random(0, 479));
-  };
   
   var ServerGame = inherits(Game, {
     
@@ -38,21 +34,23 @@ function (_, io,
     },
     
     onConnection: function (socket) {
+      var uuid, player, entity;
       
-      var uuid = this.generateUUID();
+      uuid = this.generateUUID();
       socket.set('uuid', uuid);
       
-      var playerCharacter = PlayerCharacter.generateRandomCharacter(
-        this.getNextEntityId(),
-        _.random(0, 639),
-        _.random(0, 479),
-        (['left', 'up', 'right', 'down'])[_.random(0, 3)]
-      );
-      this.addEntity(playerCharacter);
-      var player = this.createPlayer({
-        uuid: uuid,
-        character: playerCharacter
+      player = this.createPlayer({
+        uuid: uuid
       });
+      player.generateRandomName();
+      player.generateRandomEntity({
+        id: this.getNextEntityId(),
+        x: _.random(0, 639),
+        y: _.random(0, 479),
+        direction: (['left', 'up', 'right', 'down'])[_.random(0, 3)]
+      });
+      player.generateRandomColor();
+      this.addEntity(player.entity);
       
       socket.emit('clientJoin', {
         serverInfo: {
@@ -66,11 +64,16 @@ function (_, io,
       });
       
       // Tell all other clients about the new player.
-      socket.broadcast.emit('createPlayer', { player: player });
+      socket.broadcast.emit('createPlayer', {
+        entity: player.entity,
+        player: player
+      });
+      
+      // TODO: Tell about the Entity too.
       
       this.sendChatMessageToClients({
         identifier: this.name,
-        message: player.character.name + ' has joined.'
+        message: player.name + ' has joined.'
       });
       
       this.setSocketEvents(socket, {

@@ -1,9 +1,9 @@
 define(['jquery', 'socket.io', 'underscore',
-        'shared/Game', 'shared/inherits', 'shared/Types',
+        'shared/Game', 'shared/inherits',
         'client/Chatbox', 'client/Input', 'client/Sketch',
         'client/polyfills'],
 function ($, io, _,
-          Game, inherits, Types,
+          Game, inherits,
           Chatbox, Input, Sketch) {
   
   var ClientGame = inherits(Game, {
@@ -60,28 +60,29 @@ function ($, io, _,
       this.serverInfo = data.serverInfo;
       
       for (i = 0, len = data.entities.length; i < len; i++) {
-        switch (data.entities[i].type) {
-          case Types.Objects.Entity: this.createEntity(data.entities[i]); break;
-          case Types.Objects.Character: this.createCharacter(data.entities[i]); break;
-          case Types.Objects.PlayerCharacter: this.createPlayerCharacter(data.entities[i]); break;
-        }
+        this.createEntity(data.entities[i]);
       }
       
       for (i = 0, len = data.players.length; i < len; i++) {
         var player = this.createPlayer(data.players[i]);
-        player.character = this.getEntity(player.entityId);
+        player.entity = this.getEntity(player.entityId);
         if (player.uuid === data.uuid) {
           this.player = player;
         }
       }
     },
     
+    // Accepts data on a Player's Entity and that Player himself and
+    // creates and links both.
     onCreatePlayer: function (data) {
+      var entity;
+      entity = this.createEntity(data.entity);
+      data.player.entity = entity;
       this.createPlayer(data.player);
     },
     
     onMovePlayer: function (data) {
-      var mover = this.getPlayer(data.uuid).character;
+      var mover = this.getPlayer(data.uuid).entity;
       this.move(mover, data.direction, this.currentMap, true);
     },
     
@@ -100,8 +101,8 @@ function ($, io, _,
         console.log(this.players);
         console.log(data);
         player = this.getPlayer(data.identifier);
-        data.name = player.character.name;
-        data.color = player.character.color;
+        data.name = player.name;
+        data.color = player.color;
       }
       this.chatbox.addMessage(data);
     },
@@ -112,7 +113,7 @@ function ($, io, _,
       this.input = Object.create(Input).init({
         65: {
           keydown: function (event) {
-            this.startMovingContinuously(this.player.character, 'left', this.currentMap, this.input, event.which);
+            this.startMovingContinuously(this.player.entity, 'left', this.currentMap, this.input, event.which);
           }.bind(this),
           properties: {
             direction: 'left',
@@ -122,7 +123,7 @@ function ($, io, _,
         },
         87: {
           keydown: function (event) {
-            this.startMovingContinuously(this.player.character, 'up', this.currentMap, this.input, event.which);
+            this.startMovingContinuously(this.player.entity, 'up', this.currentMap, this.input, event.which);
           }.bind(this),
           properties: {
             direction: 'up',
@@ -132,7 +133,7 @@ function ($, io, _,
         },
         68: {
           keydown: function (event) {
-            this.startMovingContinuously(this.player.character, 'right', this.currentMap, this.input, event.which);
+            this.startMovingContinuously(this.player.entity, 'right', this.currentMap, this.input, event.which);
           }.bind(this),
           properties: {
             direction: 'right',
@@ -142,7 +143,7 @@ function ($, io, _,
         },
         83: {
           keydown: function (event) {
-            this.startMovingContinuously(this.player.character, 'down', this.currentMap, this.input, event.which);
+            this.startMovingContinuously(this.player.entity, 'down', this.currentMap, this.input, event.which);
           }.bind(this),
           properties: {
             direction: 'down',

@@ -5,9 +5,6 @@ function ($, _,
   
   'use strict';
   
-  var ENTITY_SPRITE_DIR = '/gamefiles/client/images/entities/',
-      TILESET_SPRITE_DIR = '/gamefiles/client/images/tilesets/';
-  
   var Sketch = {
     
     init: function (args) {

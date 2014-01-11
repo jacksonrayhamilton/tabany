@@ -5,7 +5,7 @@ function ($, moment, _) {
   
   var Chatbox = {
     
-    chatMessageTemplate: _.template('<div class="chat-messsage"><a name="<%- id %>" title="<%- time %> <%- name %> (<%- identifier  %>)"><span class="chat-message-name" style="color: <%- color %>;"><%- name %></span></a>: <%- message %></div>'),
+    chatMessageTemplate: _.template('<div class="chat-messsage"><a name="<%- id %>" title="#<%- id %> @ <%- time %>: <%- name %> (<%- identifier  %>)"><span class="chat-message-name" style="color: <%- color %>;"><%- name %>:</span></a> <%- message %></div>'),
     
     init: function (args) {
       args = args || {};

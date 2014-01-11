@@ -35,10 +35,10 @@ requirejs.config({
 // Start the main client logic.
 // TODO: Honestly, seriously, MOVE THIS LOGIC INTO CLIENTGAME!
 requirejs(['shared/Tilemap', 'shared/Tileset', 'shared/LayeredMap',
-           'text!shared/entity_sprites.json', 'text!shared/tileset_sprites.json', 
+           'text!shared/entity_images.json', 'text!shared/tileset_images.json', 
            'client/ClientGame'],
 function (Tilemap, Tileset, LayeredMap,
-          entitySprites, tilesetSprites,
+          entityImages, tilesetImages,
           ClientGame) {
   
   'use strict';
@@ -131,13 +131,13 @@ function (Tilemap, Tileset, LayeredMap,
     width: 3, height: 1, x: 2, y: 10
   };
   
-  entitySprites = JSON.parse(entitySprites);
-  tilesetSprites = JSON.parse(tilesetSprites);
+  entityImages = JSON.parse(entityImages);
+  tilesetImages = JSON.parse(tilesetImages);
   
   Object.create(ClientGame).init({
     sketchArgs: {
-      "entityImages": entitySprites,
-      "tilesetImages": tilesetSprites
+      "entityImages": entityImages,
+      "tilesetImages": tilesetImages
     },
     setup: function (game) {
       

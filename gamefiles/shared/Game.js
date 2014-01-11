@@ -1,7 +1,7 @@
 define(['underscore',
-        'shared/Entity', 'shared/Character', 'shared/PlayerCharacter', 'shared/Player', 'shared/Util'],
+        'shared/Entity', 'shared/Player', 'shared/Util'],
 function (_,
-          Entity, Character, PlayerCharacter, Player, Util) {
+          Entity, Player, Util) {
   
   'use strict';
   
@@ -86,18 +86,6 @@ function (_,
     
     createEntity: function (entityArgs) {
       var entity = Object.create(Entity).init(entityArgs);
-      this.addEntity(entity);
-      return entity;
-    },
-    
-    createCharacter: function (entityArgs) {
-      var entity = Object.create(Character).init(entityArgs);
-      this.addEntity(entity);
-      return entity;
-    },
-    
-    createPlayerCharacter: function (entityArgs) {
-      var entity = Object.create(PlayerCharacter).init(entityArgs);
       this.addEntity(entity);
       return entity;
     },

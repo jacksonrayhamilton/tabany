@@ -1,13 +1,9 @@
-define(['underscore',
-        'shared/Types'],
-function (_,
-          Types) {
+define(['underscore'],
+function (_) {
   
   'use strict';
   
   var Entity = {
-    
-    type: Types.Objects.Entity,
     
     init: function (args) {
       args = args || {};
@@ -33,7 +29,6 @@ function (_,
     
     toJSON: function () {
       return {
-        type: this.type,
         id: this.id,
         x: this.x,
         y: this.y,
