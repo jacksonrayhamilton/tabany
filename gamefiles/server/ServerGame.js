@@ -59,7 +59,9 @@ function (_, io,
         },
         uuid: uuid,
         players: this.players,
-        entities: this.entities
+        entities: this.entities,
+        //tilesets: this.tilesets,
+        //maps: this.maps
         // other gamestate stuff goes here
       });
       
@@ -69,16 +71,16 @@ function (_, io,
         player: player
       });
       
-      // TODO: Tell about the Entity too.
-      
       this.sendChatMessageToClients({
         identifier: this.name,
         message: player.name + ' has joined.'
       });
       
       this.setSocketEvents(socket, {
-        'movePlayer': this.onMovePlayer,
-        'sendChatMessageToServer': this.onSendChatMessageToServer
+        //'movePlayer': this.onMovePlayer,
+        'sendChatMessageToServer': this.onSendChatMessageToServer,
+        'startMovingContinuously': this.onStartMovingContinuously,
+        'stopMovingContinuously': this.onStopMovingContinuously
       });
     },
     
@@ -88,15 +90,15 @@ function (_, io,
       return ret;
     },
     
-    // Gets the player associated with a socket and passes that player to
-    // a socket event callback as the second argument.
+    // Gets the Player associated with a socket. Passes the socket and
+    // Player to a socket event callback.
     // The client can't be trusted and the socket knows his real identity, so
     // this function should hook into all client-initiated events.
     getSocketPlayer: function (socket, callback) {
       return function (data) {
         socket.get('uuid', (function (err, uuid) {
           if (err) throw err;
-          callback(data, this.getPlayer(uuid));
+          callback(data, socket, this.getPlayer(uuid));
         }).bind(this));
       };
     },
@@ -113,7 +115,7 @@ function (_, io,
       this.io.sockets.emit('sendChatMessageToClient', data);
     },
     
-    onSendChatMessageToServer: function (data, player) {
+    onSendChatMessageToServer: function (data, socket, player) {
       if (this.chat.validateMessage(data.message)) {
         this.sendChatMessageToClients({
           identifier: player.uuid,
@@ -123,12 +125,27 @@ function (_, io,
       }
     },
     
-    onMovePlayer: function (data, player) {
-      // this.move();
+    /*onMovePlayer: function (data, socket, player) {
+      var success;
+      success = this.move(player.entity, data.direction, this.currentMap);
+      // TODO: Implement automatic map creation.
       // TODO: Implement alg on todo list
-      this.io.sockets.emit('movePlayer', {
+      socket.broadcast.emit('movePlayer', {
         uuid: player.uuid,
         direction: data.direction
+      });
+    },*/
+    
+    onStartMovingContinuously: function (data, socket, player) {
+      socket.broadcast.emit('startMovingContinuously', {
+        uuid: player.uuid,
+        direction: data.direction
+      });
+    },
+    
+    onStopMovingContinuously: function (data, socket, player) {
+      socket.broadcast.emit('stopMovingContinuously', {
+        uuid: player.uuid
       });
     },
     

@@ -139,7 +139,7 @@ function (Tilemap, Tileset, LayeredMap,
       "entityImages": entityImages,
       "tilesetImages": tilesetImages
     },
-    setup: function (game) {
+    setup: function () {
       
       var cliffEdgeTilemap = Object.create(Tilemap);
       cliffEdgeTilemap.init.apply(cliffEdgeTilemap, _.values(cliffEdge));
@@ -158,15 +158,15 @@ function (Tilemap, Tileset, LayeredMap,
         ],
       ], icyTileset, 20, 15);
       
-      game.currentMap = icyMap;
+      this.currentMap = icyMap;
       
-      var $container = game.sketch.$el;
+      var $container = this.sketch.$el;
       var containerOffset = $container.offset();
-      $container.on('click', function (event) {
-        game.player.x = event.pageX - Math.floor(containerOffset.left);
-        game.player.y = event.pageY - Math.floor(containerOffset.top);
-        game.entitiesChanged = true;
-      });
+      $container.on('click', (function (event) {
+        this.player.entity.x = event.pageX - Math.floor(containerOffset.left);
+        this.player.entity.y = event.pageY - Math.floor(containerOffset.top);
+        this.entitiesChanged = true;
+      }).bind(this));
     }
   });
   

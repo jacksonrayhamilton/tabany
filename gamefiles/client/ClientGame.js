@@ -33,15 +33,15 @@ function ($, io, _,
       
       this.socket.on('clientJoin', this.onClientJoin.bind(this));
       this.socket.on('createPlayer', this.onCreatePlayer.bind(this));
-      this.socket.on('movePlayer', this.onMovePlayer.bind(this));
+      //this.socket.on('movePlayer', this.onMovePlayer.bind(this));
+      this.socket.on('startMovingContinuously', this.onStartMovingContinuously.bind(this));
+      this.socket.on('stopMovingContinuously', this.onStopMovingContinuously.bind(this));
       this.socket.on('sendChatMessageToClient', this.onSendChatMessageToClient.bind(this));
       
       this.initInput();
       
       if (args.setup) {
-        // Pass `this` as the first argument to the setup function. That
-        // way the setup function can refer to itself as `game`.
-        args.setup.call(this, this);
+        args.setup.call(this);
       }
       
       this.refreshConstantly = this.refreshConstantly.bind(this);
@@ -81,9 +81,83 @@ function ($, io, _,
       this.createPlayer(data.player);
     },
     
-    onMovePlayer: function (data) {
+    /*onMovePlayer: function (data) {
       var mover = this.getPlayer(data.uuid).entity;
-      this.move(mover, data.direction, this.currentMap, true);
+      this.move(mover, data.direction, this.currentMap);
+    },*/
+    
+    startMovingContinuously: function (entity, direction, layeredMap) {
+      var newDirection;
+      newDirection = direction !== entity.direction;
+      if (!entity.moving || newDirection) {
+        entity.moving = true;
+        if (newDirection) {
+          clearTimeout(entity.movementTimeout);
+        }
+        this.moveContinuously(entity, direction, layeredMap);
+        // Only tell the world that the Entity is moving if you are in
+        // control of him.
+        if (entity === this.player.entity) {
+          this.socket.emit('startMovingContinuously', { direction: direction });
+        }
+      }
+    },
+    
+    stopMovingContinuously: function (entity) {
+      entity.moving = false;
+      if (entity === this.player.entity) {
+        this.socket.emit('stopMovingContinuously');
+      }
+    },
+    
+    onStartMovingContinuously: function (data) {
+      var player = this.getPlayer(data.uuid);
+      // Last arg SHOULD be a map id or something.
+      this.startMovingContinuously(player.entity, data.direction, this.currentMap);
+    },
+    
+    onStopMovingContinuously: function (data) {
+      var player = this.getPlayer(data.uuid);
+      this.stopMovingContinuously(player.entity);
+    },
+    
+    moveContinuously: function (mover, direction, layeredMap) {
+      if (mover.moving) {
+        mover.nextFrame();
+        this.move(mover, direction, layeredMap);
+        mover.movementTimeout = setTimeout((function () {
+          this.moveContinuously(mover, direction, layeredMap);
+        }).bind(this), mover.moveRate);
+      } else {
+        mover.frame = 0;
+        clearTimeout(mover.movementTimeout);
+      }
+    },
+    
+    switchBack: function (input, unpressedKey) {
+      
+      var keyProperties, oppositeKey, adjacentKey, adjacentOppositeKey, otherKeyIsPressed;
+      
+      keyProperties = input.keyProperties;
+      oppositeKey = keyProperties[unpressedKey].opposite;
+      adjacentKey = keyProperties[unpressedKey].adjacent;
+      adjacentOppositeKey = keyProperties[adjacentKey].opposite;
+      
+      if (input.keyIsPressed(oppositeKey)) {
+        direction = keyProperties[oppositeKey].direction;
+        otherKeyIsPressed = true;
+      } else if (input.keyIsPressed(adjacentKey)) {
+        direction = keyProperties[adjacentKey].direction;
+        otherKeyIsPressed = true;
+      } else if (input.keyIsPressed(adjacentOppositeKey)) {
+        direction = keyProperties[adjacentOppositeKey].direction;
+        otherKeyIsPressed = true;
+      }
+      
+      if (otherKeyIsPressed) {
+        return direction;
+      }
+      return false;
     },
     
     sendChatMessageToServer: function (message) {
@@ -98,8 +172,6 @@ function ($, io, _,
         data.name = this.serverInfo.name;
         data.color = this.serverInfo.color;
       } else {
-        console.log(this.players);
-        console.log(data);
         player = this.getPlayer(data.identifier);
         data.name = player.name;
         data.color = player.color;
@@ -107,14 +179,28 @@ function ($, io, _,
       this.chatbox.addMessage(data);
     },
     
-    // Initializes an Input handler object on `this`, with callbacks
-    // bound to `this`.
     initInput: function () {
+      
+      // Handle initial keydowns generically for the movement keys.
+      var movementKeydown = (function (event) {
+        this.startMovingContinuously(this.player.entity, this.input.keyProperties[event.which].direction, this.currentMap);
+      }).bind(this);
+      
+      // Handle keyups, be them switchbacks or all-keys-unpressed,
+      // generically for the movement keys.
+      var movementKeyup = (function (event) {
+        var direction = this.switchBack(this.input, event.which);
+        if (direction) {
+          this.startMovingContinuously(this.player.entity, direction, this.currentMap);
+        } else {
+          this.stopMovingContinuously(this.player.entity);
+        }
+      }).bind(this);
+      
       this.input = Object.create(Input).init({
         65: {
-          keydown: function (event) {
-            this.startMovingContinuously(this.player.entity, 'left', this.currentMap, this.input, event.which);
-          }.bind(this),
+          keydown: movementKeydown,
+          keyup: movementKeyup,
           properties: {
             direction: 'left',
             opposite: 68,
@@ -122,9 +208,8 @@ function ($, io, _,
           }
         },
         87: {
-          keydown: function (event) {
-            this.startMovingContinuously(this.player.entity, 'up', this.currentMap, this.input, event.which);
-          }.bind(this),
+          keydown: movementKeydown,
+          keyup: movementKeyup,
           properties: {
             direction: 'up',
             opposite: 83,
@@ -132,9 +217,8 @@ function ($, io, _,
           }
         },
         68: {
-          keydown: function (event) {
-            this.startMovingContinuously(this.player.entity, 'right', this.currentMap, this.input, event.which);
-          }.bind(this),
+          keydown: movementKeydown,
+          keyup: movementKeyup,
           properties: {
             direction: 'right',
             opposite: 65,
@@ -142,9 +226,8 @@ function ($, io, _,
           }
         },
         83: {
-          keydown: function (event) {
-            this.startMovingContinuously(this.player.entity, 'down', this.currentMap, this.input, event.which);
-          }.bind(this),
+          keydown: movementKeydown,
+          keyup: movementKeyup,
           properties: {
             direction: 'down',
             opposite: 87,

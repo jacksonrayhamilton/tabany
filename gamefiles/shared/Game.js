@@ -18,7 +18,7 @@ function (_,
       // to know when to redraw.
       this.entitiesChanged = false;
       
-      //this.maps = {};
+      //this.maps = [];
       //this.mapsChanged = [
         //map1, map2, map3
       //];
@@ -245,13 +245,8 @@ function (_,
       return false;
     },
     
-    /*
-     * 
-     * SYNTHETIC IS A HACK, REMOVE IT
-     * 
-     */
-    move: function (mover, direction, layeredMap, synthetic) {
-      var dx, dy, nearbyTiles, tileBase;
+    move: function (mover, direction, layeredMap) {
+      var dx, dy, nearbyTiles, tileBase, ret;
       
       if (mover.direction !== direction) {
         mover.setDirection(direction);
@@ -271,79 +266,21 @@ function (_,
           !this.wouldCollideWithEntity(mover, dx, dy)) {
         mover.x += dx;
         mover.y += dy;
+        ret = true;
+      } else {
+        ret = false;
       }
       
       this.entitiesChanged = true;
       
-      if (Util.inBrowser() && !synthetic) {
-        this.socket.emit('playerMove', {
-          key: this.key,
+      /*if (Util.inBrowser() && mover === this.player.entity) {
+        this.socket.emit('movePlayer', {
           direction: direction
         });
-      }
-    },
-    
-    // TODO: Generalize this function so that it can be used without inputs.
-    moveContinuously: (function () {
-      var callback = function () {
-        this.moveContinuously.apply(this, Util.slice(arguments[0]));
-      };
-      var actuallyMove = function (mover, direction, layeredMap, input, keyCode) {
-        mover.moving = true;
-        mover.nextFrame();
-        this.move(mover, direction, layeredMap);
-        mover.movementTimeout = setTimeout(callback.bind(this, arguments), mover.moveRate);
-      };
-      return function (mover, direction, layeredMap, input, keyCode) {
-        var keyProperties,
-        oppositeKeyCode, adjacentKeyCode, adjacentOppositeKeyCode,
-        otherKeyIsPressed;
-        
-        // Check if the original key is still being pressed.
-        if (input.keyIsPressed(keyCode)) {
-          actuallyMove.apply(this, Util.slice(arguments));
-        } else {
-          // Check if any of the other directional keys are being pressed.
-          keyProperties = input.keyProperties;
-          oppositeKeyCode = keyProperties[keyCode].opposite;
-          adjacentKeyCode = keyProperties[keyCode].adjacent;
-          adjacentOppositeKeyCode = keyProperties[adjacentKeyCode].opposite;
-          
-          if (input.keyIsPressed(oppositeKeyCode)) {
-            direction = keyProperties[oppositeKeyCode].direction;
-            keyCode = oppositeKeyCode;
-            otherKeyIsPressed = true;
-          } else if (input.keyIsPressed(adjacentKeyCode)) {
-            direction = keyProperties[adjacentKeyCode].direction;
-            keyCode = adjacentKeyCode;
-            otherKeyIsPressed = true;
-          } else if (input.keyIsPressed(adjacentOppositeKeyCode)) {
-            direction = keyProperties[adjacentOppositeKeyCode].direction;
-            keyCode = adjacentOppositeKeyCode;
-            otherKeyIsPressed = true;
-          }
-          
-          if (otherKeyIsPressed) {
-            actuallyMove.call(this, mover, direction, layeredMap, input, keyCode);
-          } else {
-            mover.moving = false;
-            mover.frame = 0;
-            clearTimeout(mover.movementTimeout);
-          }
-        }
-      };
-    }()),
-    
-    startMovingContinuously: function (mover, direction, layeredMap, input, keyCode) {
-      if (mover.moving) {
-        if (direction !== mover.direction) {
-          clearTimeout(mover.movementTimeout);
-          this.moveContinuously.apply(this, Util.slice(arguments));
-        }
-      } else {
-        this.moveContinuously.apply(this, Util.slice(arguments));
-      }
-    },
+      }*/
+      
+      return ret;
+    }
   };
   
   return Game;
