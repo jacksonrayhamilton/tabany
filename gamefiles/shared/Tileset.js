@@ -5,24 +5,24 @@ function () {
   
   var Tileset = {
     
-    init: function (tiles, image, width, height, tileSize) {
-      this.tiles = tiles;
-      // String corresponding to the name of a TilesetImage
-      this.image = image;
-      this.width = width;
-      this.height = height;
-      this.tileSize = (typeof tileSize === 'undefined') ? 32 : tileSize;
+    init: function (args) {
+      this.tiles = args.tiles;
+      this.image = args.image; // String corresponding to the name of a TilesetImage
+      this.width = (typeof args.width === 'undefined') ? 8 : args.width;
+      // Specifying the height is pointless, and you may even
+      // measure it incorrectly. But you still can if you really want to.
+      if (typeof args.height === 'undefined') {
+        this.height = Math.ceil(this.tiles.length / this.width);
+      } else {
+        this.height = args.height;
+      }
+      this.tileSize = (typeof args.tileSize === 'undefined') ? 32 : args.tileSize;
       this.generateCoordinates();
       return this;
     },
     
-    /*initFromJSON: function (json) {
-      var tileSize;
-      tileSize = (typeof json.tileSize === 'undefined') ? 32 : tileSize;
-      return this.init(json.tiles, json.image, json.width, json.height, tileSize);
-    },*/
-    
     // CONSIDER: Think about porting this elsewhere (Tilemaps?) for performance.
+    // (To avoid recalculating coordinates constantly.)
     generateCoordinates: function () {
       var tiles, width, tileSize, i, len;
       tiles = this.tiles;

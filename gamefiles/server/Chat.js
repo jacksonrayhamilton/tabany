@@ -6,14 +6,14 @@ function () {
     init: function (args) {
       args = args || {};
       
-      this.messageCount = 0;
+      this.nextMessageId = 1;
       
       return this;
     },
     
     getNextMessageId: function () {
-      var ret = this.messageCount;
-      this.messageCount += 1;
+      var ret = this.nextMessageId;
+      this.nextMessageId += 1;
       return ret;
     },
     

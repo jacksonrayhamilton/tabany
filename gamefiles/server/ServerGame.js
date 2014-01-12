@@ -16,7 +16,7 @@ function (_, io,
       this.name = args.name || 'Server';
       this.color = args.color || 'rgb(17,17,17)';
       
-      this.entityCount = 0;
+      this.nextEntityId = 1;
       
       this.chat = Object.create(Chat).init();
       
@@ -85,8 +85,8 @@ function (_, io,
     },
     
     getNextEntityId: function () {
-      var ret = this.entityCount;
-      this.entityCount += 1;
+      var ret = this.nextEntityId;
+      this.nextEntityId += 1;
       return ret;
     },
     
@@ -125,11 +125,13 @@ function (_, io,
       }
     },
     
+    // MAPS-ON-THE-SERVER need to be implemented to start testing this.
+    
     /*onMovePlayer: function (data, socket, player) {
       var success;
       success = this.move(player.entity, data.direction, this.currentMap);
       // TODO: Implement automatic map creation.
-      // TODO: Implement alg on todo list
+      // TODO: Implement alg on todo list.
       socket.broadcast.emit('movePlayer', {
         uuid: player.uuid,
         direction: data.direction

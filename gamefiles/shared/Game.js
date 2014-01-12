@@ -16,21 +16,29 @@ function (_,
       
       // Determines if any Entities have changed at all. Mostly used by Sketch
       // to know when to redraw.
+      // TODO: Make an additional array that stores the Entities which have
+      // changed.
+      // REASONING:
+      // - Short-term this allows delta information to be gotten from the
+      // server relating to multiple Entities (batch calls).
+      // - Long-term this can be used for Sketch optimizations (redrawing rects
+      // only where changes occur).
       this.entitiesChanged = false;
       
-      //this.maps = [];
-      //this.mapsChanged = [
-        //map1, map2, map3
-      //];
+      this.maps = [];
       
       return this;
+    },
+    
+    addMap: function (map) {
+      
     },
     
     getEntity: function (id) {
       var entities, i, len;
       entities = this.entities;
       for (i = 0, len = entities.length; i < len; i++) {
-        if (entities[i].id == id) return entities[i];
+        if (entities[i].id === id) return entities[i];
       }
       return null;
     },

@@ -24,6 +24,12 @@ function ($, io, _,
       this.canvas = this.sketch.createCanvas('main', 640, 480);
       this.sketch.appendCanvas('main');
       
+      // Maps might have animated tiles, this can be used for cosmetic
+      // updates to the caches (redraw only changed tiles onto the cache).
+      //this.tilesChanged = [
+        //0, 5, 24
+      //];
+      
       this.chatbox = Object.create(Chatbox).init({
         sendMessage: this.sendChatMessageToServer.bind(this),
         $el: this.$el.find('.chatbox')
