@@ -7,9 +7,14 @@ function () {
     
     // TODO: Rename `tiles` to something more descriptive
     init: function (args) {
+      
       this.tiles = args.tiles;
       this.width = args.width;
-      this.height = args.height;
+      if (typeof args.height === 'undefined') {
+        this.height = Math.ceil(this.tiles.length / this.width);
+      } else {
+        this.height = args.height;
+      }
       this.x = (typeof args.x === 'undefined') ? 0 : args.x;
       this.y = (typeof args.y === 'undefined') ? 0 : args.y;
       
@@ -28,11 +33,10 @@ function () {
       } else {
         this.base = args.base;
       }
+      
       return this;
     }
   };
   
   return Tilemap;
 });
-
-

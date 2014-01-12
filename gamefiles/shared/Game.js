@@ -1,11 +1,15 @@
 define(['underscore',
-        'shared/Entity', 'shared/Player', 'shared/Util'],
+        'shared/Entity', 'shared/LayeredMap', 'shared/Player', 'shared/Tileset', 'shared/Util'],
 function (_,
-          Entity, Player, Util) {
+          Entity, LayeredMap, Player, Tileset,
+          Util) {
   
   'use strict';
   
   var Game = {
+    
+    TILESETS_DIRECTORY: '/gamefiles/shared/tilesets/',
+    MAPS_DIRECTORY: '/gamefiles/shared/maps/',
     
     init: function () {
       
@@ -25,14 +29,80 @@ function (_,
       // only where changes occur).
       this.entitiesChanged = false;
       
+      this.tilesets = [];
       this.maps = [];
       
       return this;
     },
     
-    addMap: function (map) {
-      
+    
+    /*
+     * Adders
+     * Collection-augmenting methods.
+     */
+    
+    addEntity: function (entity) {
+      this.entities.push(entity);
+      this.entitiesChanged = true;
+      return entity;
     },
+    
+    // Does NOT add the Player's PlayerCharacter.
+    addPlayer: function (player) {
+      this.players.push(player);
+      return player;
+    },
+    
+    addTileset: function (tileset) {
+      this.tilesets.push(tileset);
+      return tileset;
+    },
+    
+    addMap: function (map) {
+      this.maps.push(map);
+      return map;
+    },
+    
+    
+    /*
+     * Creators
+     * Object creation convenience methods.
+     */
+    
+    createEntity: function (entityArgs) {
+      var entity = Object.create(Entity).init(entityArgs);
+      this.addEntity(entity);
+      return entity;
+    },
+    
+    createPlayer: function (playerArgs) {
+      var player = Object.create(Player).init(playerArgs);
+      this.addPlayer(player);
+      return player;
+    },
+    
+    createTileset: function (tilesetArgs) {
+      var tileset = Object.create(Tileset).init(tilesetArgs);
+      this.addTileset(tileset);
+      return tileset;
+    },
+    
+    createMap: function (mapArgs) {
+      // Transform a string into its corresponding Tileset.
+      if (typeof mapArgs.tileset === 'string') {
+        mapArgs.tileset = this.getTileset(mapArgs.tileset);
+      }
+      var map = Object.create(LayeredMap).init(mapArgs);
+      map.initLayers();
+      this.addMap(map);
+      return map;
+    },
+    
+    
+    /*
+     * Getters
+     * Object lookup-by-property methods.
+     */
     
     getEntity: function (id) {
       var entities, i, len;
@@ -52,14 +122,30 @@ function (_,
       return null;
     },
     
-    // All "addX" and "removeX" methods probably expect non-plain objects.
-    // They do not "automatically" create anything.
-    
-    addEntity: function (entity) {
-      this.entities.push(entity);
-      this.entitiesChanged = true;
-      return entity;
+    getTileset: function (name) {
+      var tilesets, i, len;
+      tilesets = this.tilesets;
+      for (i = 0, len = tilesets.length; i < len; i++) {
+        if (tilesets[i].name === name) return tilesets[i];
+      }
+      return null;
     },
+    
+    getMap: function (name) {
+      var maps, i, len;
+      maps = this.maps;
+      for (i = 0, len = maps.length; i < len; i++) {
+        if (maps[i].name === name) return maps[i];
+      }
+      return null;
+    },
+    
+    
+    
+    /*
+     * Removers
+     * Collection splicing methods.
+     */
     
     removeEntity: function (entity) {
       var index = this.entities.indexOf(entity);
@@ -69,12 +155,6 @@ function (_,
         return true;
       }
       return false;
-    },
-    
-    // Does NOT add the Player's PlayerCharacter.
-    addPlayer: function (player) {
-      this.players.push(player);
-      return player;
     },
     
     // Also removes the Player's PlayerCharacter.
@@ -89,23 +169,9 @@ function (_,
     },
     
     
-    // All "createX" methods will automatically create an object
-    // using the supplied arguments AND add it.
-    
-    createEntity: function (entityArgs) {
-      var entity = Object.create(Entity).init(entityArgs);
-      this.addEntity(entity);
-      return entity;
-    },
-    
-    createPlayer: function (playerArgs) {
-      var player = Object.create(Player).init(playerArgs);
-      this.addPlayer(player);
-      return player;
-    },
-    
-    
-    // Collisions.
+    /*
+     * Collision-detection
+     */
     
     wouldCollide: function (mover, target, dx, dy) {
       var x, y;
@@ -281,14 +347,22 @@ function (_,
       
       this.entitiesChanged = true;
       
-      /*if (Util.inBrowser() && mover === this.player.entity) {
-        this.socket.emit('movePlayer', {
-          direction: direction
-        });
-      }*/
-      
       return ret;
+    },
+    
+    moveContinuously: function (mover, direction, layeredMap) {
+      if (mover.moving) {
+        mover.nextFrame();
+        this.move(mover, direction, layeredMap);
+        mover.movementTimeout = setTimeout((function () {
+          this.moveContinuously(mover, direction, layeredMap);
+        }).bind(this), mover.moveRate);
+      } else {
+        mover.frame = 0;
+        clearTimeout(mover.movementTimeout);
+      }
     }
+    
   };
   
   return Game;

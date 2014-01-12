@@ -11,10 +11,11 @@ module.exports = function (httpServer) {
   });
   
   // Start main server logic.
-  requirejs(['server/ServerGame'], function (ServerGame) {
-    Object.create(ServerGame).init({
-      httpServer: httpServer
-    });
+  requirejs(['server/ServerGame', 'text!server/settings.json'],
+  function (ServerGame, settings) {
+    
+    Object.create(ServerGame).init(httpServer, JSON.parse(settings));
+      
   });
   
 };

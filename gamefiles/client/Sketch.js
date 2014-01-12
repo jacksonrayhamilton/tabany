@@ -8,15 +8,9 @@ function ($, _,
   var Sketch = {
     
     init: function (args) {
-      var el, $el, entityImages, tilesetImages;
-      
       args = args || {};
-      el = args.el || '.canvases-container';
-      $el = args.$el;
-      entityImages = args.entityImages;
-      tilesetImages = args.tilesetImages;
       
-      this.$el = $el || $(el);
+      this.$el = args.$el || $( (args.el || '.canvases-container') );
       this.$el.css({
         position: 'relative'
       });
@@ -62,7 +56,7 @@ function ($, _,
     },
     
     drawTilemap: function (canvas, tilemap, tileset) {
-      var tileSize, width, height, pixelWidth, pixelHeight, tilesetImage, cache, image, i, len, tile, tileXY, coordinates;
+      var tileSize, width, height, pixelWidth, pixelHeight, tilesetImage, cache, image, i, len, tilesetTile, tile, tileXY, coordinates;
       
       tileSize = tileset.tileSize;
       
@@ -84,9 +78,10 @@ function ($, _,
           
           // Draw all Tiles to the cache.
           for (i = 0, len = tilemap.tiles.length; i < len; i++) {
-            tile = tileset.tiles[tilemap.tiles[i]];
-            if (tile) {
-              coordinates = tile.coordinates;
+            tilesetTile = tilemap.tiles[i];
+            if (tilesetTile > -1) {
+              tile = tileset.tiles[tilesetTile];
+              coordinates = tileset.coordinates[tilesetTile];
               cache.drawSlice(
                 tilesetImage.image,
                 coordinates[0], coordinates[1],

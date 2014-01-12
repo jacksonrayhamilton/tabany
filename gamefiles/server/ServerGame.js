@@ -1,7 +1,7 @@
-define(['underscore', 'socket.io',
+define(['fs', 'underscore', 'socket.io',
         'shared/Entity', 'shared/Game', 'shared/inherits', 'shared/Player',
         'server/Chat'],
-function (_, io,
+function (fs, _, io,
           Entity, Game, inherits, Player,
           Chat) {
   
@@ -9,25 +9,45 @@ function (_, io,
   
   var ServerGame = inherits(Game, {
     
-    init: function (applySuper, args) {
+    init: function (applySuper, httpServer, settings) {
+      var tilesets, maps, name, data, i, len, tileset, map;
       
       applySuper(this);
       
-      this.name = args.name || 'Server';
-      this.color = args.color || 'rgb(17,17,17)';
+      this.name = (typeof settings.name === 'undefined') ? 'Server' : settings.name;
+      this.color = (typeof settings.color === 'undefined') ? 'rgb(17,17,17)' : settings.color;
       
       this.nextEntityId = 1;
+      this.nextMapId = 1;
       
       this.chat = Object.create(Chat).init();
       
-      this.io = io.listen(args.httpServer, {
-        //log: false
+      tilesets = settings.tilesets;
+      maps = settings.maps;
+      
+      // This is a STRING.
+      this.startingMap = settings.startingMap;
+      
+      // TODO: Make async.
+      for (i = 0, len = tilesets.length; i < len; i++) {
+        name = tilesets[i];
+        data = fs.readFileSync('.' + this.TILESETS_DIRECTORY + name + '.json', 'utf-8');
+        tileset = this.createTileset(JSON.parse(data));
+      }
+      
+      for (i = 0, len = maps.length; i < len; i++) {
+        name = maps[i];
+        data = fs.readFileSync('.' + this.MAPS_DIRECTORY + name + '.json', 'utf-8');
+        map = this.createMap(JSON.parse(data));
+      }
+      
+      // TODO: Keep track of a Player's current map because the server
+      // should actually be able to manage multiple maps.
+      this.currentMap = this.getMap(this.startingMap); // TESTING ONLY, remove soon!
+      
+      this.io = io.listen(httpServer, {
+        log: false
       });
-      
-      /*this.io.set('authorization', function (handshakeData, callback) {
-        callback(null, true);
-      });*/
-      
       this.io.sockets.on('connection', this.onConnection.bind(this));
       
       return this;
@@ -58,11 +78,11 @@ function (_, io,
           color: this.color
         },
         uuid: uuid,
+        startingMap: this.startingMap,
         players: this.players,
         entities: this.entities,
-        //tilesets: this.tilesets,
-        //maps: this.maps
-        // other gamestate stuff goes here
+        tilesets: _.pluck(this.tilesets, 'name'),
+        maps: _.pluck(this.maps, 'name')
       });
       
       // Tell all other clients about the new player.
@@ -82,11 +102,28 @@ function (_, io,
         'startMovingContinuously': this.onStartMovingContinuously,
         'stopMovingContinuously': this.onStopMovingContinuously
       });
+      
+      // TODO: This is a testing implementation, make it more effecient.
+      setInterval((function () {
+        if (this.entitiesChanged) {
+          var entitiesSnapshot = this.entities.map(function (entity) {
+            return entity.getSnapshot();
+          });
+          this.io.sockets.emit('entitiesSnapshot', entitiesSnapshot);
+          this.entitiesChanged = false;
+        }
+      }).bind(this), 50);
     },
     
     getNextEntityId: function () {
       var ret = this.nextEntityId;
       this.nextEntityId += 1;
+      return ret;
+    },
+    
+    getNextMapId: function () {
+      var ret = this.nextMapId;
+      this.nextMapId += 1;
       return ret;
     },
     
@@ -125,20 +162,25 @@ function (_, io,
       }
     },
     
-    // MAPS-ON-THE-SERVER need to be implemented to start testing this.
+    startMovingContinuously: function (entity, direction, layeredMap) {
+      var newDirection;
+      newDirection = direction !== entity.direction;
+      if (!entity.moving || newDirection) {
+        entity.moving = true;
+        if (newDirection) {
+          clearTimeout(entity.movementTimeout);
+        }
+        this.moveContinuously(entity, direction, layeredMap);
+      }
+    },
     
-    /*onMovePlayer: function (data, socket, player) {
-      var success;
-      success = this.move(player.entity, data.direction, this.currentMap);
-      // TODO: Implement automatic map creation.
-      // TODO: Implement alg on todo list.
-      socket.broadcast.emit('movePlayer', {
-        uuid: player.uuid,
-        direction: data.direction
-      });
-    },*/
+    stopMovingContinuously: function (entity) {
+      entity.moving = false;
+    },
     
     onStartMovingContinuously: function (data, socket, player) {
+      // currentMap should actually be the player's current map
+      this.startMovingContinuously(player.entity, data.direction, this.currentMap);
       socket.broadcast.emit('startMovingContinuously', {
         uuid: player.uuid,
         direction: data.direction
@@ -146,6 +188,7 @@ function (_, io,
     },
     
     onStopMovingContinuously: function (data, socket, player) {
+      this.stopMovingContinuously(player.entity);
       socket.broadcast.emit('stopMovingContinuously', {
         uuid: player.uuid
       });

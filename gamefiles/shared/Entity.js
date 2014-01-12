@@ -42,6 +42,15 @@ function (_) {
       };
     },
     
+    getSnapshot: function () {
+      return {
+        id: this.id,
+        x: this.x,
+        y: this.y,
+        direction: this.direction
+      };
+    },
+    
     setDirection: function (direction) {
       this.direction = direction;
       switch (direction) {

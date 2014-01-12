@@ -1,20 +1,57 @@
-define(
-function () {
+define(['shared/Tilemap'],
+function (Tilemap) {
   
   'use strict';
   
   var LayeredMap = {
     
     init: function (args) {
-      this.layers = args.layers; // Array of arrays of tilemaps
+      
+      this.name = args.name;
+      
+      // Array of arrays of Tilemaps.
+      // If initializing from JSON, don't forget to call initLayers().
+      this.layers = args.layers;
+      
+      // WARNING: This is sometimes a string. createMap should handle the
+      // automatic linking of Maps to Tilesets, but be careful anyway.
       this.tileset = args.tileset;
+      
       this.width = args.width;
       this.height = args.height;
+      
       // It is supposed that there will be an alpha-less ground layer and then
       // small Tilemaps and Entities will be intermixed on the next layer up.
       this.entityLayer = (typeof args.entityLayer === 'undefined') ? 2 : args.entityLayer;
+      
       this.generateImpassibilityMap();
+      
       return this;
+    },
+    
+    toJSON: function () {
+      return {
+        name: this.name,
+        layers: this.layers,
+        tileset: this.tileset.name,
+        width: this.width,
+        height: this.height,
+        entityLayer: this.entityLayer
+      };
+    },
+    
+    // CONSIDER: Recursive searching of arbitrarily-deep nested layers?
+    // (Oh dear god please no.)
+    // Automatically initializes all of this Map's layers as Tilemaps.
+    // This is needed after initializing from JSON.
+    initLayers: function () {
+      var l, lLen, layer, t, tLen;
+      for (l = 0, lLen = this.layers.length; l < lLen; l++) {
+        layer = this.layers[l];
+        for (t = 0, tLen = layer.length; t < tLen; t++) {
+          layer[t] = Object.create(Tilemap).init(layer[t]);
+        }
+      }
     },
     
     // NOTE: Higher tilemaps' impassible arrays override

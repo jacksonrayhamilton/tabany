@@ -1,0 +1,5 @@
+{
+  "tilesets": ["icy"],
+  "maps": ["winter_wonderland_0001"],
+  "startingMap": "winter_wonderland_0001"
+}

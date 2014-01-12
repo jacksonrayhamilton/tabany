@@ -6,11 +6,10 @@ function () {
   var Tileset = {
     
     init: function (args) {
+      this.name = args.name;
       this.tiles = args.tiles;
       this.image = args.image; // String corresponding to the name of a TilesetImage
       this.width = (typeof args.width === 'undefined') ? 8 : args.width;
-      // Specifying the height is pointless, and you may even
-      // measure it incorrectly. But you still can if you really want to.
       if (typeof args.height === 'undefined') {
         this.height = Math.ceil(this.tiles.length / this.width);
       } else {
@@ -21,15 +20,27 @@ function () {
       return this;
     },
     
+    toJSON: function () {
+      return {
+        name: this.name,
+        tiles: this.tiles,
+        image: this.image,
+        width: this.width,
+        height: this.height,
+        tileSize: this.tileSize
+      };
+    },
+    
+    // TODO: Use a separate coordinates array instead.
     // CONSIDER: Think about porting this elsewhere (Tilemaps?) for performance.
     // (To avoid recalculating coordinates constantly.)
     generateCoordinates: function () {
-      var tiles, width, tileSize, i, len;
-      tiles = this.tiles;
+      var width, tileSize, i, len;
       width = this.width;
       tileSize = this.tileSize;
-      for (i = 0, len = tiles.length; i < len; i++) {
-        tiles[i].coordinates = [
+      this.coordinates = [];
+      for (i = 0, len = this.tiles.length; i < len; i++) {
+        this.coordinates[i] = [
           (i % width) * tileSize,
           Math.floor(i / width) * tileSize
         ];

@@ -1,9 +1,11 @@
 define(['jquery', 'socket.io', 'underscore',
         'shared/Game', 'shared/inherits',
+        'text!shared/entity_images.json', 'text!shared/tileset_images.json', 
         'client/Chatbox', 'client/Input', 'client/Sketch',
         'client/polyfills'],
 function ($, io, _,
           Game, inherits,
+          entityImages, tilesetImages,
           Chatbox, Input, Sketch) {
   
   var ClientGame = inherits(Game, {
@@ -16,10 +18,15 @@ function ($, io, _,
       this.host = args.host || 'http://localhost';
       this.port = args.port || 3000;
       this.$el = args.$el || (args.el ? $(args.el) : $('#game-container'));
+      if (args.setup) this.setup = args.setup;
+      
       this.player = null;
       this.currentMap = null;
       
-      this.sketch = Object.create(Sketch).init(args.sketchArgs);
+      this.sketch = Object.create(Sketch).init({
+        entityImages: JSON.parse(entityImages),
+        tilesetImages: JSON.parse(tilesetImages)
+      });
       // TODO: Multiple canvases, these settings are arbitrary.
       this.canvas = this.sketch.createCanvas('main', 640, 480);
       this.sketch.appendCanvas('main');
@@ -30,28 +37,8 @@ function ($, io, _,
         //0, 5, 24
       //];
       
-      this.chatbox = Object.create(Chatbox).init({
-        sendMessage: this.sendChatMessageToServer.bind(this),
-        $el: this.$el.find('.chatbox')
-      });
-      
       this.socket = io.connect(this.host + ':' + this.port);
-      
       this.socket.on('clientJoin', this.onClientJoin.bind(this));
-      this.socket.on('createPlayer', this.onCreatePlayer.bind(this));
-      //this.socket.on('movePlayer', this.onMovePlayer.bind(this));
-      this.socket.on('startMovingContinuously', this.onStartMovingContinuously.bind(this));
-      this.socket.on('stopMovingContinuously', this.onStopMovingContinuously.bind(this));
-      this.socket.on('sendChatMessageToClient', this.onSendChatMessageToClient.bind(this));
-      
-      this.initInput();
-      
-      if (args.setup) {
-        args.setup.call(this);
-      }
-      
-      this.refreshConstantly = this.refreshConstantly.bind(this);
-      this.refreshConstantly();
       
       return this;
     },
@@ -59,9 +46,9 @@ function ($, io, _,
     // Processes all information the server gives to the client after
     // joining the game.
     onClientJoin: function (data) {
-      var i, len, entity;
+      var i, len, player, map;
       
-      console.log('onClientJoin data', data);
+      console.log('PAYLOAD: ', data);
       
       this.serverInfo = data.serverInfo;
       
@@ -70,12 +57,74 @@ function ($, io, _,
       }
       
       for (i = 0, len = data.players.length; i < len; i++) {
-        var player = this.createPlayer(data.players[i]);
+        player = this.createPlayer(data.players[i]);
         player.entity = this.getEntity(player.entityId);
         if (player.uuid === data.uuid) {
           this.player = player;
         }
       }
+      
+      this.loadJSONBatch(this.TILESETS_DIRECTORY, data.tilesets, function (tilesetData) {
+        var tileset = this.createTileset(tilesetData);
+      }, function () {
+        
+        this.loadJSONBatch(this.MAPS_DIRECTORY, data.maps, function (mapData) {
+          var map = this.createMap(mapData);
+          if (map.name === data.startingMap) {
+            this.currentMap = map;
+          }
+        }, function () {
+          
+          this.chatbox = Object.create(Chatbox).init({
+            sendMessage: this.sendChatMessageToServer.bind(this),
+            $el: this.$el.find('.chatbox')
+          });
+          
+          this.initInput();
+          
+          if (this.setup) this.setup();
+          
+          this.refreshConstantly = this.refreshConstantly.bind(this);
+          this.refreshConstantly();
+          
+          // TODO: Create a binding method for client like the server has.
+          this.socket.on('createPlayer', this.onCreatePlayer.bind(this));
+          this.socket.on('startMovingContinuously', this.onStartMovingContinuously.bind(this));
+          this.socket.on('stopMovingContinuously', this.onStopMovingContinuously.bind(this));
+          this.socket.on('entitiesSnapshot', this.onEntitiesSnapshot.bind(this));
+          this.socket.on('sendChatMessageToClient', this.onSendChatMessageToClient.bind(this));
+          
+        }, this);
+      }, this);
+      
+      return this;
+    },
+    
+    // Loads multiple JSON files using jQuery and executes a callback after
+    // they are all loaded.
+    loadJSONBatch: function (directory, files, iterator, complete, thisArg) {
+      var filesLoaded, filesLength, i;
+      filesLoaded = 0;
+      filesLength = files.length;
+      for (i = 0; i < filesLength; i++) {
+        $.getJSON(directory + files[i] + '.json', function (data) {
+          iterator.call(thisArg, data);
+          if (++filesLoaded === filesLength) complete.call(thisArg);
+        });
+      }
+    },
+    
+    // TODO: This is a testing implementation, give it a better one soon.
+    onEntitiesSnapshot: function (data) {
+      var i, len;
+      for (i = 0, len = data.length; i < len; i++) {
+        var snapshot = data[i];
+        var entity = this.getEntity(snapshot.id);
+        entity.x = snapshot.x;
+        entity.y = snapshot.y;
+        entity.direction = snapshot.direction;
+      }
+      this.entitiesChanged = true;
     },
     
     // Accepts data on a Player's Entity and that Player himself and
@@ -125,19 +174,6 @@ function ($, io, _,
     onStopMovingContinuously: function (data) {
       var player = this.getPlayer(data.uuid);
       this.stopMovingContinuously(player.entity);
-    },
-    
-    moveContinuously: function (mover, direction, layeredMap) {
-      if (mover.moving) {
-        mover.nextFrame();
-        this.move(mover, direction, layeredMap);
-        mover.movementTimeout = setTimeout((function () {
-          this.moveContinuously(mover, direction, layeredMap);
-        }).bind(this), mover.moveRate);
-      } else {
-        mover.frame = 0;
-        clearTimeout(mover.movementTimeout);
-      }
     },
     
     switchBack: function (input, unpressedKey) {
