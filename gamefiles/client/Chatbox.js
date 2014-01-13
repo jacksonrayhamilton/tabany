@@ -3,6 +3,10 @@ function ($, moment, _) {
   
   'use strict';
   
+  /*
+   * Adds chatting functionality to a DOM element.
+   * Can send, receive and format messages.
+   */
   var Chatbox = {
     
     chatMessageTemplate: _.template('<div class="chat-messsage"><a name="<%- id %>" title="#<%- id %> @ <%- time %>: <%- name %> (<%- identifier  %>)"><span class="chat-message-name" style="color: <%- color %>;"><%- name %>:</span></a> <%- message %></div>'),
@@ -30,6 +34,7 @@ function ($, moment, _) {
       return (scrollPosition >= scrollHeight);
     },
     
+    // Formats and appends a message to the chatbox.
     addMessage: function (data) {
       var scrollLater, $messages;
       
@@ -47,10 +52,13 @@ function ($, moment, _) {
       }
     },
     
+    // Cancels any other effects that would occur as a side effect of
+    // interacting the chatbox's interface.
     onClick: function (event) {
       event.stopPropagation();
     },
     
+    // See above.
     onMessageInputKeydown: function (event) {
       var keyCode = event.which;
       // The Enter key is a shortcut to click the Send button.
@@ -60,6 +68,7 @@ function ($, moment, _) {
       event.stopPropagation();
     },
     
+    // Handles the click events for the "message-send" element.
     onMessageSendClick: function (event) {
       var message = this.$messageInput.val();
       if (message !== '') {

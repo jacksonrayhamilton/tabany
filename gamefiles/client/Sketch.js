@@ -5,6 +5,11 @@ function ($, _,
   
   'use strict';
   
+  /*
+   * A highly-optimized canvas engine for drawing all the different
+   * elements of the game.
+   * Also stores image data.
+   */
   var Sketch = {
     
     init: function (args) {
@@ -136,7 +141,9 @@ function ($, _,
       xStart = spriteWidth * frame;
       yStart = spriteHeight * directionRow;
       
+      // Enable colored-shadows.
       //this.ctx.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
+      // Enable shadows.
       //this.canvases[canvas].ctx.fillRect(entity.x, entity.y, entity.width, entity.height)
       this.canvases[canvas].drawSlice(
         image,

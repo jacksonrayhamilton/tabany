@@ -1,6 +1,15 @@
 define(
 function () {
   
+  'use strict';
+  
+  /*
+   * Maintains the state of the game's chat system, but was mostly bastardized
+   * because it couldn't validate Players as well as ServerGame could.
+   * 
+   * However it will still probably do cool message validation things in
+   * the future.
+   */
   var Chat = {
     
     init: function (args) {

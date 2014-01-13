@@ -3,6 +3,9 @@ function ($) {
   
   'use strict';
   
+  /*
+   * Handles client input for specified keyCodes using jQuery.
+   */
   var Input = {
     
     init: function (keyArgs) {

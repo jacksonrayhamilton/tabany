@@ -3,6 +3,17 @@ function () {
   
   'use strict';
   
+  /*
+   * A lazily-loaded image. Stores information about an image and is intended
+   * to sit in memory until the image actually needs to be displayed. Then
+   * its load event fires and its image is loaded asynchronously.
+   * 
+   * Whatever method attempts to use the image will have to silently fail
+   * a couple times until the asynchronous loading completes.
+   * 
+   * This design is preferable to loading a ton of images immediately on
+   * joining the game.
+   */
   var LoadableImage = {
     
     init: function (args) {

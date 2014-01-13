@@ -3,6 +3,11 @@ function (_) {
   
   'use strict';
   
+  /*
+   * Any being that exists within the game world.
+   * Players each own an Entity.
+   * Other Entities are controlled by the server.
+   */
   var Entity = {
     
     init: function (args) {
@@ -19,6 +24,7 @@ function (_) {
       this.pixelRate = args.pixelRate || 1;
       this.moveRate = args.moveRate || 10;
       this.frameRate = args.frameRate || 15;
+      this.currentMap = args.currentMap || null;
       
       // These properties may be browser-only.
       this.frame = 0; // 0..3
@@ -38,7 +44,9 @@ function (_) {
         direction: this.direction,
         pixelRate: this.pixelRate,
         moveRate: this.moveRate,
-        frameRate: this.frameRate
+        frameRate: this.frameRate,
+        // A string that references a map.
+        currentMap: this.currentMap.name
       };
     },
     

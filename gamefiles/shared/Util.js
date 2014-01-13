@@ -3,6 +3,9 @@ function () {
   
   'use strict';
   
+  /*
+   * Random useful little functions whose functionality should be abstracted.
+   */
   var Util = {
     
     inBrowser: function () {

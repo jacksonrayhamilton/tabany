@@ -1,3 +1,7 @@
+/*
+ * Sets requirejs config and kick-starts the game.
+ */
+
 requirejs.config({
   // All scripts are loaded from gamefiles/ by default.
   baseUrl: 'gamefiles',
@@ -40,15 +44,7 @@ function (ClientGame) {
   
   Object.create(ClientGame).init({
     setup: function () {
-      
-      var $container = this.sketch.$el;
-      var containerOffset = $container.offset();
-      $container.on('click', (function (event) {
-        this.player.entity.x = event.pageX - Math.floor(containerOffset.left);
-        this.player.entity.y = event.pageY - Math.floor(containerOffset.top);
-        this.entitiesChanged = true;
-      }).bind(this));
-      
+      // Arbitrary client-side code here.
     }
   });
   

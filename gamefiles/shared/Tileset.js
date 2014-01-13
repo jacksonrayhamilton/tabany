@@ -3,6 +3,23 @@ function () {
   
   'use strict';
   
+  /*
+   * Provides data to logically-supplement a TilesetImage.
+   * 
+   * You can have a picture of a rock, sure, but that rock has to be
+   * explicitly defined as a solid object that can't be passed through.
+   * This is what Tilesets are for.
+   * 
+   * Contains properties corresponding to the tiles on a TilesetImage.
+   * These properties are ordered by their coordinates.
+   * 
+   * Currently manages whether certain tiles are impassible (or only
+   * impassible from certain directions).
+   * 
+   * Will typically be loaded from a JSON file in shared/tilesets/.
+   * 
+   * (See client/images/tilesets/ for examples of TilesetImages.)
+   */
   var Tileset = {
     
     init: function (args) {
@@ -31,7 +48,6 @@ function () {
       };
     },
     
-    // TODO: Use a separate coordinates array instead.
     // CONSIDER: Think about porting this elsewhere (Tilemaps?) for performance.
     // (To avoid recalculating coordinates constantly.)
     generateCoordinates: function () {

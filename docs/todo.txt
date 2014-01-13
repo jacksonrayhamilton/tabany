@@ -1,6 +1,8 @@
 Just use one version of underscore rather than local AND on server?
 On join and resource loading complete emit to the server that you have joined successfully, that way you can still "the player has joined message."
 
+Server
+  Consider when designing methods that in the future some clients won't want to receive information on distant maps. Think about sectioning-off groups of players.
 
 Client-server collisions
   On client move, entities will move locally immediately. Client socket will emit the move/directionChange event and node will broadcast the move to all other clients.
@@ -12,3 +14,10 @@ Sprites
 Tilesets
   Remove the raised property, it can be emulated in other ways seamlessly.
 
+Chat
+  Private messages
+
+Tilesets
+  Make less verbose for better minification
+    "imp" rather than "impassible"
+    1 rather than true

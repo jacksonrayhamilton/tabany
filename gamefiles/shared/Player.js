@@ -7,6 +7,11 @@ function (_,
   
   'use strict';
   
+  /*
+   * An abstraction layer for the clients themselves. Maintains the
+   * identity of one client.
+   * Has a link to an Entity which is owned by it.
+   */
   var Player = {
     
     SEXES: ['male', 'female'],
@@ -71,7 +76,8 @@ function (_,
       this.entity = Object.create(Entity).init({
         id: args.id, x: args.x, y: args.y, width: 16, height: 16,
         image: image, direction: args.direction,
-        pixelRate: 1, moveRate: 10, frameRate: 15
+        pixelRate: 1, moveRate: 10, frameRate: 10,
+        currentMap: args.currentMap
       });
       this.entityId = this.entity.id;
       

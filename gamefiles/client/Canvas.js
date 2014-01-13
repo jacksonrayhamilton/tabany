@@ -3,6 +3,10 @@ function () {
   
   'use strict';
   
+  /*
+   * A very light abstraction layer for dealing with HTMLCanvasElements and
+   * their contexts.
+   */
   var Canvas = {
     
     init: function (el, width, height) {
@@ -19,10 +23,12 @@ function () {
       return this;
     },
     
+    // Wrapper for ctx.drawImage(), the first form.
     drawImage: function (image, x, y) {
       this.ctx.drawImage(image, x, y);
     },
     
+    // Wrapper for ctx.drawImage(), the third form.
     drawSlice: function (image, sx, sy, sWidth, sHeight, dx, dy) {
       this.ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, sWidth, sHeight);
     }

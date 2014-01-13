@@ -3,6 +3,13 @@ function (Tilemap) {
   
   'use strict';
   
+  /*
+   * An collection of Tilemaps that, when laid in their specified order, with
+   * a Tileset to reference, compose the complete image of a slice of the
+   * game world.
+   * 
+   * Will typically be loaded from a JSON file in shared/maps/.
+   */
   var LayeredMap = {
     
     init: function (args) {
@@ -20,8 +27,10 @@ function (Tilemap) {
       this.width = args.width;
       this.height = args.height;
       
-      // It is supposed that there will be an alpha-less ground layer and then
-      // small Tilemaps and Entities will be intermixed on the next layer up.
+      // It is supposed that there will be an alpha-less ground layer,
+      // and then a layer of with alpha with no "protruding" Tilemaps,
+      // and then Tilemaps and Entities will be intermixed on the next
+      // layer up.
       this.entityLayer = (typeof args.entityLayer === 'undefined') ? 2 : args.entityLayer;
       
       this.generateImpassibilityMap();
@@ -40,10 +49,10 @@ function (Tilemap) {
       };
     },
     
-    // CONSIDER: Recursive searching of arbitrarily-deep nested layers?
-    // (Oh dear god please no.)
     // Automatically initializes all of this Map's layers as Tilemaps.
     // This is needed after initializing from JSON.
+    // CONSIDER: Recursive searching of arbitrarily-deep nested layers?
+    // (Oh dear god please no.)
     initLayers: function () {
       var l, lLen, layer, t, tLen;
       for (l = 0, lLen = this.layers.length; l < lLen; l++) {
@@ -54,8 +63,10 @@ function (Tilemap) {
       }
     },
     
-    // NOTE: Higher tilemaps' impassible arrays override
-    // those of lower tilemaps!
+    // Examines all Tilemaps in all layers a returns a flat mapping of the
+    // all relevant impassibilities. Optimizes collision detection by only
+    // presenting the engine with the highest overriding passibility of any
+    // given space that has layers of tiles in it.
     generateImpassibilityMap: function () {
       var impassibilityMap, layers, tileset, l, lLen,
       tilemaps, ts, tsLen,

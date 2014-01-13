@@ -5,6 +5,9 @@ function (inherits,
   
   'use strict';
   
+  /*
+   * A lazily-loaded image of a Tileset, see LoadableImage.
+   */
   var TilesetImage = inherits(LoadableImage, {
     
     DIRECTORY: '/gamefiles/client/images/tilesets/',

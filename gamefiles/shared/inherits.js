@@ -1,5 +1,6 @@
 /*
- * Wraps prototypal inheritance.
+ * Wraps prototypal inheritance with an inherits() function
+ * and super emulation.
  * 
  * Allows for an object-literal syntax that feels consistent with the
  * syntax for regular Object creation (but avoids Object.defineProperties()
@@ -20,8 +21,7 @@
 define(['underscore'],
 function (_) {
   
-  // Shortcut for Array.prototype.slice.call()
-  var slice = Function.prototype.call.bind(Array.prototype.slice);
+  'use strict';
   
   // Creates a "child" object where its "parent" is its prototype. Also
   // partializes the child's initializer with a function for super emulation.
@@ -38,7 +38,7 @@ function (_) {
         // the parent's initializer.
         return function (thisArg, initArguments) {
           initArguments = initArguments || {};
-          parentInit.apply(thisArg, slice(initArguments, 1));
+          parentInit.apply(thisArg, Array.prototype.slice.call(initArguments, 1));
         };
       }()));
     }

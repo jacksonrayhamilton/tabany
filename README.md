@@ -19,7 +19,7 @@ Gameplay
 
 Players are dropped into a world in which they can interact with other players (in real-time) on an endless, seamless landscape. 
 
-There are various Objectives which players can pursue over the course of the Tabanese Week. They can opt to band together in "clans" (of two to sixteen players) to better their chances of survival and success. Those who complete the Objectives are hailed as "W.I.N.N.E.R.S." at the Week's end. After the Week comes to a close, the planet is reset, and all players are on equal-footing once again. In this way the gameplay could be considered "session-based," albeit the sessions are rather long-lived.
+There are various Objectives which players can pursue over the course of the Tabanese Week. They can opt to band together in "clans" (of two to sixteen players) to better their chances of survival and success. Those who complete the Objectives are hailed as "W.I.N.N.E.R.S." at Week's End. After the Week comes to a close, the planet is reset, and all players are on equal-footing once again. In this way the gameplay could be considered "session-based," albeit the sessions are rather long-lived.
 
 The world is "partially-modifiable." Some areas are customizable for strategic or aesthetic purposes, and others are not at all (for the sake of mobility). Think "secret bases" from Pokémon Diamond and Pearl, but on a grander scale.
 
@@ -29,15 +29,19 @@ Players view themselves from a top-down perspective in the classic Final Fantasy
 Status
 ------
 
-Tabany is currently being actively developed. A good chunk of the basic RPG client-side game engine has been written. The client-side's MMORPG functionality and its complimentary server-side code is currently being adventurously implemented.
+Tabany is currently being actively developed. It has just reached the "Alpha" stage on its release schedule. (See docs/design_document.md.)
 
-The game engine is currently unstable, but the latest push should always at least run. Once the game's client- and server-side components are sufficiently-stabilized, this message will be updated. GitHub Releases will then provide stable versions of the software, which should allow anyone to run a game server on his own website (provided Node.js is installed, etc).
+Respectable portions of both the client and server-side components of the game engine have written. It is currently possible for multiple players to move around and chat with each other on the same map in real-time. Drawing, collision detection, rudimentary entity interpolation, JSON and image data pipelining and basic player identification/authication have been implemented. There is also a pretty solid RequireJS program structure to keep everything organized, and all code is commented.
 
-Performance will be scrutinized once all essential features of the engine are implemented. (This is not to say that the engine is particularly imperformant right now&mdash;but once stabilized, it will be *absurdly*-fast.)
+The game engine will can not be officially deemed "stable" until it has been throughly tested; the "Epsilon" release is guaranteed to be stable, but some earlier releases may be fortunate enough to also bear that title. However, each release should run smoothly for the most part. Nightly pushes should *at least* not crash after 3 seconds.
+
+One of the ultimate goals of the project is that anyone will be able to `git clone` and run his own slice of Tabany on his own webserver... and maybe even connect his server to a web of other Tabanies, which altogether form one gigantic, majestic GPL-licensed MMORPG universe. *Ah!*
+
+Performance will be heavily-scrutinized once all essential features of the engine are implemented, and in the meantime stupid algorithms will be avoided, or at least quickly-replaced.
 
 Graphics are on the horizon; until then, the game will utilize RPG Maker assets (available under separate terms than that of Tabany's code).
 
-For more info on tentative project goals see docs/design_document.txt.
+For more info on project goals see docs/design_document.md.
 
 
 Usage
@@ -70,4 +74,4 @@ Enjoy.
 Contact
 -------
 
-Send an email to jackson@jacksonrayhamilton.com if you would like to contribute to this project in any substantial or minor way.
+Send an email to jackson@jacksonrayhamilton.com if you would like to contribute to this project in any substantial or minor way. An aching heart for JavaScript, art, music, breakthrough game ideas or just general advice are all warmly welcomed.

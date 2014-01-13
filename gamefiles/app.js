@@ -1,8 +1,9 @@
-
-/**
- * Module dependencies.
+/*
+ * Requires all the modules needed to run a web server, and then hands off the
+ * HTTP server to game engine.
  */
 
+// Module dependencies.
 var http = require('http');
 var path = require('path');
 var connect = require('connect');
@@ -10,9 +11,8 @@ var MemoryStore = connect.session.MemoryStore;
 var secrets = require('../secrets.json');
 var server = require('./server/server.js');
 
-
-/**
- * Application initialization.
+/*
+ *  Application initialization.
  */
 
 var app = connect();

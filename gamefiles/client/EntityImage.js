@@ -3,6 +3,11 @@ define(['shared/inherits',
 function (inherits,
           LoadableImage) {
   
+  'use strict';
+  
+  /*
+   * A lazily-loaded image of an Entity, see LoadableImage.
+   */
   var EntityImage = inherits(LoadableImage, {
     
     DIRECTORY: '/gamefiles/client/images/entities/',

@@ -6,6 +6,13 @@ function (_,
   
   'use strict';
   
+  /*
+   * Manages gamestate-related things that are common to both the client
+   * and the server. (Both ClientGame and ServerGame inherit from this.)
+   * 
+   * Maintains containers of all objects used by the game.
+   * Handles movement and collision detection.
+   */
   var Game = {
     
     TILESETS_DIRECTORY: '/gamefiles/shared/tilesets/',
@@ -13,8 +20,10 @@ function (_,
     
     init: function () {
       
+      // Containers for all data maintained by the game.
+      this.tilesets = [];
+      this.maps = [];
       this.players = [];
-      
       // Will be sorted constantly.
       this.entities = [];
       
@@ -28,9 +37,6 @@ function (_,
       // - Long-term this can be used for Sketch optimizations (redrawing rects
       // only where changes occur).
       this.entitiesChanged = false;
-      
-      this.tilesets = [];
-      this.maps = [];
       
       return this;
     },
@@ -66,10 +72,16 @@ function (_,
     
     /*
      * Creators
-     * Object creation convenience methods.
+     * Object creation [convenience] methods.
+     * Some of these have side-effects, but they are extremely convenient
+     * and desirable side-effects so they are probably justifiable.
      */
     
     createEntity: function (entityArgs) {
+      // Transform a string into its corresponding Map.
+      if (typeof entityArgs.currentMap === 'string') {
+        entityArgs.currentMap = this.getMap(entityArgs.currentMap);
+      }
       var entity = Object.create(Entity).init(entityArgs);
       this.addEntity(entity);
       return entity;
@@ -139,7 +151,6 @@ function (_,
       }
       return null;
     },
-    
     
     
     /*
@@ -319,6 +330,7 @@ function (_,
       return false;
     },
     
+    // Changes a mover's direction and attempts to move him in that direction.
     move: function (mover, direction, layeredMap) {
       var dx, dy, nearbyTiles, tileBase, ret;
       
@@ -345,11 +357,17 @@ function (_,
         ret = false;
       }
       
+      mover.changed = true;
       this.entitiesChanged = true;
       
       return ret;
     },
     
+    // Moves an Entity at his moveRate for as long as he is deemed
+    // to be moving. His moving property will probably be set to false
+    // by stopMovingContinuously.
+    // More efficient and controllable than registering repeated keydowns,
+    // especially on the server.
     moveContinuously: function (mover, direction, layeredMap) {
       if (mover.moving) {
         mover.nextFrame();
@@ -360,6 +378,33 @@ function (_,
       } else {
         mover.frame = 0;
         clearTimeout(mover.movementTimeout);
+      }
+    },
+    
+    // Begins the process of moving continuously with a few checks that only
+    // need to be made once per command.
+    startMovingContinuously: function (entity, direction, layeredMap) {
+      var newDirection;
+      newDirection = direction !== entity.direction;
+      if (!entity.moving || newDirection) {
+        entity.moving = true;
+        if (newDirection) {
+          clearTimeout(entity.movementTimeout);
+        }
+        this.moveContinuously(entity, direction, layeredMap);
+        // Only tell the world that the Entity is moving if you are in
+        // control of him.
+        if (Util.inBrowser() && entity === this.player.entity) {
+          this.socket.emit('startMovingContinuously', { direction: direction });
+        }
+      }
+    },
+    
+    // Throws a wrench in moveContinuously's loop.
+    stopMovingContinuously: function (entity) {
+      entity.moving = false;
+      if (Util.inBrowser() && entity === this.player.entity) {
+        this.socket.emit('stopMovingContinuously');
       }
     }
     
