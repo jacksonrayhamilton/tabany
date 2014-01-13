@@ -23,9 +23,6 @@ function ($, io, _,
       
       applySuper(this);
       
-      // Preconfigured settings that the server couldn't have sent.
-      this.host = args.host || 'http://localhost';
-      this.port = args.port || 3000;
       this.$el = args.$el || (args.el ? $(args.el) : $('#game-container'));
       if (args.setup) this.setup = args.setup;
       
@@ -47,7 +44,7 @@ function ($, io, _,
       //this.tilesChanged = [0, 5, 24];
       
       // Connect to the server! IT'S HAPPENING!
-      this.socket = io.connect(this.host + ':' + this.port);
+      this.socket = io.connect();
       this.socket.on('clientJoin', this.onClientJoin.bind(this));
       
       return this;

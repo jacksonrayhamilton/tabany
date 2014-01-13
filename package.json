@@ -1,10 +1,14 @@
 {
   "name": "tabany",
-  "version": "0.1.0",
+  "version": "0.1.0-3",
   "private": true,
   "description": "A free and open-source browser-based MMORPG.",
   "keywords": "real-time mmorpg rpg adventure online game",
   "homepage": "https://github.com/jacksonrayhamilton/tabany",
+  "domains": [
+    "tabany.com",
+    "www.tabany.com"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/jacksonrayhamilton/tabany.git"
@@ -18,5 +22,9 @@
     "requirejs": "2.1.9",
     "socket.io": "0.9.15",
     "underscore": "1.5.2"
+  },
+  "subdomain": "tabany",
+  "engines": {
+    "node": "0.10.x"
   }
 }

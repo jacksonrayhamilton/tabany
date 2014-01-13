@@ -65,6 +65,7 @@ function (fs, _, io,
       this.io.sockets.on('connection', this.onConnection.bind(this));
       
       this.sendSnapshotsConstantly();
+      this.flushConstantly();
       
       return this;
     },
@@ -182,7 +183,10 @@ function (fs, _, io,
       return function (data) {
         socket.get('uuid', (function (err, uuid) {
           if (err) throw err;
-          callback(data, socket, this.getPlayer(uuid));
+          // OMFG: The following is a hack, handle this differently.
+          // I just don't want the server to crash on flushes on nodejitsu.
+          var player = this.getPlayer(uuid);
+          if (player) callback(data, socket, this.getPlayer(uuid));
         }).bind(this));
       };
     },
@@ -227,6 +231,18 @@ function (fs, _, io,
           }
         }).bind(this);
       }).bind(this)()), this.SNAPSHOT_RATE);
+    },
+    
+    // Kills all Players every 12 hours. Good for demos.
+    flushConstantly: function () {
+      setInterval((function () {
+        this.entities = [];
+        this.players = [];
+        this.sendChatMessageToClients({
+          identifier: this.name,
+          message: 'The server was just flushed. Everyone in it died. Refresh your page.'
+        });
+      }).bind(this), 12 * 60 * 60 * 1000);
     },
     
     // Integer ids differentiate Entities.
