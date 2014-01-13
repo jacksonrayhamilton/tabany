@@ -31,7 +31,7 @@ Status
 
 Tabany is currently being actively developed. It has just reached the "Alpha" stage on its release schedule. (See docs/design_document.md.)
 
-Respectable portions of both the client and server-side components of the game engine have written. It is currently possible for multiple players to move around and chat with each other on the same map in real-time. Drawing, collision detection, rudimentary entity interpolation, JSON and image data pipelining and basic player identification/authication have been implemented. There is also a pretty solid RequireJS program structure to keep everything organized, and all code is commented.
+Respectable portions of both the client and server-side components of the game engine have written. It is currently possible for multiple players to move around and chat with each other on the same map in real-time. Drawing, collision detection, rudimentary entity interpolation, JSON and image data pipelining and basic player identification/authentication have been implemented. There is also a pretty solid RequireJS program structure to keep everything organized, and all code is commented.
 
 The game engine will can not be officially deemed "stable" until it has been throughly tested; the "Epsilon" release is guaranteed to be stable, but some earlier releases may be fortunate enough to also bear that title. However, each release should run smoothly for the most part. Nightly pushes should *at least* not crash after 3 seconds.
 
