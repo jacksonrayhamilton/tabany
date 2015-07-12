@@ -5,7 +5,7 @@ Tabany
 
 Tabany is a free and open-source browser-based MMORPG, written in JavaScript and for Node.js.
 
-Try out a live demo at [tabany.com](http://tabany.com).
+Try out a live demo at [tabany.nodejitsu.com](http://tabany.nodejitsu.com/).
 
 
 Backstory
