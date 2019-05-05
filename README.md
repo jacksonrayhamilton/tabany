@@ -66,12 +66,6 @@ $ node app
 Visit the web app at http://localhost:3000 in Chrome or Firefox. (Other browsers may work too, but I've never tested them.)
 
 
-Contact
--------
-
-Send an email to jackson@jacksonrayhamilton.com if you would like to contribute to this project in any substantial or minor way. An aching heart for JavaScript, art, music, breakthrough game ideas or just general advice are all warmly welcomed.
-
-
 Image Credits
 -------------
 

@@ -76,8 +76,6 @@ Jackson
 - Editors
 - Beta-testers
 
-Want to be on this list and contribute? Send an email to jackson@jacksonrayhamilton.com.
-
 
 Schedule (Tentative)
 --------------------
