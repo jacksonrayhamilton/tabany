@@ -82,7 +82,6 @@
   bottom: 0;
   z-index: 100;
   width: 320px;
-  height: 120px;
   border-top: 1px solid #222;
   border-right: 1px solid #222;
   color: #222;
@@ -104,10 +103,11 @@
 }
 
 .chatbox-message-row {
+  display: flex;
 }
 
 .chatbox-message-input {
-  width: 265px;
+  flex: 1;
 }
 
 .agpl-info {
