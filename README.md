@@ -57,13 +57,6 @@ $ cd tabany
 $ npm install
 ```
 
-Tabany's images **do not** come bundled with the git repo. Assuming the current directory is `tabany`, to download the images:
-
-```bash
-$ chmod +x tools/download_images.sh
-$ ./tools/download_images.sh
-```
-
 After installing, to run the server (assuming the current directory is `tabany`):
 
 ```bash
@@ -77,3 +70,9 @@ Contact
 -------
 
 Send an email to jackson@jacksonrayhamilton.com if you would like to contribute to this project in any substantial or minor way. An aching heart for JavaScript, art, music, breakthrough game ideas or just general advice are all warmly welcomed.
+
+
+Image Credits
+-------------
+
+Credits for this project's image assets are available at gamefiles/images/CREDITS. These assets are NOT licensed under the same terms as Tabany's code. In order to use those assets you must follow the specific requirements of their creators, which are specified at the urls listed in CREDITS. Copying the CREDITS file into your project MAY suffice, but you should navigate to the creators' pages to confirm that you are properly crediting them.
