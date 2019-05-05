@@ -47,6 +47,8 @@ For more info on project goals see docs/design_document.md.
 Usage
 -----
 
+The server was written using Node 0.10. (I know, it's very outdated.) Newer Node versions may work, but I've never tested them.
+
 To install:
 
 ```bash
@@ -61,7 +63,7 @@ After installing, to run the server (assuming the current directory is `tabany`)
 $ node app
 ```
 
-Enjoy.
+Visit the web app at http://localhost:3000 in Chrome or Firefox. (Other browsers may work too, but I've never tested them.)
 
 
 Contact
