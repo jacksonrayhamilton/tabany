@@ -142,4 +142,4 @@ Income
 
 Ads? Donations? In-game shops? Cosmetics? Avatars? Virtual real estate? Value-for-value?
 
-Tabany.com might be able to be monetized. Even though the game is GPL, if everyone likes to play on a central server then that server can offer incentives in exchange for support.
+Website might be able to be monetized. Even though the game is GPL, if everyone likes to play on a central server then that server can offer incentives in exchange for support.
