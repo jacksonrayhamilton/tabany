@@ -29,7 +29,7 @@ Players view themselves from a top-down perspective in the classic Final Fantasy
 Status
 ------
 
-Tabany is currently being actively developed. It has just reached the "Alpha" stage on its release schedule. (See docs/design_document.md.)
+Tabany is currently being actively developed. It has just reached the "Alpha" stage on its release schedule. (See [docs/design_document.md][].)
 
 Respectable portions of both the client and server-side components of the game engine have written. It is currently possible for multiple players to move around and chat with each other on the same map in real-time. Drawing, collision detection, rudimentary entity interpolation, JSON and image data pipelining and basic player identification/authentication have been implemented. There is also a pretty solid RequireJS program structure to keep everything organized, and all code is commented.
 
@@ -41,7 +41,7 @@ Performance will be heavily-scrutinized once all essential features of the engin
 
 Graphics are on the horizon; until then, the game will utilize RPG Maker assets (available under separate terms than that of Tabany's code).
 
-For more info on project goals see docs/design_document.md.
+For more info on project goals see [docs/design_document.md][].
 
 
 Usage
